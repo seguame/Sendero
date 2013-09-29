@@ -3,10 +3,11 @@
 
 #include <QMainWindow>
 
+#include "EditorCodigo/editor_codigo.h"
+
 QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
-class QPlainTextEdit;
 QT_END_NAMESPACE
 
 class VentanaPrincipal : public QMainWindow
@@ -43,7 +44,7 @@ class VentanaPrincipal : public QMainWindow
 
     //Atributos
     private:
-        QPlainTextEdit *textEdit;
+        EditorCodigo *textEdit;
         QString archivoActual;
 
         QMenu *menuArchivo;

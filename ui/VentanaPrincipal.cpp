@@ -1,10 +1,11 @@
 #include <QtGui>
 
 #include "VentanaPrincipal.h"
+#include "EditorCodigo/editor_codigo.h"
 
 VentanaPrincipal::VentanaPrincipal()
 {
-    textEdit = new QPlainTextEdit;
+    textEdit = new EditorCodigo;
     setCentralWidget(textEdit);
 
     crearAcciones();
