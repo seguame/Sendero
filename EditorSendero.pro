@@ -13,10 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    ui/VentanaPrincipal.cpp
+    ui/VentanaPrincipal.cpp \
+    ui/EditorCodigo/editorcodigo.cpp \
+    ui/EditorCodigo/contadorlinea.cpp
 
 HEADERS  += \
-    ui/VentanaPrincipal.h
+    ui/VentanaPrincipal.h \
+    ui/EditorCodigo/editorcodigo.h \
+    ui/EditorCodigo/contadorlinea.h
 
 RESOURCES += \
     Imagenes.qrc
