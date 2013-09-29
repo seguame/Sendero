@@ -14,6 +14,7 @@ VentanaPrincipal::VentanaPrincipal()
     crearMenus();
     crearToolBars();
     crearBarraEstado();
+    crearWidgetsMovibles();
 
     leerConfiguracion();
 
@@ -217,6 +218,8 @@ void VentanaPrincipal::crearMenus()
     menuEditar->addAction(accionCopiar);
     menuEditar->addAction(accionPegar);
 
+    menuVista = menuBar()->addMenu(tr("Vista"));
+
     menuBar()->addSeparator();
 
     menuAyuda = menuBar()->addMenu(tr("Ayuda"));
@@ -247,6 +250,25 @@ void VentanaPrincipal::crearBarraEstado()
     statusBar()->showMessage(tr("Preparado"));
 }
 
+void VentanaPrincipal::crearWidgetsMovibles()
+{
+    QDockWidget *dock = new QDockWidget(tr("Problemas"), this);
+    dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::RightDockWidgetArea);
+    salidaErrores = new QListWidget(dock);
+    salidaErrores->addItems(QStringList()
+            << "Testing");
+    dock->setWidget(salidaErrores);
+    addDockWidget(Qt::BottomDockWidgetArea, dock);
+    menuVista->addAction(dock->toggleViewAction());
+
+    dock = new QDockWidget(tr("Compilador"), this);
+    salidaCompilacion = new QListWidget(dock);
+    salidaCompilacion->addItems(QStringList()
+            << "Aun no sabes compilar :B");
+    dock->setWidget(salidaCompilacion);
+    addDockWidget(Qt::BottomDockWidgetArea, dock);
+    menuVista->addAction(dock->toggleViewAction());
+}
 
 
 void VentanaPrincipal::leerConfiguracion()

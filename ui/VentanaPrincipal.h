@@ -10,6 +10,7 @@ QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
 class QFont;
+class QListWidget;
 QT_END_NAMESPACE
 
 class VentanaPrincipal : public QMainWindow
@@ -36,6 +37,7 @@ class VentanaPrincipal : public QMainWindow
         void crearMenus();
         void crearToolBars();
         void crearBarraEstado();
+        void crearWidgetsMovibles();
         void leerConfiguracion();
         void escribirConfiguracion();
         bool preguntarSiGuardar();
@@ -54,6 +56,7 @@ class VentanaPrincipal : public QMainWindow
         QMenu *menuArchivo;
         QMenu *menuEditar;
         QMenu *menuAyuda;
+        QMenu *menuVista;
         QToolBar *toolBarArchivo;
         QToolBar *toolBarEdicion;
         QAction *accionNuevo;
@@ -66,6 +69,8 @@ class VentanaPrincipal : public QMainWindow
         QAction *accionPegar;
         QAction *accionAcercaDe;
         QAction *accionAcercaDeQT;
+        QListWidget *salidaErrores;
+        QListWidget *salidaCompilacion;
 };
 
 #endif //__VENTANA_PRINCIPAL_H__
