@@ -22,7 +22,6 @@ VentanaPrincipal::VentanaPrincipal()
 
     setArchivoActual("");
     setUnifiedTitleAndToolBarOnMac(true);
-    setWindowTitle(QObject::tr("Sendero"));
 }
 
 
@@ -56,7 +55,10 @@ void VentanaPrincipal::abrir()
 {
     if (preguntarSiGuardar())
     {
-        QString nombreArchivo = QFileDialog::getOpenFileName(this);
+        QString nombreArchivo = QFileDialog::getOpenFileName(this,
+                                                             tr("Abrir archivo"),
+                                                             "",
+                                                             "Cualquiera (*.*);; Ir Files (*.ir);; C++ Files (*.cpp *.h)");
 
         if (!nombreArchivo.isEmpty())
         {
