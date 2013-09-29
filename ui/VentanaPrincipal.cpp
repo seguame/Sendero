@@ -22,6 +22,7 @@ VentanaPrincipal::VentanaPrincipal()
 
     setArchivoActual("");
     setUnifiedTitleAndToolBarOnMac(true);
+    setWindowTitle(QObject::tr("Sendero"));
 }
 
 
