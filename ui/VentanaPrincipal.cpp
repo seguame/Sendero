@@ -6,11 +6,9 @@
 
 VentanaPrincipal::VentanaPrincipal()
 {
-    textEdit = new EditorCodigo;
-    resaltador = new ResaltadorSintaxis(textEdit->document());
+    configurarEditor();
 
 
-    setCentralWidget(textEdit);
 
     crearAcciones();
     crearMenus();
@@ -19,7 +17,7 @@ VentanaPrincipal::VentanaPrincipal()
 
     leerConfiguracion();
 
-    connect(textEdit->document(),
+    connect(editorTexto->document(),
             SIGNAL(contentsChanged()),
             this,
             SLOT(archivoFueModificado()));
@@ -43,13 +41,27 @@ void VentanaPrincipal::closeEvent(QCloseEvent *evento)
     }
 }
 
+void VentanaPrincipal::configurarEditor()
+{
+    QFont fuente;
+    fuente.setFamily("Courier");
+    fuente.setFixedPitch(true);
+    fuente.setPointSize(14);
+
+    editorTexto = new EditorCodigo;
+    editorTexto->setFont(fuente);
+
+    resaltador = new ResaltadorSintaxis(editorTexto->document());
+
+    setCentralWidget(editorTexto);
+}
 
 
 void VentanaPrincipal::nuevoArchivo()
 {
     if (preguntarSiGuardar())
     {
-        textEdit->clear();
+        editorTexto->clear();
         setArchivoActual("");
     }
 }
@@ -111,7 +123,7 @@ void VentanaPrincipal::acercaDe()
 
 void VentanaPrincipal::archivoFueModificado()
 {
-    setWindowModified(textEdit->document()->isModified());
+    setWindowModified(editorTexto->document()->isModified());
 }
 
 
@@ -150,17 +162,17 @@ void VentanaPrincipal::crearAcciones()
 
     accionCortar->setShortcuts(QKeySequence::Cut);
     accionCortar->setStatusTip(tr("Cortar el contenido seleccionado al portapapeles"));
-    connect(accionCortar, SIGNAL(triggered()), textEdit, SLOT(cut()));
+    connect(accionCortar, SIGNAL(triggered()), editorTexto, SLOT(cut()));
 
     accionCopiar = new QAction(QIcon(":/imagenes/copy.png"), tr("Copiar"), this);
     accionCopiar->setShortcuts(QKeySequence::Copy);
     accionCopiar->setStatusTip(tr("Copiar el contenido seleccionado al portapapeles"));
-    connect(accionCopiar, SIGNAL(triggered()), textEdit, SLOT(copy()));
+    connect(accionCopiar, SIGNAL(triggered()), editorTexto, SLOT(copy()));
 
     accionPegar = new QAction(QIcon(":/imagenes/paste.png"), tr("Pegar"), this);
     accionPegar->setShortcuts(QKeySequence::Paste);
     accionPegar->setStatusTip(tr("Pegar el contenido del portapapeles en el lugar seleccionado"));
-    connect(accionPegar, SIGNAL(triggered()), textEdit, SLOT(paste()));
+    connect(accionPegar, SIGNAL(triggered()), editorTexto, SLOT(paste()));
 
     accionAcercaDe = new QAction(tr("Acerca de"), this);
     accionAcercaDe->setStatusTip(tr("Mostrar información de la aplicación"));
@@ -176,12 +188,12 @@ void VentanaPrincipal::crearAcciones()
     accionCortar->setEnabled(false);
     accionCopiar->setEnabled(false);
 
-    connect(textEdit,
+    connect(editorTexto,
             SIGNAL(copyAvailable(bool)),
             accionCortar,
             SLOT(setEnabled(bool)));
 
-    connect(textEdit,
+    connect(editorTexto,
             SIGNAL(copyAvailable(bool)),
             accionCopiar,
             SLOT(setEnabled(bool)));
@@ -258,7 +270,7 @@ void VentanaPrincipal::escribirConfiguracion()
 
 bool VentanaPrincipal::preguntarSiGuardar()
 {
-    if (textEdit->document()->isModified())
+    if (editorTexto->document()->isModified())
     {
         QMessageBox::StandardButton interaccion;
 
@@ -300,7 +312,7 @@ void VentanaPrincipal::cargarArchivo(const QString &nombreArchivo)
     QApplication::setOverrideCursor(Qt::WaitCursor);
     #endif
 
-    textEdit->setPlainText(flujoEntrada.readAll());
+    editorTexto->setPlainText(flujoEntrada.readAll());
 
     #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
@@ -332,7 +344,7 @@ bool VentanaPrincipal::guardarArchivo(const QString &nombreArchivo)
     QApplication::setOverrideCursor(Qt::WaitCursor);
     #endif
 
-    flujoSalida << (textEdit->toPlainText());
+    flujoSalida << (editorTexto->toPlainText());
 
     #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
@@ -351,7 +363,7 @@ void VentanaPrincipal::setArchivoActual(const QString &nombreArchivo)
 {
     archivoActual = nombreArchivo;
 
-    textEdit->document()->setModified(false);
+    editorTexto->document()->setModified(false);
     setWindowModified(false);
 
     QString nombreaAMostrar = archivoActual;

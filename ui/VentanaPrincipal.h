@@ -9,6 +9,7 @@
 QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
+class QFont;
 QT_END_NAMESPACE
 
 class VentanaPrincipal : public QMainWindow
@@ -30,6 +31,7 @@ class VentanaPrincipal : public QMainWindow
         void archivoFueModificado();
 
     private:
+        void configurarEditor();
         void crearAcciones();
         void crearMenus();
         void crearToolBars();
@@ -45,7 +47,7 @@ class VentanaPrincipal : public QMainWindow
 
     //Atributos
     private:
-        EditorCodigo *textEdit;
+        EditorCodigo *editorTexto;
         ResaltadorSintaxis *resaltador;
         QString archivoActual;
 
