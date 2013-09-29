@@ -14,13 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     ui/VentanaPrincipal.cpp \
-    ui/EditorCodigo/editorcodigo.cpp \
-    ui/EditorCodigo/contadorlinea.cpp
+    ui/EditorCodigo/contador_linea.cpp \
+    ui/EditorCodigo/editor_codigo.cpp
 
 HEADERS  += \
     ui/VentanaPrincipal.h \
-    ui/EditorCodigo/editorcodigo.h \
-    ui/EditorCodigo/contadorlinea.h
+    ui/EditorCodigo/editor_codigo.h \
+    ui/EditorCodigo/contador_linea.h
 
 RESOURCES += \
     Imagenes.qrc
