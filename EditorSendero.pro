@@ -16,3 +16,14 @@ SOURCES += main.cpp\
         VentanaPrincipal.cpp
 
 HEADERS  += VentanaPrincipal.h
+
+RESOURCES += \
+    Imagenes.qrc
+
+OTHER_FILES += \
+    imagenes/save.png \
+    imagenes/paste.png \
+    imagenes/open.png \
+    imagenes/new.png \
+    imagenes/cut.png \
+    imagenes/copy.png
