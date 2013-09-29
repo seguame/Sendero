@@ -12,10 +12,11 @@ TARGET = EditorSendero
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        VentanaPrincipal.cpp
+SOURCES += main.cpp \
+    ui/VentanaPrincipal.cpp
 
-HEADERS  += VentanaPrincipal.h
+HEADERS  += \
+    ui/VentanaPrincipal.h
 
 RESOURCES += \
     Imagenes.qrc
