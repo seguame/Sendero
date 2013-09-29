@@ -2,10 +2,14 @@
 
 #include "VentanaPrincipal.h"
 #include "EditorCodigo/editor_codigo.h"
+#include "EditorCodigo/resaltador_sintaxis.h"
 
 VentanaPrincipal::VentanaPrincipal()
 {
     textEdit = new EditorCodigo;
+    resaltador = new ResaltadorSintaxis(textEdit->document());
+
+
     setCentralWidget(textEdit);
 
     crearAcciones();

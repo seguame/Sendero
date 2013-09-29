@@ -20,7 +20,7 @@ class EditorCodigo : public QPlainTextEdit
     Q_OBJECT
 
     public:
-        EditorCodigo(QWidget *parent = 0);
+        EditorCodigo(QWidget *padre = 0);
 
         void eventoPintadoAreaNumeroLinea(QPaintEvent *evento);
         int anchuraAreaNumeroLinea();
