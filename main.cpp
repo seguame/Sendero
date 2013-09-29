@@ -1,6 +1,6 @@
 #include <QApplication>
 
-#include "VentanaPrincipal.h"
+#include "ui/VentanaPrincipal.h"
 
 int main(int argc, char *argv[])
 {
