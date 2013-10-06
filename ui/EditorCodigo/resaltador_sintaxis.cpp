@@ -11,16 +11,17 @@ ResaltadorSintaxis::ResaltadorSintaxis(QTextDocument *padre)
     formatoPalabraReservada.setFontWeight(QFont::Bold);
 
     QStringList patronPalabraReservada;
-    patronPalabraReservada  << "\\bchar\\b" << "\\bclass\\b" << "\\bconst\\b"
-                            << "\\bdouble\\b" << "\\benum\\b" << "\\bexplicit\\b"
-                            << "\\bfriend\\b" << "\\binline\\b" << "\\bint\\b"
-                            << "\\blong\\b" << "\\bnamespace\\b" << "\\boperator\\b"
-                            << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b"
-                            << "\\bshort\\b" << "\\bsignals\\b" << "\\bsigned\\b"
-                            << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b"
-                            << "\\btemplate\\b" << "\\btypedef\\b" << "\\btypename\\b"
-                            << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b"
-                            << "\\bvoid\\b" << "\\bvolatile\\b" << "\\bif\\b" << "\\belse\\b";
+    patronPalabraReservada  << "\\binterrumpe\\b" << "\\bvalor\\b" << "\\bcanal\\b"
+                            << "\\bconst\\b" << "\\bcontinua\\b" << "\\bdefecto\\b"
+                            << "\\bdifer\\b" << "\\bsino\\b" << "\\bdesde\\b"
+                            << "\\bfuncion\\b" << "\\bir\\b" << "\\bir_a\\b"
+                            << "\\bsi\\b" << "\\bimportar\\b" << "\\binterfaz\\b"
+                            << "\\bmapa\\b" << "\\bpaquete\\b" << "\\brango\\b"
+                            << "\\bregresa\\b" << "\\bselecciona\\b" << "\\bestructura\\b"
+                            << "\\bcaso\\b" << "\\btipo\\b" << "\\bentero\\b"
+                            << "\\bvar\\b" << "\\bdiv\\b" << "\\bmod\\b"
+                            << "\\blogico\\b" << "\\bcaracter\\b" << "\\balfabetico\\b"
+                            << "\\breal\\b";
 
     foreach (const QString &patron, patronPalabraReservada)
     {
