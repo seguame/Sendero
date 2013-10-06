@@ -16,13 +16,15 @@ SOURCES += main.cpp \
     ui/VentanaPrincipal.cpp \
     ui/EditorCodigo/contador_linea.cpp \
     ui/EditorCodigo/editor_codigo.cpp \
-    ui/EditorCodigo/resaltador_sintaxis.cpp
+    ui/EditorCodigo/resaltador_sintaxis.cpp \
+    compilador/compilador.cpp
 
 HEADERS  += \
     ui/VentanaPrincipal.h \
     ui/EditorCodigo/editor_codigo.h \
     ui/EditorCodigo/contador_linea.h \
-    ui/EditorCodigo/resaltador_sintaxis.h
+    ui/EditorCodigo/resaltador_sintaxis.h \
+    compilador/compilador.h
 
 RESOURCES += \
     Imagenes.qrc
@@ -33,4 +35,5 @@ OTHER_FILES += \
     imagenes/open.png \
     imagenes/new.png \
     imagenes/cut.png \
-    imagenes/copy.png
+    imagenes/copy.png \
+    imagenes/compile.png
