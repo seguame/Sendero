@@ -30,6 +30,7 @@ class VentanaPrincipal : public QMainWindow
         bool guardarComo();
         void acercaDe();
         void archivoFueModificado();
+        void compilar();
 
     private:
         void configurarEditor();
@@ -59,6 +60,7 @@ class VentanaPrincipal : public QMainWindow
         QMenu *menuVista;
         QToolBar *toolBarArchivo;
         QToolBar *toolBarEdicion;
+        QAction *accionCompilar;
         QAction *accionNuevo;
         QAction *accionAbrir;
         QAction *accionGuardar;

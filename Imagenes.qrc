@@ -5,6 +5,7 @@
         <file>imagenes/new.png</file>
         <file>imagenes/cut.png</file>
         <file>imagenes/copy.png</file>
+        <file>imagenes/compile.png</file>
         <file>imagenes/open.png</file>
     </qresource>
 </RCC>

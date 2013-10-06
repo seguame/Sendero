@@ -3,6 +3,7 @@
 #include "VentanaPrincipal.h"
 #include "EditorCodigo/editor_codigo.h"
 #include "EditorCodigo/resaltador_sintaxis.h"
+#include "compilador/compilador.h"
 
 VentanaPrincipal::VentanaPrincipal()
 {
@@ -127,10 +128,22 @@ void VentanaPrincipal::archivoFueModificado()
     setWindowModified(editorTexto->document()->isModified());
 }
 
+void VentanaPrincipal::compilar()
+{
+    if(preguntarSiGuardar())
+    {
+        new Compilador(archivoActual);
+    }
+}
+
 
 
 void VentanaPrincipal::crearAcciones()
 {
+    accionCompilar = new QAction(QIcon(":/imagenes/compile.png"), tr("Compilar"), this);
+    accionCompilar->setStatusTip("Compilar archivo actual");
+    connect(accionCompilar, SIGNAL(triggered()), this, SLOT(compilar()));
+
     accionNuevo = new QAction(QIcon(":/imagenes/new.png"), tr("Nuevo"), this);
     accionNuevo->setShortcuts(QKeySequence::New);
     accionNuevo->setStatusTip(tr("Crear un nuevo archivo"));
@@ -236,6 +249,7 @@ void VentanaPrincipal::crearToolBars()
     toolBarArchivo->addAction(accionNuevo);
     toolBarArchivo->addAction(accionAbrir);
     toolBarArchivo->addAction(accionGuardar);
+    toolBarArchivo->addAction(accionCompilar);
 
     toolBarEdicion = addToolBar(tr("Edicion"));
     toolBarEdicion->addAction(accionCortar);
