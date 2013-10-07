@@ -48,7 +48,7 @@ void VentanaPrincipal::configurarEditor()
     QFont fuente;
     fuente.setFamily("Courier");
     fuente.setFixedPitch(true);
-    fuente.setPointSize(14);
+    fuente.setPointSize(11);
 
     editorTexto = new EditorCodigo;
     editorTexto->setFont(fuente);
@@ -76,7 +76,7 @@ void VentanaPrincipal::abrir()
         QString nombreArchivo = QFileDialog::getOpenFileName(this,
                                                              tr("Abrir archivo"),
                                                              "",
-                                                             "Cualquiera (*.*);; Ir Files (*.ir);; C++ Files (*.cpp *.h)");
+                                                             "Ir Files (*.ir);; C++ Files (*.cpp *.h);; Cualquiera (*.*)");
 
         if (!nombreArchivo.isEmpty())
         {
@@ -128,11 +128,70 @@ void VentanaPrincipal::archivoFueModificado()
     setWindowModified(editorTexto->document()->isModified());
 }
 
+
 void VentanaPrincipal::compilar()
 {
     if(preguntarSiGuardar())
     {
-        new Compilador(archivoActual);
+        string strArchivo = archivoActual.toUtf8().constData();
+
+        Compilador compilador(strArchivo);
+        compilador.realizarMagia();
+
+        QStringList listaInfo;
+        QStringList listaError;
+
+        QFile archivoInfo(QString((compilador._rutaAlArchivo + "/" + compilador._nombreArchivo + ".lexemas").c_str()));
+        QFile archivoError(QString((compilador._rutaAlArchivo + "/" + compilador._nombreArchivo + ".errores").c_str()));
+
+        if (!archivoInfo.open(QFile::ReadOnly | QFile::Text))
+        {
+            QMessageBox::warning(this, tr("Sendero"),
+                                 tr("No se pudo abrir el archivo %1:\n%2.")
+                                 .arg(archivoActual)
+                                 .arg(archivoInfo.errorString()));
+            return;
+        }
+
+        if (!archivoError.open(QFile::ReadOnly | QFile::Text))
+        {
+            QMessageBox::warning(this, tr("Sendero"),
+                                 tr("No se pudo abrir el archivo %1:\n%2.")
+                                 .arg(archivoActual)
+                                 .arg(archivoError.errorString()));
+            return;
+        }
+
+        QTextStream flujoEntradaInfo(&archivoInfo);
+        QTextStream flujoEntradaError(&archivoError);
+
+        #ifndef QT_NO_CURSOR
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        #endif
+
+        listaInfo.clear();
+
+        while(!flujoEntradaInfo.atEnd())
+        {
+            listaInfo << flujoEntradaInfo.readLine();
+        }
+
+
+        listaError.clear();
+
+        while(!flujoEntradaError.atEnd())
+        {
+            listaError << flujoEntradaError.readLine();
+        }
+
+        #ifndef QT_NO_CURSOR
+        QApplication::restoreOverrideCursor();
+        #endif
+
+        salidaInformativa->clear();
+        salidaInformativa->addItems(listaInfo);
+        salidaErrores->clear();
+        salidaErrores->addItems(listaError);
     }
 }
 
@@ -269,18 +328,20 @@ void VentanaPrincipal::crearWidgetsMovibles()
     QDockWidget *dock = new QDockWidget(tr("Problemas"), this);
     dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::RightDockWidgetArea);
     salidaErrores = new QListWidget(dock);
-    salidaErrores->addItems(QStringList()
-            << "Testing");
     dock->setWidget(salidaErrores);
     addDockWidget(Qt::BottomDockWidgetArea, dock);
     menuVista->addAction(dock->toggleViewAction());
 
-    dock = new QDockWidget(tr("Compilador"), this);
+    /*dock = new QDockWidget(tr("Compilador"), this);
     salidaCompilacion = new QListWidget(dock);
-    salidaCompilacion->addItems(QStringList()
-            << "Aun no sabes compilar :B");
     dock->setWidget(salidaCompilacion);
     addDockWidget(Qt::BottomDockWidgetArea, dock);
+    menuVista->addAction(dock->toggleViewAction());*/
+
+    dock = new QDockWidget(tr("Info"), this);
+    salidaInformativa = new QListWidget(dock);
+    dock->setWidget(salidaInformativa);
+    addDockWidget(Qt::RightDockWidgetArea, dock);
     menuVista->addAction(dock->toggleViewAction());
 }
 

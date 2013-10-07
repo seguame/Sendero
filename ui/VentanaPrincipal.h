@@ -73,6 +73,7 @@ class VentanaPrincipal : public QMainWindow
         QAction *accionAcercaDeQT;
         QListWidget *salidaErrores;
         QListWidget *salidaCompilacion;
+        QListWidget *salidaInformativa;
 };
 
 #endif //__VENTANA_PRINCIPAL_H__

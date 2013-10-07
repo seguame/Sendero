@@ -7,7 +7,7 @@ ResaltadorSintaxis::ResaltadorSintaxis(QTextDocument *padre)
 {
     ReglaDeResaltado regla;
 
-    formatoPalabraReservada.setForeground(Qt::darkBlue);
+    formatoPalabraReservada.setForeground(Qt::darkMagenta);
     formatoPalabraReservada.setFontWeight(QFont::Bold);
 
     QStringList patronPalabraReservada;
@@ -21,7 +21,7 @@ ResaltadorSintaxis::ResaltadorSintaxis(QTextDocument *padre)
                             << "\\bcaso\\b" << "\\btipo\\b" << "\\bentero\\b"
                             << "\\bvar\\b" << "\\bdiv\\b" << "\\bmod\\b"
                             << "\\blogico\\b" << "\\bcaracter\\b" << "\\balfabetico\\b"
-                            << "\\breal\\b";
+                            << "\\breal\\b" << "\\bVerdadero" << "\\bFalso\\b";
 
     foreach (const QString &patron, patronPalabraReservada)
     {
@@ -32,7 +32,7 @@ ResaltadorSintaxis::ResaltadorSintaxis(QTextDocument *padre)
 
 
     formatoClase.setFontWeight(QFont::Bold);
-    formatoClase.setForeground(Qt::darkMagenta);
+    formatoClase.setForeground(Qt::darkBlue);
     regla.patron = QRegExp("\\bQ[A-Za-z]+\\b");
     regla.formato = formatoClase;
     reglasDeResaltado.append(regla);
