@@ -138,60 +138,11 @@ void VentanaPrincipal::compilar()
         Compilador compilador(strArchivo);
         compilador.realizarMagia();
 
-        QStringList listaInfo;
-        QStringList listaError;
+        archivoSinExtencion = QString(compilador.getNombreArchivo().c_str());
+        rutaActual = QString(compilador.getRutaAlArchivo().c_str());
 
-        QFile archivoInfo(QString((compilador._rutaAlArchivo + "/" + compilador._nombreArchivo + ".lexemas").c_str()));
-        QFile archivoError(QString((compilador._rutaAlArchivo + "/" + compilador._nombreArchivo + ".errores").c_str()));
+        actualizarVistas();
 
-        if (!archivoInfo.open(QFile::ReadOnly | QFile::Text))
-        {
-            QMessageBox::warning(this, tr("Sendero"),
-                                 tr("No se pudo abrir el archivo %1:\n%2.")
-                                 .arg(archivoActual)
-                                 .arg(archivoInfo.errorString()));
-            return;
-        }
-
-        if (!archivoError.open(QFile::ReadOnly | QFile::Text))
-        {
-            QMessageBox::warning(this, tr("Sendero"),
-                                 tr("No se pudo abrir el archivo %1:\n%2.")
-                                 .arg(archivoActual)
-                                 .arg(archivoError.errorString()));
-            return;
-        }
-
-        QTextStream flujoEntradaInfo(&archivoInfo);
-        QTextStream flujoEntradaError(&archivoError);
-
-        #ifndef QT_NO_CURSOR
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        #endif
-
-        listaInfo.clear();
-
-        while(!flujoEntradaInfo.atEnd())
-        {
-            listaInfo << flujoEntradaInfo.readLine();
-        }
-
-
-        listaError.clear();
-
-        while(!flujoEntradaError.atEnd())
-        {
-            listaError << flujoEntradaError.readLine();
-        }
-
-        #ifndef QT_NO_CURSOR
-        QApplication::restoreOverrideCursor();
-        #endif
-
-        salidaInformativa->clear();
-        salidaInformativa->addItems(listaInfo);
-        salidaErrores->clear();
-        salidaErrores->addItems(listaError);
     }
 }
 
@@ -325,24 +276,102 @@ void VentanaPrincipal::crearBarraEstado()
 
 void VentanaPrincipal::crearWidgetsMovibles()
 {
+
     QDockWidget *dock = new QDockWidget(tr("Problemas"), this);
     dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::RightDockWidgetArea);
-    salidaErrores = new QListWidget(dock);
-    dock->setWidget(salidaErrores);
+    vistaErrores = new QTreeView(dock);
+    vistaErrores->setRootIsDecorated(false);
+    vistaErrores->setAlternatingRowColors(true);
+    modeloErrores = new QStandardItemModel(0,5, this);
+    modeloErrores->setHeaderData(0, Qt::Horizontal, QObject::tr("Linea"));
+    modeloErrores->setHeaderData(1, Qt::Horizontal, QObject::tr("Columna"));
+    modeloErrores->setHeaderData(2, Qt::Horizontal, QObject::tr("Error"));
+    modeloErrores->setHeaderData(3, Qt::Horizontal, QObject::tr("Descripccion"));
+    modeloErrores->setHeaderData(4, Qt::Horizontal, QObject::tr("Linea de Error"));
+    vistaErrores->setModel(modeloErrores);
+    dock->setWidget(vistaErrores);
     addDockWidget(Qt::BottomDockWidgetArea, dock);
     menuVista->addAction(dock->toggleViewAction());
 
-    /*dock = new QDockWidget(tr("Compilador"), this);
-    salidaCompilacion = new QListWidget(dock);
-    dock->setWidget(salidaCompilacion);
-    addDockWidget(Qt::BottomDockWidgetArea, dock);
-    menuVista->addAction(dock->toggleViewAction());*/
-
-    dock = new QDockWidget(tr("Info"), this);
-    salidaInformativa = new QListWidget(dock);
-    dock->setWidget(salidaInformativa);
+    dock = new QDockWidget(tr("Informacion"), this);
+    dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    vistaInformativa = new QTreeView(dock);
+    vistaInformativa->setRootIsDecorated(false);
+    vistaInformativa->setAlternatingRowColors(true);
+    modeloInformativa = new QStandardItemModel(0, 2, this);
+    modeloInformativa->setHeaderData(0, Qt::Horizontal, QObject::tr("Token"));
+    modeloInformativa->setHeaderData(1, Qt::Horizontal, QObject::tr("Lexema"));
+    vistaInformativa->setModel(modeloInformativa);
+    dock->setWidget(vistaInformativa);
     addDockWidget(Qt::RightDockWidgetArea, dock);
     menuVista->addAction(dock->toggleViewAction());
+}
+
+void VentanaPrincipal::actualizarVistas()
+{
+    QString ruta = QString("%1/%2").arg(rutaActual).arg(archivoSinExtencion);
+
+    #ifndef QT_NO_CURSOR
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    #endif
+
+    actualizarVistaErrores(ruta);
+    actualizarVistaInformativa(ruta);
+
+    #ifndef QT_NO_CURSOR
+    QApplication::restoreOverrideCursor();
+    #endif
+
+}
+
+void VentanaPrincipal::actualizarVistaErrores(QString ruta)
+{
+    QFile archivo(ruta + ".errores");
+
+    if (!archivo.open(QFile::ReadOnly | QFile::Text))
+        return;
+
+    QTextStream flujo(&archivo);
+
+    modeloErrores->removeRows(0,((QStandardItemModel)modeloErrores).rowCount() + 1);
+    int i = 0;
+    while(!flujo.atEnd())
+    {
+        QStringList tmp = flujo.readLine().split(",,,");
+
+        modeloErrores->insertRow(i);
+        modeloErrores->setData(modeloErrores->index(i, 0), tmp[0]);
+        modeloErrores->setData(modeloErrores->index(i, 1), tmp[1]);
+        modeloErrores->setData(modeloErrores->index(i, 2), tmp[2]);
+        modeloErrores->setData(modeloErrores->index(i, 3), tmp[3]);
+        modeloErrores->setData(modeloErrores->index(i, 4), tmp[4]);
+
+        ++i;
+    }
+}
+
+void VentanaPrincipal::actualizarVistaInformativa(QString ruta)
+{
+    QFile archivo(ruta + ".lexemas");
+
+    if (!archivo.open(QFile::ReadOnly | QFile::Text))
+        return;
+
+    QTextStream flujo(&archivo);
+
+    modeloInformativa->removeRows(0,((QStandardItemModel)modeloInformativa).rowCount() + 1);
+
+    int i = 0;
+    while(!flujo.atEnd())
+    {
+        QStringList tmp = flujo.readLine().split(",,,");
+
+        modeloInformativa->insertRow(i);
+        modeloInformativa->setData(modeloInformativa->index(i, 0), tmp[0]);
+        modeloInformativa->setData(modeloInformativa->index(i, 1), tmp[1]);
+
+        ++i;
+    }
 }
 
 

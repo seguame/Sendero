@@ -11,6 +11,8 @@ class QAction;
 class QMenu;
 class QFont;
 class QListWidget;
+class QTreeView;
+class QAbstractItemModel;
 QT_END_NAMESPACE
 
 class VentanaPrincipal : public QMainWindow
@@ -47,12 +49,18 @@ class VentanaPrincipal : public QMainWindow
         void setArchivoActual(const QString &nombreArchivo);
         QString soloNombreArchivo(const QString &nombreCompletoArchivo);
 
+        void actualizarVistas();
+        void actualizarVistaErrores(QString ruta);
+        void actualizarVistaInformativa(QString ruta);
+
 
     //Atributos
     private:
         EditorCodigo *editorTexto;
         ResaltadorSintaxis *resaltador;
         QString archivoActual;
+        QString rutaActual;
+        QString archivoSinExtencion;
 
         QMenu *menuArchivo;
         QMenu *menuEditar;
@@ -71,9 +79,11 @@ class VentanaPrincipal : public QMainWindow
         QAction *accionPegar;
         QAction *accionAcercaDe;
         QAction *accionAcercaDeQT;
-        QListWidget *salidaErrores;
-        QListWidget *salidaCompilacion;
-        QListWidget *salidaInformativa;
+
+        QTreeView *vistaErrores;
+        QTreeView *vistaInformativa;
+        QAbstractItemModel *modeloErrores;
+        QAbstractItemModel *modeloInformativa;
 };
 
 #endif //__VENTANA_PRINCIPAL_H__
