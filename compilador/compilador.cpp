@@ -1,6 +1,8 @@
 #include <iostream>
 #include <sstream>
 
+
+
 #include <QDebug>
 
 #include "compilador.h"
@@ -8,43 +10,43 @@
 const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 {
     //      0   1–7 8-9 a–d     e   f   g–w x   y–z +-  %^      ;,()[]{}    .   “   :   =   >   <   !   |   &   _    '      /       *       ESPACIO OTRO
-    /*e0*/{e1,e6,e6,e14,e14,e14,e14,e14,e14,e15,e15,e12,e12,e16,e18,e20,e27,e21,e22,e24,e25,e13,e29,e32,e15,ERR,ERR},
-    /*e1*/{e2,e3,ERR,ERR,ERR,ERR,ERR,e4,ERR,ERR,ERR,ERR,e7,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR},
-    /*e2*/{e2,e3,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR},
-    /*e3*/{e3,e3,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR},
-    /*e4*/{e5,e5,e5,e5,e5,e5,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR},
-    /*e5*/{e5,e5,e5,e5,e5,e5,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e6*/{e6,e6,e6,ACP,e9,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e7,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e7*/{e8,e8,e8,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR},
-    /*e8*/{e8,e8,e8,ACP,e9,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e9*/{e11,e11,e11,ERR,ERR,ERR,ERR,ERR,ERR,e10,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR},
-    /*e10*/{e11,e11,e11,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR},
-    /*e11*/{e11,e11,e11,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e12*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e13*/{e14,e14,e14,e14,e14,e14,e14,e14,e14,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,e14,ERR,ERR,ERR,ERR,ERR},
-    /*e14*/{e14,e14,e14,e14,e14,e14,e14,e14,e14,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e14,ACP,ACP,ACP,ACP,ACP},
-    /*e15*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e16*/{e16,e16,e16,e16,e16,e16,e16,e16,e16,e16,e16,e16,e16,e17,e16,e16,e16,e16,e16,e16,e16,e16,e16,e16,e16,e16,e16},
-    /*e17*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e18*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e19,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e19*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e20*/{ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,e23,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR},
-    /*e21*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e23,ACP,e28,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e22*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e23,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e23*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e24*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e26,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e25*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e26,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e26*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e27*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e23,e28,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e28*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e29*/{e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,e30,ERR,e30,e30,e30,e30},
-    /*e30*/{ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,e31,ERR,ERR,ERR,ERR},
-    /*e31*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP},
-    /*e32*/{ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e33,e34,ACP,ACP},
-    /*e33*/{e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33,e33},
-    /*e34*/{e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e35,e34,e34},
-    /*e35*/{e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e34,e36,e35,e34,e34},
-    /*e36*/{e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36,e36}
+    /*e0*/{e1,  e6, e6, e14,    e14,e14,e14,e14,e14,e15,e15,    e12,        e12,e16,e18,e20,e27,e21,e22,e24,e25,e13, e29,   e32,    e15,    ERR,    ERR},
+    /*e1*/{e2,  e3, ERR,ERR,    ERR,ERR,ERR,e4, ERR,ACP,ACP,    ACP,        e7, ERR,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ERR, ERR,   ACP,    ACP,    ACP,    ERR},
+    /*e2*/{e2,  e3, ERR,ERR,    ERR,ERR,ERR,ERR,ERR,ACP,ACP,    ACP,        e7, ERR,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ERR, ERR,   ACP,    ACP,    ACP,    ERR},
+    /*e3*/{e3,  e3, ERR,ERR,    ERR,ERR,ERR,ERR,ACP,ACP,ACP,    ACP,        ERR,ERR,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ERR, ERR,   ACP,    ACP,    ACP,    ERR},
+    /*e4*/{e5,  e5, e5, e5,     e5, e5, ERR,ERR,ERR,ERR,ERR,    ERR,        ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR, ERR,   ERR,    ERR,    ERR,    ERR},
+    /*e5*/{e5,  e5, e5, e5,     e5, e5, ERR,ERR,ERR,ACP,ACP,    ACP,        ERR,ERR,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ERR, ERR,   ACP,    ACP,    ACP,    ERR},
+    /*e6*/{e6,  e6, e6, ACP,    e9, ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        e7, ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e7*/{e8,  e8, e8, ERR,    ERR,ERR,ERR,ERR,ERR,ERR,ERR,    ERR,        ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR, ERR,   ERR,    ERR,    ERR,    ERR},
+    /*e8*/{e8,  e8, e8, ACP,    e9, ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e9*/{e11, e11,e11,ERR,    ERR,ERR,ERR,ERR,ERR,e10,ERR,    ERR,        ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR, ERR,   ERR,    ERR,    ERR,    ERR},
+    /*e10*/{e11,e11,e11,ERR,    ERR,ERR,ERR,ERR,ERR,ERR,ERR,    ERR,        ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR, ERR,   ERR,    ERR,    ERR,    ERR},
+    /*e11*/{e11,e11,e11,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e12*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e13*/{e14,e14,e14,e14,    e14,e14,e14,e14,e14,ERR,ERR,    ERR,        ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,e14, ERR,   ERR,    ERR,    ERR,    ERR},
+    /*e14*/{e14,e14,e14,e14,    e14,e14,e14,e14,e14,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e14, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e15*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e16*/{e16,e16,e16,e16,    e16,e16,e16,e16,e16,e16,e16,    e16,        e16,e17,e16,e16,e16,e16,e16,e16,e16,e16, e16,   e16,    e16,    e16,    e16},
+    /*e17*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e18*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,e19,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e19*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e20*/{ERR,ERR,ERR,ERR,    ERR,ERR,ERR,ERR,ERR,ERR,ERR,    ERR,        ERR,ERR,ERR,e23,ERR,ERR,ERR,ERR,ERR,ERR, ERR,   ERR,    ERR,    ERR,    ERR},
+    /*e21*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,e23,ACP,e28,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e22*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,e23,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e23*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e24*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,e26,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e25*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,e26,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e26*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e27*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,e23,e28,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e28*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e29*/{e30,e30,e30,e30,    e30,e30,e30,e30,e30,e30,e30,    e30,        e30,e30,e30,e30,e30,e30,e30,e30,e30,e30, ERR,   e30,    e30,    e30,    e30},
+    /*e30*/{ERR,ERR,ERR,ERR,    ERR,ERR,ERR,ERR,ERR,ERR,ERR,    ERR,        ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR,ERR, e31,   ERR,    ERR,    ERR,    ERR},
+    /*e31*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP},
+    /*e32*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   e33,    e34,    ACP,    ACP},
+    /*e33*/{e33,e33,e33,e33,    e33,e33,e33,e33,e33,e33,e33,    e33,        e33,e33,e33,e33,e33,e33,e33,e33,e33,e33, e33,   e33,    e33,    e33,    e33},
+    /*e34*/{e34,e34,e34,e34,    e34,e34,e34,e34,e34,e34,e34,    e34,        e34,e34,e34,e34,e34,e34,e34,e34,e34,e34, e34,   e34,    e35,    e34,    e34},
+    /*e35*/{e34,e34,e34,e34,    e34,e34,e34,e34,e34,e34,e34,    e34,        e34,e34,e34,e34,e34,e34,e34,e34,e34,e34, e34,   e36,    e35,    e34,    e34},
+    /*e36*/{e36,e36,e36,e36,    e36,e36,e36,e36,e36,e36,e36,    e36,        e36,e36,e36,e36,e36,e36,e36,e36,e36,e36, e36,   e36,    e36,    e36,    e36}
 
 };
 
@@ -153,7 +155,7 @@ string Compilador::lexico(string renglon)
     string lexema = "";
     char c;
     unsigned int tamanio_linea = renglon.size();
-    token = "sin asignar";
+    token = ERROR;
 
     if(enComentarioMultilinea)
     {
@@ -187,10 +189,10 @@ string Compilador::lexico(string renglon)
         {
             estadoAnterior = estado;
             estado = matriz_transiciones[estado][entrada];
-            //int f = estado;
-            //stringstream ss;
-            //ss << f;
-            //qDebug() << c << QString((ss.str().c_str()));
+            /*int f = estado;
+            stringstream ss;
+            ss << f;
+            qDebug() << c << QString((ss.str().c_str()));*/
             if(estado != ERR && estado != ACP)
             {
                 lexema += c;
@@ -207,10 +209,10 @@ string Compilador::lexico(string renglon)
             estado = ACP;
         }
 
-        if(entrada == ESPACIO && estado != e16 && estado != e33 && estado != e34 && estado != e35)
+        /*if(entrada == ESPACIO && estado != e16 && estado != e33 && estado != e34 && estado != e35)
         {
             estado = ACP;
-        }
+        }*/
 
         if(_columnaActual == tamanio_linea)
         {
@@ -220,143 +222,137 @@ string Compilador::lexico(string renglon)
 
     }
 
-    //qDebug() << "";
-
-    switch(estadoAnterior)
+    if(estado == ACP)
     {
-        case e1: case e2: case e6:
-            token = ENTERO;
-            break;
-        case e3:
-            token = OCTAL;
-            break;
-        case e5:
-            token = HEXADECIMAL;
-            break;
-        case e8: case e11:
-            token = REAL;
-            break;
-        case e12: case e18:
-            token = DELIMITADOR;
-            break;
-        case e14:
-            token = IDENTIFICADOR;
-            if(esPalabraReservada(lexema))
-            {
-                token = RESERVADA;
-            }
-            else if(esConstanteLogica(lexema))
-            {
-                token = CONST_LOGICA;
-            }
-            break;
-        case e15: case e32:
-            token = OPER_ARITMETICA;
-            break;
-        case e17:
-            token = ALFABETICO;
-            break;
-        case e19:
-            token = ASIGNACION;
-            break;
-        case e22: case e26:
-            token = OPER_LOGICO;
-            break;
-        case e24: case e25: case e28:
-            token = OPER_BINARIO;
-            break;
-        case e23: case e21: case e27:
-            token = COMPARACION;
-            break;
-        case e31:
-            token = CARACTER;
-            break;
-        case e33:
-            token = COMENTARIO;
-            break;
 
-        // casos especiales en el comentario multilinea
-        case e34: case e35:
-            enComentarioMultilinea = true;
-            token = COMENTARIO;
-            break;
+        switch(estadoAnterior)
+        {
+            case e1: case e2: case e6:
+                token = ENTERO;
+                break;
+            case e3:
+                token = OCTAL;
+                break;
+            case e5:
+                token = HEXADECIMAL;
+                break;
+            case e8: case e11:
+                token = REAL;
+                break;
+            case e12: case e18:
+                token = DELIMITADOR;
+                break;
+            case e14:
+                token = IDENTIFICADOR;
+                if(esPalabraReservada(lexema))
+                {
+                    token = RESERVADA;
+                }
+                else if(esConstanteLogica(lexema))
+                {
+                    token = CONST_LOGICA;
+                }
+                break;
+            case e15: case e32:
+                token = OPER_ARITMETICA;
+                break;
+            case e17:
+                token = ALFABETICO;
+                break;
+            case e19:
+                token = ASIGNACION;
+                break;
+            case e22: case e26:
+                token = OPER_LOGICO;
+                break;
+            case e24: case e25: case e28:
+                token = OPER_BINARIO;
+                break;
+            case e23: case e21: case e27:
+                token = COMPARACION;
+                break;
+            case e31:
+                token = CARACTER;
+                break;
+            case e33:
+                token = COMENTARIO;
+                break;
 
-        case e36:
+            // casos especiales en el comentario multilinea
+            case e34: case e35:
+                enComentarioMultilinea = true;
+                token = COMENTARIO;
+                break;
+
+            case e36:
+                token = COMENTARIO;
+                enComentarioMultilinea = false;
+                break;
+
+            default:
+                //token = ERROR;
+                break;
+        }
+
+        if(estado == e36) //llegó fin de linea y no logramos ponerlo en anterior
+        {
             token = COMENTARIO;
             enComentarioMultilinea = false;
-            break;
-
-        default:
-            token = ERROR;
-            break;
+        }
     }
-
-    if(estado == e36) //llegó fin de linea y no logramos ponerlo en anterior
-    {
-        token = COMENTARIO;
-        enComentarioMultilinea = false;
-    }
-
-    // a checar errores
-    if(token.compare(ERROR) == 0)
+    else if(estado == ERR)
     {
         stringstream linea;
         stringstream colum;
 
         linea << (_lineaActual + 1);
         salidaErrores << linea.str() << ",,,";
-        cout << linea.str() << "\t";
         colum << _columnaActual;
         salidaErrores << colum.str() << ",,,";
-        cout << colum.str() << "\t";
         salidaErrores << lexema << ",,,";
-        cout << lexema << "\t";
 
         switch(estadoAnterior)
         {
-            case e4:
-                salidaErrores << "Constante hexadecimal incompleta" << ",,,";
-                cout << "Constante hexadecimal incompleta" << "\t";
+            case e4: case e5:
+                salidaErrores << "Constante hexadecimal incompleta. Se esperaba 0-9|A-F" << ",,,";
                 break;
 
+            case e1:
+                salidaErrores << "Valor Octal|Hexadecimal|Decimal invalido. Se esperaba 0-7|.|X" << ",,,";
+                break;
+            case e2: case e3:
+                salidaErrores << "Valor Octal invalido. Se esperaba 0-7" << ",,,";
+                break;
             case e7:
                 salidaErrores << "Falta parte decimal. Se esperaba digito" << ",,,";
-                cout << "Falta parte decimal, se esperaba digito" << "\t";
                 break;
 
             case e9:
                 salidaErrores << "Falta parte exponencial. Se esperaba +|-|digito" << ",,,";
-                cout << "Falta parte exponencial, se esperaba +|-|digito" << "\t";
                 break;
 
             case e10:
                 salidaErrores << "Falta parte exponencial. Se esperaba digito" << ",,,";
-                cout << "Falta parte exponencial, se esperaba digito" << "\t";
                 break;
 
             case e13:
                 salidaErrores << "_ invalido como identificador. Se espera _+|[letra|digito]+" << ",,,";
-                cout << "_ invalido como identificador, se espera _+|[letra|digito]+" << "\t";
                 break;
 
             case e16:
                 salidaErrores << "Fin de cadena no encontrado. Se esperaba \"" << ",,,";
-                cout << "Fin de cadena no encontrado, se esperaba \"" << "\t";
                 break;
 
             case e20:
                 salidaErrores << "Se esperaba = despues de = para comparacion" << ",,,";
-                cout << "Se esperaba = despues de = para comparacion" << "\t";
                 break;
 
             case e29:
                 salidaErrores << "se esperaba un caracter cualquiera excepto \"'\"" << ",,,";
-                cout << "se esperaba un caracter cualquiera excepto \"'\"" << "\t";
                 break;
 
             case e30:
                 salidaErrores << "se esperaba\"'\"" << ",,,";
-                cout << "se esperaba\"'\"" << "\t";
                 break;
 
             default:
@@ -365,6 +361,10 @@ string Compilador::lexico(string renglon)
         }
 
         salidaErrores << renglon << endl;
+    }
+    else
+    {
+        throw "No se que ocurrio aqui";
     }
 
     return lexema;
