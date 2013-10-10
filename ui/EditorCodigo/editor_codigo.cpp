@@ -80,7 +80,7 @@ void EditorCodigo::resaltarLineaActual()
     {
         QTextEdit::ExtraSelection seleccionada;
 
-        QColor colorLinea = QColor(Qt::yellow).lighter(140);
+        QColor colorLinea = QColor(Qt::yellow).lighter(170);
 
         seleccionada.format.setBackground(colorLinea);
         seleccionada.format.setProperty(QTextFormat::FullWidthSelection, true);
