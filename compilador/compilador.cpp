@@ -314,53 +314,53 @@ string Compilador::lexico(string renglon)
         switch(estadoAnterior)
         {
             case e4: case e5:
-                salidaErrores << "Constante hexadecimal incompleta. Se esperaba 0-9|A-F" << ",,,";
+                salidaErrores << "Constante hexadecimal incompleta. Se esperaba 0-9|A-F";
                 break;
 
             case e1:
-                salidaErrores << "Valor Octal|Hexadecimal|Decimal invalido. Se esperaba 0-7|.|X" << ",,,";
+                salidaErrores << "Valor Octal|Hexadecimal|Decimal invalido. Se esperaba 0-7|.|X";
                 break;
             case e2: case e3:
-                salidaErrores << "Valor Octal invalido. Se esperaba 0-7" << ",,,";
+                salidaErrores << "Valor Octal invalido. Se esperaba 0-7";
                 break;
             case e7:
-                salidaErrores << "Falta parte decimal. Se esperaba digito" << ",,,";
+                salidaErrores << "Falta parte decimal. Se esperaba digito";
                 break;
 
             case e9:
-                salidaErrores << "Falta parte exponencial. Se esperaba +|-|digito" << ",,,";
+                salidaErrores << "Falta parte exponencial. Se esperaba +|-|digito";
                 break;
 
             case e10:
-                salidaErrores << "Falta parte exponencial. Se esperaba digito" << ",,,";
+                salidaErrores << "Falta parte exponencial. Se esperaba digito";
                 break;
 
             case e13:
-                salidaErrores << "_ invalido como identificador. Se espera _+|[letra|digito]+" << ",,,";
+                salidaErrores << "_ invalido como identificador. Se espera _+|[letra|digito]+";
                 break;
 
             case e16:
-                salidaErrores << "Fin de cadena no encontrado. Se esperaba \"" << ",,,";
+                salidaErrores << "Fin de cadena no encontrado. Se esperaba \"";
                 break;
 
             case e20:
-                salidaErrores << "Se esperaba = despues de = para comparacion" << ",,,";
+                salidaErrores << "Se esperaba = despues de = para comparacion";
                 break;
 
             case e29:
-                salidaErrores << "se esperaba un caracter cualquiera excepto \"'\"" << ",,,";
+                salidaErrores << "se esperaba un caracter cualquiera excepto \"'\"";
                 break;
 
             case e30:
-                salidaErrores << "se esperaba\"'\"" << ",,,";
+                salidaErrores << "se esperaba\"'\"";
                 break;
 
             default:
-                salidaErrores << "DEBUG" << ",,,";
+                salidaErrores << "DEBUG";
                 break;
         }
 
-        salidaErrores << renglon << endl;
+        salidaErrores << " y llego: " << c << ",,," << renglon << endl;
     }
     else
     {
