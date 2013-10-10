@@ -87,7 +87,7 @@ Compilador::Compilador(string rutaArchivo) :
 }
 
 
-void Compilador::realizarMagia()
+void Compilador::realizarMagia( void )
 {
     hacerAnalisisSintactico();
 }
@@ -106,13 +106,13 @@ void Compilador::hacerAnalisisSintactico()
         return;
     }
 
-    salidaInformacion << "-----------------------------------------" << endl;
-    salidaInformacion << "TOKEN \t LEXEMA" << endl;
-    salidaInformacion << "-----------------------------------------" << endl;
+    //salidaInformacion << "-----------------------------------------" << endl;
+    //salidaInformacion << "TOKEN \t LEXEMA" << endl;
+    //salidaInformacion << "-----------------------------------------" << endl;
 
-    salidaErrores << "------------------------------------------------------------------------------------------------" << endl;
-    salidaErrores << "LINEA \t COL \t ERROR \t\t DESCRIPCCION \t\t\t LINEA ERROR" << endl;
-    salidaErrores << "------------------------------------------------------------------------------------------------" << endl;
+    //salidaErrores << "------------------------------------------------------------------------------------------------" << endl;
+    //salidaErrores << "LINEA \t COL \t ERROR \t\t DESCRIPCCION \t\t\t LINEA ERROR" << endl;
+    //salidaErrores << "------------------------------------------------------------------------------------------------" << endl;
 
     string linea;
     string lex;
@@ -126,7 +126,7 @@ void Compilador::hacerAnalisisSintactico()
         {
             lex = lexico(linea);
             //qDebug() << QString((token + "\t" + lex).c_str());
-            salidaInformacion << (token + "\t" +  lex) << endl;
+            salidaInformacion << (token + ",,," +  lex) << endl;
         }
         _lineaActual++;
         _columnaActual = 0;
@@ -136,7 +136,7 @@ void Compilador::hacerAnalisisSintactico()
     {
         stringstream ss;
         ss << _lineaActual;
-        salidaErrores << ss.str() << "\t\t" << 0 << "\t\t" << lex << "\t\t\tFin de archivo inesperado\t" << linea << endl;
+        salidaErrores << ss.str() << ",,," << 0 << ",,," << lex << ",,,Fin de archivo inesperado,,," << linea << endl;
     }
 
     //qDebug() << "Terminamos";
@@ -300,66 +300,67 @@ string Compilador::lexico(string renglon)
     // a checar errores
     if(token.compare(ERROR) == 0)
     {
-        stringstream ss;
+        stringstream linea;
+        stringstream colum;
 
-        ss << (_lineaActual + 1);
-        salidaErrores << ss.str() << "\t";
-        cout << ss.str() << "\t";
-        ss << _columnaActual;
-        salidaErrores << ss.str() << "\t";
-        cout << ss.str() << "\t";
-        salidaErrores << lexema << "\t";
+        linea << (_lineaActual + 1);
+        salidaErrores << linea.str() << ",,,";
+        cout << linea.str() << "\t";
+        colum << _columnaActual;
+        salidaErrores << colum.str() << ",,,";
+        cout << colum.str() << "\t";
+        salidaErrores << lexema << ",,,";
         cout << lexema << "\t";
 
         switch(estadoAnterior)
         {
             case e4:
-                salidaErrores << "Constante hexadecimal incompleta" << "\t";
+                salidaErrores << "Constante hexadecimal incompleta" << ",,,";
                 cout << "Constante hexadecimal incompleta" << "\t";
                 break;
 
             case e7:
-                salidaErrores << "Falta parte decimal, se esperaba digito" << "\t";
+                salidaErrores << "Falta parte decimal. Se esperaba digito" << ",,,";
                 cout << "Falta parte decimal, se esperaba digito" << "\t";
                 break;
 
             case e9:
-                salidaErrores << "Falta parte exponencial, se esperaba +|-|digito" << "\t";
+                salidaErrores << "Falta parte exponencial. Se esperaba +|-|digito" << ",,,";
                 cout << "Falta parte exponencial, se esperaba +|-|digito" << "\t";
                 break;
 
             case e10:
-                salidaErrores << "Falta parte exponencial, se esperaba digito" << "\t";
+                salidaErrores << "Falta parte exponencial. Se esperaba digito" << ",,,";
                 cout << "Falta parte exponencial, se esperaba digito" << "\t";
                 break;
 
             case e13:
-                salidaErrores << "_ invalido como identificador, se espera _+|[letra|digito]+" << "\t";
+                salidaErrores << "_ invalido como identificador. Se espera _+|[letra|digito]+" << ",,,";
                 cout << "_ invalido como identificador, se espera _+|[letra|digito]+" << "\t";
                 break;
 
             case e16:
-                salidaErrores << "Fin de cadena no encontrado, se esperaba \"" << "\t";
+                salidaErrores << "Fin de cadena no encontrado. Se esperaba \"" << ",,,";
                 cout << "Fin de cadena no encontrado, se esperaba \"" << "\t";
                 break;
 
             case e20:
-                salidaErrores << "Se esperaba = despues de = para comparacion" << "\t";
+                salidaErrores << "Se esperaba = despues de = para comparacion" << ",,,";
                 cout << "Se esperaba = despues de = para comparacion" << "\t";
                 break;
 
             case e29:
-                salidaErrores << "se esperaba un caracter cualquiera excepto \"'\"" << "\t";
+                salidaErrores << "se esperaba un caracter cualquiera excepto \"'\"" << ",,,";
                 cout << "se esperaba un caracter cualquiera excepto \"'\"" << "\t";
                 break;
 
             case e30:
-                salidaErrores << "se esperaba\"'\"" << "\t";
+                salidaErrores << "se esperaba\"'\"" << ",,,";
                 cout << "se esperaba\"'\"" << "\t";
                 break;
 
             default:
-                salidaErrores << "DEBUG" << "\t";
+                salidaErrores << "DEBUG" << ",,,";
                 break;
         }
 
@@ -496,4 +497,14 @@ void Compilador::separarNombreArchivo (const string& str)
 
     _rutaAlArchivo = str.substr(0 ,pos1);
     _nombreArchivo = str.substr(pos1 + 1, pos2 - pos1 - 1);
+}
+
+string Compilador::getRutaAlArchivo( void )
+{
+    return _rutaAlArchivo;
+}
+
+string Compilador::getNombreArchivo( void )
+{
+    return _nombreArchivo;
 }

@@ -36,7 +36,9 @@ class Compilador
 {
     public:
         Compilador(string rutaArchivo);
-        void realizarMagia();
+        void realizarMagia( void );
+        string getRutaAlArchivo( void );
+        string getNombreArchivo( void );
 
     private:
         Entrada siguienteEntrada(char caracter);
@@ -46,9 +48,6 @@ class Compilador
         bool esConstanteLogica( string palabra );
         void hacerAnalisisSintactico( void );
 
-    public:
-        string _rutaAlArchivo;
-        string _nombreArchivo;
 
     private:
         bool enComentarioMultilinea;
@@ -57,6 +56,8 @@ class Compilador
         unsigned int _columnaActual;
         string token;
         string _rutaCompletaArchivo;
+        string _rutaAlArchivo;
+        string _nombreArchivo;
 
 
         ofstream salidaInformacion;
