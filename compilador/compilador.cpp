@@ -169,7 +169,7 @@ string Compilador::lexico(string renglon)
         c = renglon.at(_columnaActual++);
         while(estado == e0 && (c == ' ' || c == '\t' || c == '\n'))
         {
-            if(isblank(c))
+            if((c == ' ' || c == '\t' || c == '\n'))
             {
                 if((_columnaActual + 1) > tamanio_linea)
                 {
