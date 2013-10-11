@@ -199,7 +199,7 @@ void VentanaPrincipal::crearAcciones()
     connect(accionPegar, SIGNAL(triggered()), editorTexto, SLOT(paste()));
 
     accionAcercaDe = new QAction(tr("Acerca de"), this);
-    accionAcercaDe->setStatusTip(tr("Mostrar información de la aplicación"));
+    accionAcercaDe->setStatusTip(tr("Mostrar informacion de la aplicacion"));
     connect(accionAcercaDe, SIGNAL(triggered()), this, SLOT(acercaDe()));
 
 
@@ -310,6 +310,7 @@ void VentanaPrincipal::crearWidgetsMovibles()
 void VentanaPrincipal::actualizarVistas()
 {
     QString ruta = QString("%1/%2").arg(rutaActual).arg(archivoSinExtencion);
+    ruta = QDir::toNativeSeparators(ruta);
 
     #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -332,8 +333,7 @@ void VentanaPrincipal::actualizarVistaErrores(QString ruta)
         return;
 
     QTextStream flujo(&archivo);
-
-    modeloErrores->removeRows(0,((QStandardItemModel)modeloErrores).rowCount() + 1);
+    modeloErrores->removeRows(0,((QStandardItemModel)modeloErrores).rowCount());
     int i = 0;
     while(!flujo.atEnd())
     {
