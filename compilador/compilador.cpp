@@ -97,8 +97,8 @@ void Compilador::realizarMagia( void )
 void Compilador::hacerAnalisisSintactico()
 {
     ifstream compilable;
-    salidaInformacion.open((_nombreArchivo+".lexemas").c_str());
-    salidaErrores.open((_nombreArchivo+".errores").c_str());
+    salidaInformacion.open((_rutaAlArchivo+"/"+_nombreArchivo+".lexemas").c_str());
+    salidaErrores.open((_rutaAlArchivo+"/"+_nombreArchivo+".errores").c_str());
 
     compilable.open(_rutaCompletaArchivo.c_str());
 
@@ -150,26 +150,31 @@ void Compilador::hacerAnalisisSintactico()
 string Compilador::lexico(string renglon)
 {
     Entrada entrada;
-    Estado estado = e0;
-    Estado estadoAnterior = e0;
+    Estado estado;
+    Estado estadoAnterior;
     string lexema = "";
     char c;
-    unsigned int tamanio_linea = renglon.size();
+    size_t tamanio_linea = renglon.size();
     token = ERROR;
 
     if(enComentarioMultilinea)
     {
         //el salto de linea elimina el * que pudiera estar en el estado 35
-        estado = e34;
+        estadoAnterior = estado = e34;
+    }
+    else
+    {
+        estadoAnterior = estado = e0;
     }
 
 
     while (estado != ERR && estado != ACP && _columnaActual < tamanio_linea)
     {
         c = renglon.at(_columnaActual++);
-        while(estado == e0 && (c == ' ' || c == '\t' || c == '\n'))
+
+        if(estado == e0 || estado == e34)
         {
-            if((c == ' ' || c == '\t' || c == '\n'))
+            while(c == ' ' || c == '\t' || c == '\n')
             {
                 if((_columnaActual + 1) > tamanio_linea)
                 {
@@ -180,6 +185,7 @@ string Compilador::lexico(string renglon)
                 {
                     c = renglon.at(_columnaActual++);
                 }
+
             }
         }
 
@@ -492,8 +498,8 @@ bool Compilador::esConstanteLogica( string palabra )
 
 void Compilador::separarNombreArchivo (const string& str)
 {
-    unsigned pos1 = str.find_last_of("/\\");
-    unsigned pos2 = str.find_last_of(".");
+    size_t pos1 = str.find_last_of("/\\");
+    size_t pos2 = str.find_last_of(".");
 
     _rutaAlArchivo = str.substr(0 ,pos1);
     _nombreArchivo = str.substr(pos1 + 1, pos2 - pos1 - 1);
