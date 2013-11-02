@@ -5,6 +5,7 @@
 #include <QObject>
 
 #include "contador_linea.h"
+#include "ui/EditorCodigo/resaltador_sintaxis.h"
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -28,6 +29,9 @@ class EditorCodigo : public QPlainTextEdit
     protected:
         void resizeEvent(QResizeEvent *evento);
 
+    private:
+        void configurarEditor();
+
     private slots:
         void actualizarAnchoAreaNumeroLinea();
         void resaltarLineaActual();
@@ -35,6 +39,9 @@ class EditorCodigo : public QPlainTextEdit
 
     private:
         QWidget *areaNumeroLinea;
+        QFont fuente;
+
+        ResaltadorSintaxis *resaltador;
 };
 
 #endif // __EDITOR_CODIGO_H__

@@ -7,8 +7,8 @@
 
 VentanaPrincipal::VentanaPrincipal()
 {
-    configurarEditor();
-
+    editorTexto = new EditorCodigo;
+    setCentralWidget(editorTexto);
 
 
     crearAcciones();
@@ -41,21 +41,6 @@ void VentanaPrincipal::closeEvent(QCloseEvent *evento)
     {
         evento->ignore();
     }
-}
-
-void VentanaPrincipal::configurarEditor()
-{
-    QFont fuente;
-    fuente.setFamily("Courier");
-    fuente.setFixedPitch(true);
-    fuente.setPointSize(11);
-
-    editorTexto = new EditorCodigo;
-    editorTexto->setFont(fuente);
-
-    resaltador = new ResaltadorSintaxis(editorTexto->document());
-
-    setCentralWidget(editorTexto);
 }
 
 
@@ -305,6 +290,7 @@ void VentanaPrincipal::crearWidgetsMovibles()
     dock->setWidget(vistaInformativa);
     addDockWidget(Qt::RightDockWidgetArea, dock);
     menuVista->addAction(dock->toggleViewAction());
+
 }
 
 void VentanaPrincipal::actualizarVistas()
@@ -333,7 +319,7 @@ void VentanaPrincipal::actualizarVistaErrores(QString ruta)
         return;
 
     QTextStream flujo(&archivo);
-    modeloErrores->removeRows(0,((QStandardItemModel)modeloErrores).rowCount());
+    //modeloErrores->removeRows(0,((QStandardItemModel)modeloErrores).rowCount());
     int i = 0;
     while(!flujo.atEnd())
     {
@@ -359,7 +345,7 @@ void VentanaPrincipal::actualizarVistaInformativa(QString ruta)
 
     QTextStream flujo(&archivo);
 
-    modeloInformativa->removeRows(0,((QStandardItemModel)modeloInformativa).rowCount() + 1);
+    //modeloInformativa->removeRows(0,((QStandardItemModel)modeloInformativa).rowCount() + 1);
 
     int i = 0;
     while(!flujo.atEnd())

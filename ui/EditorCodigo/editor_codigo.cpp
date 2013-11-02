@@ -5,16 +5,27 @@
 
 EditorCodigo::EditorCodigo(QWidget *padre) : QPlainTextEdit(padre)
 {
+    resaltador = new ResaltadorSintaxis(this->document());
     areaNumeroLinea = new ContadorLinea(this);
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(actualizarAnchoAreaNumeroLinea()));
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(actualizarAreaNumeroLinea(QRect,int)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(resaltarLineaActual()));
 
+    configurarEditor();
+
     actualizarAnchoAreaNumeroLinea();
     resaltarLineaActual();
 }
 
+void EditorCodigo::configurarEditor( void )
+{
+    fuente.setFamily("Courier");
+    fuente.setStyleHint(QFont::Monospace);
+    fuente.setFixedPitch(true);
+    fuente.setPointSize(11);
+    this->setFont(fuente);
+}
 
 
 int EditorCodigo::anchuraAreaNumeroLinea()

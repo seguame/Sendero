@@ -4,7 +4,6 @@
 #include <QMainWindow>
 
 #include "EditorCodigo/editor_codigo.h"
-#include "EditorCodigo/resaltador_sintaxis.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -35,7 +34,6 @@ class VentanaPrincipal : public QMainWindow
         void compilar();
 
     private:
-        void configurarEditor();
         void crearAcciones();
         void crearMenus();
         void crearToolBars();
@@ -57,7 +55,6 @@ class VentanaPrincipal : public QMainWindow
     //Atributos
     private:
         EditorCodigo *editorTexto;
-        ResaltadorSintaxis *resaltador;
         QString archivoActual;
         QString rutaActual;
         QString archivoSinExtencion;
