@@ -20,11 +20,16 @@ EditorCodigo::EditorCodigo(QWidget *padre) : QPlainTextEdit(padre)
 
 void EditorCodigo::configurarEditor( void )
 {
+    const int TABULADOR = 4; //Para posible configuracion futura.
+
     fuente.setFamily("Courier");
     fuente.setStyleHint(QFont::Monospace);
     fuente.setFixedPitch(true);
     fuente.setPointSize(11);
     this->setFont(fuente);
+
+    QFontMetrics metricas(fuente);
+    this->setTabStopWidth(TABULADOR * metricas.width(' '));
 }
 
 
