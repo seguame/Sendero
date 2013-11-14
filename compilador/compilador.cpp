@@ -128,7 +128,10 @@ void Compilador::hacerAnalisisSintactico()
         {
             lex = lexico(linea);
             //qDebug() << QString((token + "\t" + lex).c_str());
-            salidaInformacion << (token + ",,," +  lex) << endl;
+            if(lex.compare("") != 0)
+            {
+                salidaInformacion << (token + ",,," +  lex) << endl;
+            }
         }
         _lineaActual++;
         _columnaActual = 0;
