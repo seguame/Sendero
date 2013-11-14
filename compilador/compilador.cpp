@@ -147,6 +147,7 @@ void Compilador::hacerAnalisisSintactico()
     //qDebug() << "Terminamos";
     compilable.close();
     salidaInformacion.close();
+    salidaErrores.close();
 }
 
 
