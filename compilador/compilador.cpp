@@ -350,7 +350,7 @@ string Compilador::lexico(string renglon)
                 break;
 
             case e20:
-                salidaErrores << "Se esperaba = despues de = para comparacion";
+                salidaErrores << "Se esperaba =|: despues de =";
                 break;
 
             case e29:
@@ -365,6 +365,10 @@ string Compilador::lexico(string renglon)
                 salidaErrores << "DEBUG";
                 break;
         }
+
+        //Remover los espacios en blanco laterales del renglon
+        //No se hace antes para no moficiar el conteo de columnas
+        remove(renglon.begin(), renglon.end(), ' ');
 
         salidaErrores << " y llego: " << c << ",,," << renglon << endl;
     }
