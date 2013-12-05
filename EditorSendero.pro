@@ -17,14 +17,16 @@ SOURCES += main.cpp \
     ui/EditorCodigo/contador_linea.cpp \
     ui/EditorCodigo/editor_codigo.cpp \
     ui/EditorCodigo/resaltador_sintaxis.cpp \
-    compilador/compilador.cpp
+    compilador/compilador.cpp \
+    compilador/analizador_sintactico.cpp
 
 HEADERS  += \
     ui/VentanaPrincipal.h \
     ui/EditorCodigo/editor_codigo.h \
     ui/EditorCodigo/contador_linea.h \
     ui/EditorCodigo/resaltador_sintaxis.h \
-    compilador/compilador.h
+    compilador/compilador.h \
+    compilador/analizador_sintactico.h
 
 RESOURCES += \
     Imagenes.qrc
