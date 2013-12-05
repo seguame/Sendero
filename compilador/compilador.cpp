@@ -6,7 +6,6 @@
 #include <QDebug>
 
 #include "compilador.h"
-#include "analizador_sintactico.h"
 
 const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 {
@@ -522,4 +521,164 @@ string Compilador::getRutaAlArchivo( void )
 string Compilador::getNombreArchivo( void )
 {
     return _nombreArchivo;
+}
+
+void Compilador::AnalizadorSintactico::programa( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::importar( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::funcion( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::params( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::pars ( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::tipo( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::bloque ( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::vars ( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::estatutos( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::comando ( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::asigna (void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::dimension (void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::expr( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::opy( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::opno( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::oprel( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::suma( void )
+{
+
+}
+
+void Compilador::AnalizadorSintactico::multi(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::expo (void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::signo (void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::termino (void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::constanteTipo(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::lFunc_1(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::lFunc_2(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::vparam(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::si(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::desde(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::caso(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::regresa (void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::lee(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::imprime(void)
+{
+
+}
+
+void Compilador::AnalizadorSintactico::constante(void)
+{
+
 }
