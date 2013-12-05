@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "compilador.h"
+#include "analizador_sintactico.h"
 
 const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 {
@@ -126,7 +127,7 @@ void Compilador::hacerAnalisisSintactico()
 
         while(_columnaActual < linea.size())
         {
-            lex = lexico(linea);
+            lex = siguienteLexema(linea);
             //qDebug() << QString((token + "\t" + lex).c_str());
             if(lex.compare("") != 0)
             {
@@ -151,7 +152,7 @@ void Compilador::hacerAnalisisSintactico()
 }
 
 
-string Compilador::lexico(string renglon)
+string Compilador::siguienteLexema(string renglon)
 {
     Entrada entrada;
     Estado estado;

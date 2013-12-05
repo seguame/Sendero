@@ -43,7 +43,7 @@ class Compilador
     private:
         Entrada siguienteEntrada(char caracter);
         void separarNombreArchivo(const string& str);
-        string lexico( string renglon );
+        string siguienteLexema( string renglon );
         bool esPalabraReservada( string palabra );
         bool esConstanteLogica( string palabra );
         void hacerAnalisisSintactico( void );
@@ -86,6 +86,5 @@ class Compilador
 
 
 };
-
 
 #endif // COMPILADOR_H
