@@ -321,6 +321,7 @@ void VentanaPrincipal::actualizarVistaErrores(QString ruta)
     QTextStream flujo(&archivo);
     //modeloErrores->removeRows(0,((QStandardItemModel)modeloErrores).rowCount());
 
+    delete modeloErrores;
     modeloErrores = new QStandardItemModel(0,5, this);
     modeloErrores->setHeaderData(0, Qt::Horizontal, QObject::tr("Linea"));
     modeloErrores->setHeaderData(1, Qt::Horizontal, QObject::tr("Columna"));
@@ -355,7 +356,7 @@ void VentanaPrincipal::actualizarVistaInformativa(QString ruta)
     QTextStream flujo(&archivo);
 
     //modeloInformativa->removeRows(0,((QStandardItemModel)modeloInformativa).rowCount() + 1);
-
+    delete modeloInformativa;
     modeloInformativa = new QStandardItemModel(0, 2, this);
     modeloInformativa->setHeaderData(0, Qt::Horizontal, QObject::tr("Token"));
     modeloInformativa->setHeaderData(1, Qt::Horizontal, QObject::tr("Lexema"));
