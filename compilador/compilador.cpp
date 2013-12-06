@@ -91,12 +91,6 @@ Compilador::Compilador(string rutaArchivo) :
 
 void Compilador::realizarMagia( void )
 {
-    hacerAnalisisSintactico();
-}
-
-void Compilador::hacerAnalisisSintactico()
-{
-    ifstream compilable;
     salidaInformacion.open((_rutaAlArchivo+"/"+_nombreArchivo+".lexemas").c_str());
     salidaErrores.open((_rutaAlArchivo+"/"+_nombreArchivo+".errores").c_str());
 
@@ -109,32 +103,18 @@ void Compilador::hacerAnalisisSintactico()
     }
 
 
-    string linea;
-    string lex;
-    while(getline(compilable, linea))
-    {
-        //stringstream ss;
-        //ss << (_lineaActual + 1);
-        //qDebug() << QString((ss.str() + " " + linea).c_str());
+    ///////////////////////////////
 
-        while(_columnaActual < linea.size())
-        {
-            lex = siguienteLexema(linea);
-            //qDebug() << QString((token + "\t" + lex).c_str());
-            if(lex.compare("") != 0)
-            {
-                salidaInformacion << (token + ",,," +  lex) << endl;
-            }
-        }
-        _lineaActual++;
-        _columnaActual = 0;
-    }
+    hacerAnalisisSintactico();
+
+
+    //////////////////////////////
 
     if(enComentarioMultilinea) //se acabo el archivo y no se cerro el comentario
     {
         stringstream ss;
         ss << _lineaActual;
-        salidaErrores << ss.str() << ",,," << 0 << ",,," << lex << ",,,Fin de archivo inesperado,,," << linea << endl;
+        salidaErrores << ss.str() << ",,," << 0 << ",,," << lexico << ",,,Fin de archivo inesperado,,," << renglon << endl;
     }
 
     //qDebug() << "Terminamos";
@@ -143,14 +123,38 @@ void Compilador::hacerAnalisisSintactico()
     salidaErrores.close();
 }
 
+void Compilador::hacerAnalisisSintactico()
+{
+    while(getline(compilable, renglon))
+    {
+        //stringstream ss;
+        //ss << (_lineaActual + 1);
+        //qDebug() << QString((ss.str() + " " + linea).c_str());
 
-string Compilador::siguienteLexema(string renglon)
+        while(_columnaActual < renglon.size())
+        {
+            lexico = siguienteLexema();
+            //qDebug() << QString((token + "\t" + lex).c_str());
+            if(lexico.compare("") != 0)
+            {
+                salidaInformacion << (token + ",,," +  lexico) << endl;
+            }
+        }
+        _lineaActual++;
+        _columnaActual = 0;
+    }
+
+
+}
+
+
+string Compilador::siguienteLexema()
 {
     Entrada entrada;
     Estado estado;
     Estado estadoAnterior;
     string lexema = "";
-    char c;
+    char c = '\0';
     size_t tamanio_linea = renglon.size();
     token = ERROR;
 
@@ -347,7 +351,7 @@ string Compilador::siguienteLexema(string renglon)
                 break;
 
             case e20:
-                salidaErrores << "Se esperaba =|: despues de =";
+                salidaErrores << "Se esperaba = | : despues de =";
                 break;
 
             case e29:
@@ -365,7 +369,7 @@ string Compilador::siguienteLexema(string renglon)
 
         //Remover los espacios en blanco laterales del renglon
         //No se hace antes para no moficiar el conteo de columnas
-        remove(renglon.begin(), renglon.end(), ' ');
+        //remove(renglon.begin(), renglon.end(), ' ');
 
         salidaErrores << " y llego: " << c << ",,," << renglon << endl;
     }
@@ -526,7 +530,7 @@ string Compilador::getNombreArchivo( void )
 //==============================================================
 
 
-void Compilador::programa( void )
+/*void Compilador::programa( void )
 {
 
     if(siguienteLexema().compare("Paquete") != 0)
@@ -914,4 +918,4 @@ void Compilador::constante(void)
 bool Compilador::siguienteLexemaEs(string esperado)
 {
 
-}
+}*/

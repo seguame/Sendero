@@ -44,12 +44,13 @@ class Compilador
     private:
         Entrada siguienteEntrada(char caracter);
         void separarNombreArchivo(const string& str);
-        string siguienteLexema( string renglon );
+        string siguienteLexema( void );
         bool esPalabraReservada( string palabra );
         bool esConstanteLogica( string palabra );
         void hacerAnalisisSintactico( void );
 
 
+        ifstream compilable;
         bool enComentarioMultilinea;
         string renglon;
         unsigned int _lineaActual;
