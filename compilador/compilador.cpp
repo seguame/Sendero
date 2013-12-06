@@ -108,15 +108,6 @@ void Compilador::hacerAnalisisSintactico()
         return;
     }
 
-    //salidaInformacion << "-----------------------------------------" << endl;
-    //salidaInformacion << "TOKEN \t LEXEMA" << endl;
-    //salidaInformacion << "-----------------------------------------" << endl;
-
-    //salidaErrores << "------------------------------------------------------------------------------------------------" << endl;
-    //salidaErrores << "LINEA \t COL \t ERROR \t\t DESCRIPCCION \t\t\t LINEA ERROR" << endl;
-    //salidaErrores << "------------------------------------------------------------------------------------------------" << endl;
-
-    AnalizadorSintactico sintactico(compilable);
 
     string linea;
     string lex;
@@ -537,7 +528,6 @@ string Compilador::getNombreArchivo( void )
 
 void Compilador::programa( void )
 {
-    string lexema;
 
     if(siguienteLexema().compare("Paquete") != 0)
         return; //se esperana definicion de paquete
