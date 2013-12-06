@@ -88,12 +88,17 @@ class Compilador
         class AnalizadorSintactico
         {
             public:
+                AnalizadorSintactico(ifstream compilable);
+            private:
+
+                ifstream compilable;
+
                 void programa( void );
                 void importar( void );
                 void funcion( void );
                 void params( void );
-                void pars ( void );
-                void tipo( void );
+                string pars ( void );
+                bool tipo( string lex );
                 void bloque ( void );
                 void vars ( void );
                 void estatutos( void );
@@ -120,6 +125,8 @@ class Compilador
                 void lee(void);
                 void imprime(void);
                 void constante(void);
+
+                bool siguienteLexemaEs(string esperado);
         };
 
 };

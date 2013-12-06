@@ -116,6 +116,8 @@ void Compilador::hacerAnalisisSintactico()
     //salidaErrores << "LINEA \t COL \t ERROR \t\t DESCRIPCCION \t\t\t LINEA ERROR" << endl;
     //salidaErrores << "------------------------------------------------------------------------------------------------" << endl;
 
+    AnalizadorSintactico sintactico(compilable);
+
     string linea;
     string lex;
     while(getline(compilable, linea))
@@ -523,34 +525,130 @@ string Compilador::getNombreArchivo( void )
     return _nombreArchivo;
 }
 
+
+
+
+//==============================================================
+//
+//                PARSER !!!!!!!!!!!!!!
+//
+//==============================================================
+
+Compilador::AnalizadorSintactico::AnalizadorSintactico(ifstream compilable)
+{
+    this->compilable = compilable;
+}
+
 void Compilador::AnalizadorSintactico::programa( void )
 {
+    string lexema;
 
+    if(siguienteLexema().compare("Paquete") != 0)
+        return; //se esperana definicion de paquete
+
+    if(siguienteLexema().compare("principal") != 0)
+        return; //se esperaba definicion de paquete principal
+
+    do
+    {
+        lexema = siguienteLexema();
+
+        if(lexema.compare("importar") == 0)
+            importar();
+        else if(lexema.compare("funcion") != 0)
+            funcion();
+        else
+            return; // tronancia
+    }while(true);
 }
 
 void Compilador::AnalizadorSintactico::importar( void )
 {
+    string lexema = siguienteLexema();
 
+    if(lexema.compare("(") == 0)
+    {
+        do
+        {
+            lexema = siguienteLexema();
+        }while(lexema.compare(ALFABETICO) == 0);
+
+        if(lexema.compare(")") != 0)
+            return; //solo se aceptan contantes alfabeticas y el cierre de parentesis
+    }
+    else if(lexema.compare(ALFABETICO) != 0)
+    {
+        return; //despues de importar va la constante alfabetica o muchas en parentesis
+    }
 }
 
 void Compilador::AnalizadorSintactico::funcion( void )
 {
+    string lexico = siguienteLexema();
 
+    if(lexico.compare(IDENTIFICADOR) != 0)
+    {
+        return; //despues de declarar una funcion debe estar su nombre
+    }
+
+    params();
+
+    lexico = siguienteLexema();
+
+    if(tipo(lexico)) lexico = siguienteLexema(); //si no fuera tipo, no debemos avanzar aun
+
+    bloque();
 }
 
 void Compilador::AnalizadorSintactico::params( void )
 {
+    string lexico = siguienteLexema();
+
+    if(lexico.compare("(") != 0)
+        return; // hace falta la apertura parentesis ¬_¬
+
+    // pars nos debe retornar el cierre de parentesis
+    lexico = pars();
+
+    if(lexico.compare(")") != 0)
+        return; // no se cerraron parentesis
+}
+
+string Compilador::AnalizadorSintactico::pars ( void )
+{
+    string lexico = siguienteLexema();
+
+    if(lexico.compare(")") == 0)
+        return lexico; //funcion sin parametros
+
+    // la funcion tiene parametros
+    do
+    {
+        do
+        {
+            if(lexico.compare(IDENTIFICADOR) != 0)
+                return ""; // debe de ser un identificador ¬¬
+
+            lexico = siguienteLexema();
+
+        }while(lexico.compare("," == 0));
+
+        if(!tipo(lexico)) return ""; // no se determina de que tipo son las variables
+
+        lexico = siguienteLexema();
+
+    }while(lexico.compare("," == 0));
+
+    return lexico;
 
 }
 
-void Compilador::AnalizadorSintactico::pars ( void )
+bool Compilador::AnalizadorSintactico::tipo( string lex )
 {
-
-}
-
-void Compilador::AnalizadorSintactico::tipo( void )
-{
-
+    return (lex.compare(REAL) == 0 ||
+            lex.compare(ENTERO) == 0 ||
+            lex.compare(LOGICO) == 0 ||
+            lex.compare(ALFABETICO) == 0)
 }
 
 void Compilador::AnalizadorSintactico::bloque ( void )
@@ -679,6 +777,11 @@ void Compilador::AnalizadorSintactico::imprime(void)
 }
 
 void Compilador::AnalizadorSintactico::constante(void)
+{
+
+}
+
+bool Compilador::AnalizadorSintactico::siguienteLexemaEs(string esperado)
 {
 
 }
