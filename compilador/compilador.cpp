@@ -534,12 +534,8 @@ string Compilador::getNombreArchivo( void )
 //
 //==============================================================
 
-Compilador::AnalizadorSintactico::AnalizadorSintactico(ifstream compilable)
-{
-    this->compilable = compilable;
-}
 
-void Compilador::AnalizadorSintactico::programa( void )
+void Compilador::programa( void )
 {
     string lexema;
 
@@ -555,14 +551,14 @@ void Compilador::AnalizadorSintactico::programa( void )
 
         if(lexema.compare("importar") == 0)
             importar();
-        else if(lexema.compare("funcion") != 0)
+        else if(lexema.compare("funcion") == 0)
             funcion();
         else
             return; // tronancia
     }while(true);
 }
 
-void Compilador::AnalizadorSintactico::importar( void )
+void Compilador::importar( void )
 {
     string lexema = siguienteLexema();
 
@@ -582,7 +578,7 @@ void Compilador::AnalizadorSintactico::importar( void )
     }
 }
 
-void Compilador::AnalizadorSintactico::funcion( void )
+void Compilador::funcion( void )
 {
     string lexico = siguienteLexema();
 
@@ -600,7 +596,7 @@ void Compilador::AnalizadorSintactico::funcion( void )
     bloque();
 }
 
-void Compilador::AnalizadorSintactico::params( void )
+void Compilador::params( void )
 {
     string lexico = siguienteLexema();
 
@@ -614,7 +610,7 @@ void Compilador::AnalizadorSintactico::params( void )
         return; // no se cerraron parentesis
 }
 
-string Compilador::AnalizadorSintactico::pars ( void )
+string Compilador::pars ( void )
 {
     string lexico = siguienteLexema();
 
@@ -643,145 +639,289 @@ string Compilador::AnalizadorSintactico::pars ( void )
 
 }
 
-bool Compilador::AnalizadorSintactico::tipo( string lex )
+bool Compilador::tipo( string lex )
 {
     return (lex.compare(REAL) == 0 ||
             lex.compare(ENTERO) == 0 ||
-            lex.compare(LOGICO) == 0 ||
+            lex.compare(CONST_LOGICA) == 0 ||
             lex.compare(ALFABETICO) == 0)
 }
 
-void Compilador::AnalizadorSintactico::bloque ( void )
+void Compilador::bloque ( void )
+{
+    string lexico = siguienteLexema();
+
+    if(lexico.compare("{") != 0)
+        return; // se esperaba la apertura de llaves
+
+    lexico = siguienteLexema();
+
+    while(lexico.compare("}") != 0)
+    {
+        vars(); // FIXME: retroceder un valor de pila si algo falla en vars
+        estatutos();
+
+        lexico = siguienteLexema();
+    }
+}
+
+//TODO: cambiar a tipo bool para que retorne su valides como bloque
+void Compilador::vars ( void )
+{
+    string lexico = siguienteLexema();
+
+    if(lexico.compare("var") != 0)
+        return; //los caminos de la vida, no son lo que yo esperaba (8)
+
+    lexico = siguienteLexema();
+
+    if(lexico.compare(IDENTIFICADOR) == 0)
+    {
+        if(!tipo(siguienteLexema()))
+            return; //se debe especificar el tipo de la variable
+    }
+    else if(lexico.compare("(") == 0)
+    {
+        do
+        {
+            do
+            {
+                if(lexico.compare(IDENTIFICADOR) != 0)
+                    return; // debe de ser un identificador ¬¬
+
+                lexico = siguienteLexema();
+
+            }while(lexico.compare("," == 0));
+
+            if(!tipo(lexico)) return; // no se determina de que tipo son las variables
+
+            lexico = siguienteLexema();
+
+        }while(lexico.compare("," == 0));
+
+        if(lexico.compare(")") != 0)
+            return; // no se cerraron los parentesis!
+    }
+    else
+    {
+        return;// despues de vars va un identificador o agrupacion de estos
+    }
+}
+
+voidCompilador::estatutos( void )
+{
+    // no necesariamente se debe tener estatutos, requiero de pila para
+    // estos casos... PILA YA!
+
+    comando();
+
+    //falta pensarle que pex con los ;
+
+}
+
+void Compilador::comando ( void )
 {
 
 }
 
-void Compilador::AnalizadorSintactico::vars ( void )
+void Compilador::asigna (void)
+{
+    string lexico = siguienteLexema();
+    bool hayDimension = false;
+
+    if(lexico.compare(IDENTIFICADOR) != 0)
+        return; // se debe hacer la asignacion a un identificador valido
+
+    lexico = siguienteLexema();
+
+    if(lexico.compare("[") == 0)
+    {
+        hayDimension = true;
+        dimension();
+    }
+
+    //avanzar en la  lectura
+    if(hayDimension) lexico = siguienteLexema();
+
+    if(lexico.compare(":=") == 0)
+        expr();
+    else
+        return; //se esperaba la asignacion
+}
+
+void Compilador::dimension (void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::estatutos( void )
+void Compilador::expr( void )
+{
+    string lexico;
+    do
+    {
+        opy();
+
+        lexico = siguienteLexema();
+    }while(lexico.compare("||") == 0);
+}
+
+void Compilador::opy( void )
+{
+    string lexico;
+    do
+    {
+        opno();
+
+        lexico = siguienteLexema();
+    }while(lexico.compare("&&") == 0);
+}
+
+void Compilador::opno( void )
+{
+    if(siguienteLexema().compare("!") != 0) //regresar el lexema a la pila (?)
+    {}
+
+    oprel();
+}
+
+void Compilador::oprel( void )
+{
+    string lexico;
+
+    do
+    {
+        suma();
+        lexico = siguienteLexema();
+    }while(lexico.compare(LOGICO) == 0);
+
+}
+
+void Compilador::suma( void )
+{
+
+    bool hay_operacion = false;
+    string siguiente;
+    string lexico = siguienteLexema();
+
+    do
+    {
+        if((lexico.compare("+") == 0 || lexico.compare("-") == 0))
+        {
+            siguiente = lexico;
+            hay_operacion = true;
+            lex = lexico();
+        }
+
+        multiplicacionDivisionModulo();
+
+        if (hay_operacion)
+        {
+            hay_operacion = false;
+
+            hacerMagiaDeTresDirecciones(siguiente);
+
+            operador_derecho = pila_valores->top();
+            pila_valores->pop();
+
+            operador_izquierdo = pila_valores->top();
+            pila_valores->pop();
+
+            if(siguiente.compare("+") == 0)
+            {
+                resultado = operador_izquierdo + operador_derecho;
+            }
+            else if (siguiente.compare("-") == 0)
+            {
+                resultado = operador_izquierdo - operador_derecho;
+            }
+            else
+            {
+                cerr << "Algo fue mal en el analisis: Evaluador::sumaResta" << endl;
+                exit(1);
+            }
+
+            pila_valores->push(resultado);
+
+        }
+    } while (lex.compare("+") == 0 || lex.compare("-") == 0);
+}
+
+void Compilador::multi(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::comando ( void )
+void Compilador::expo (void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::asigna (void)
+void Compilador::signo (void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::dimension (void)
+void Compilador::termino (void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::expr( void )
+void Compilador::constanteTipo(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::opy( void )
+void Compilador::lFunc_1(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::opno( void )
+void Compilador::lFunc_2(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::oprel( void )
+void Compilador::vparam(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::suma( void )
+void Compilador::si(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::multi(void)
+void Compilador::desde(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::expo (void)
+void Compilador::caso(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::signo (void)
+void Compilador::regresa (void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::termino (void)
+void Compilador::lee(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::constanteTipo(void)
+void Compilador::imprime(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::lFunc_1(void)
+void Compilador::constante(void)
 {
 
 }
 
-void Compilador::AnalizadorSintactico::lFunc_2(void)
-{
-
-}
-
-void Compilador::AnalizadorSintactico::vparam(void)
-{
-
-}
-
-void Compilador::AnalizadorSintactico::si(void)
-{
-
-}
-
-void Compilador::AnalizadorSintactico::desde(void)
-{
-
-}
-
-void Compilador::AnalizadorSintactico::caso(void)
-{
-
-}
-
-void Compilador::AnalizadorSintactico::regresa (void)
-{
-
-}
-
-void Compilador::AnalizadorSintactico::lee(void)
-{
-
-}
-
-void Compilador::AnalizadorSintactico::imprime(void)
-{
-
-}
-
-void Compilador::AnalizadorSintactico::constante(void)
-{
-
-}
-
-bool Compilador::AnalizadorSintactico::siguienteLexemaEs(string esperado)
+bool Compilador::siguienteLexemaEs(string esperado)
 {
 
 }

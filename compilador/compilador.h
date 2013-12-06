@@ -2,6 +2,7 @@
 #define COMPILADOR_H
 
 #include <fstream>
+#include <stack>
 
 #include <QString>
 
@@ -49,7 +50,6 @@ class Compilador
         void hacerAnalisisSintactico( void );
 
 
-    private:
         bool enComentarioMultilinea;
         string renglon;
         unsigned int _lineaActual;
@@ -63,7 +63,6 @@ class Compilador
         ofstream salidaInformacion;
         ofstream salidaErrores;
 
-    private:
         static const Estado matriz_transiciones[ESTADOS][ENTRADAS];
         static const string palabras_reservadas[PALABRAS_RESERVADAS];
         const string IDENTIFICADOR;
@@ -85,50 +84,42 @@ class Compilador
         const string ERROR;
 
 
-        class AnalizadorSintactico
-        {
-            public:
-                AnalizadorSintactico(ifstream compilable);
-            private:
+        // Analizador Sintactico
 
-                ifstream compilable;
+        string lexico;
 
-                void programa( void );
-                void importar( void );
-                void funcion( void );
-                void params( void );
-                string pars ( void );
-                bool tipo( string lex );
-                void bloque ( void );
-                void vars ( void );
-                void estatutos( void );
-                void comando ( void );
-                void asigna (void);
-                void dimension (void);
-                void expr( void );
-                void opy( void );
-                void opno( void );
-                void oprel( void );
-                void suma( void );
-                void multi(void);
-                void expo (void);
-                void signo (void);
-                void termino (void);
-                void constanteTipo(void);
-                void lFunc_1(void);
-                void lFunc_2(void);
-                void vparam(void);
-                void si(void);
-                void desde(void);
-                void caso(void);
-                void regresa (void);
-                void lee(void);
-                void imprime(void);
-                void constante(void);
-
-                bool siguienteLexemaEs(string esperado);
-        };
-
+        void programa( void );
+        void importar( void );
+        void funcion( void );
+        void params( void );
+        string pars ( void );
+        bool tipo( string lex );
+        void bloque ( void );
+        void vars ( void );
+        void estatutos( void );
+        void comando ( void );
+        void asigna (void);
+        void dimension (void);
+        void expr( void );
+        void opy( void );
+        void opno( void );
+        void oprel( void );
+        void suma( void );
+        void multi(void);
+        void expo (void);
+        void signo (void);
+        void termino (void);
+        void constanteTipo(void);
+        void lFunc_1(void);
+        void lFunc_2(void);
+        void vparam(void);
+        void si(void);
+        void desde(void);
+        void caso(void);
+        void regresa (void);
+        void lee(void);
+        void imprime(void);
+        void constante(void);
 };
 
 #endif // COMPILADOR_H
