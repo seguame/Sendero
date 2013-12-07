@@ -824,6 +824,7 @@ void Compilador::estatutos(void)
     comando();
 }
 
+//TODO, que retorne true si existio comando
 void Compilador::comando (void)
 {
     if(token.compare(IDENTIFICADOR) == 0)
@@ -853,6 +854,7 @@ void Compilador::comando (void)
         {
 
         }
+
     }
 
 }
@@ -1003,7 +1005,20 @@ void Compilador::vparam(void)
 
 void Compilador::si(void)
 {
+    if(lexico.compare("si") != 0)
+        return;
 
+    expr();
+
+    bloque(true);
+
+    leerLexema();
+
+    if(lexico.compare("sino") == 0)
+    {
+        bloque(true);
+        leerLexema();
+    }
 }
 
 void Compilador::desde(void)
