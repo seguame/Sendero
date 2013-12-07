@@ -44,7 +44,7 @@ const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
     /*e33*/{e33,e33,e33,e33,    e33,e33,e33,e33,e33,e33,e33,    e33,        e33,e33,e33,e33,e33,e33,e33,e33,e33,e33, e33,   e33,    e33,    e33,    e33},
     /*e34*/{e34,e34,e34,e34,    e34,e34,e34,e34,e34,e34,e34,    e34,        e34,e34,e34,e34,e34,e34,e34,e34,e34,e34, e34,   e34,    e35,    e34,    e34},
     /*e35*/{e34,e34,e34,e34,    e34,e34,e34,e34,e34,e34,e34,    e34,        e34,e34,e34,e34,e34,e34,e34,e34,e34,e34, e34,   e36,    e35,    e34,    e34},
-    /*e36*/{e36,e36,e36,e36,    e36,e36,e36,e36,e36,e36,e36,    e36,        e36,e36,e36,e36,e36,e36,e36,e36,e36,e36, e36,   e36,    e36,    e36,    e36}
+    /*e36*/{ACP,ACP,ACP,ACP,    ACP,ACP,ACP,ACP,ACP,ACP,ACP,    ACP,        ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP,ACP, ACP,   ACP,    ACP,    ACP,    ACP}
 
 };
 
@@ -125,26 +125,6 @@ void Compilador::realizarMagia( void )
 
 void Compilador::hacerAnalisisSintactico()
 {
-    //while(getline(compilable, renglon))
-    //{
-        //stringstream ss;
-        //ss << (_lineaActual + 1);
-        //qDebug() << QString((ss.str() + " " + linea).c_str());
-
-      //  while(_columnaActual < renglon.size())
-       // {
-        //    lexico = siguienteLexema();
-            //qDebug() << QString((token + "\t" + lex).c_str());
-
-            //lineas en blanco
-          //  if(lexico.compare("") != 0)
-            //{
-              //  salidaInformacion << (token + ",,," +  lexico) << endl;
-            //}
-        //}
-        //_lineaActual++;
-        //_columnaActual = 0;
-    //}
     while(!finDeArchivo)
     {
         do
@@ -155,7 +135,6 @@ void Compilador::hacerAnalisisSintactico()
         if(!finDeArchivo)
             salidaInformacion << (token + ",,," +  lexico) << endl;
     }
-
 }
 
 void Compilador::saltarLineasEnBlanco( void )
@@ -260,7 +239,7 @@ string Compilador::siguienteLexema()
             estado = ACP;
         }*/
 
-        if(_columnaActual == tamanio_linea)
+        if(_columnaActual >= tamanio_linea)
         {
             estadoAnterior = estado;
             estado = ACP;
@@ -270,7 +249,6 @@ string Compilador::siguienteLexema()
 
     if(estado == ACP)
     {
-
         switch(estadoAnterior)
         {
             case e1: case e2: case e6:
