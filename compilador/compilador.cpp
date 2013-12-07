@@ -126,17 +126,6 @@ void Compilador::realizarMagia(void)
 void Compilador::hacerAnalisisSintactico(void)
 {
     programa();
-
-    /*while(!finDeArchivo)
-    {
-        do
-        {
-            lexico = siguienteLexema();
-        }while(lexico.compare("") == 0 && !finDeArchivo);
-
-        if(!finDeArchivo)
-            salidaInformacion << (token + ",,," +  lexico) << endl;
-    }*/
 }
 
 void Compilador::saltarLineasEnBlanco(void)
@@ -645,6 +634,8 @@ void Compilador::importar(void)
     }
 }
 
+
+//TODO: chequeo de que si la funcion retorna tipo, este sea valido
 void Compilador::funcion(void)
 {
     leerLexema();
@@ -669,9 +660,13 @@ void Compilador::funcion(void)
     //si lo consecuente es un "tipo" avanzar otro token dentro del bloque
     //si no lo era, validar en bloque que lo que sigue es un {
     if(tipo(lexico))
+    {
         bloque(true);
+    }
     else
+    {
         bloque(false);
+    }
 }
 
 void Compilador::params(void)
@@ -690,7 +685,7 @@ void Compilador::params(void)
     //else, no se checa cierre de parentesis, se hizo en pars
 }
 
-bool Compilador::pars (void)
+bool Compilador::pars(void)
 {
     leerLexema();
 
@@ -715,7 +710,8 @@ bool Compilador::pars (void)
 
             if(token.compare(IDENTIFICADOR) != 0)
                 escribirError("Se esperaba identificador de variable");
-            else if(primeraVuelta)
+
+            if(primeraVuelta)
                 primeraVuelta = false;
 
             leerLexema();
@@ -752,143 +748,157 @@ void Compilador::bloque (bool avanzar)
 
     leerLexema();
 
+    vars();
+    estatutos();
+
     if(lexico.compare("}") != 0)
-        escribirError("Es esperaba cierre de bloque }");
+        escribirError("Se esperaba cierre de bloque }");
 }
 
-/*//TODO: cambiar a tipo bool para que retorne su valides como bloque
 void Compilador::vars (void)
 {
-    lexico = siguienteLexema();
 
     if(lexico.compare("var") != 0)
         return; //los caminos de la vida, no son lo que yo esperaba (8)
 
-    lexico = siguienteLexema();
+    leerLexema();
 
-    if(lexico.compare(IDENTIFICADOR) == 0)
+    if(token.compare(IDENTIFICADOR) == 0)
     {
-        if(!tipo(siguienteLexema()))
-            return; //se debe especificar el tipo de la variable
+        leerLexema();
+
+        if(!tipo(lexico))
+            escribirError("Se esperaba definicion de tipo");
     }
     else if(lexico.compare("(") == 0)
     {
+        leerLexema();
+        bool primeraVuelta = true;
+
         do
         {
             do
             {
-                if(lexico.compare(IDENTIFICADOR) != 0)
-                    return; // debe de ser un identificador ¬¬
+                if(!primeraVuelta)
+                {
+                    if(lexico.compare(",") != 0)
+                        escribirError("Se esperaba coma ','");
+                    else
+                        leerLexema();
+                }
 
-                lexico = siguienteLexema();
+                if(token.compare(IDENTIFICADOR) != 0)
+                    escribirError("Se esperaba identificador de variable");
 
-            }while(lexico.compare("," == 0));
+                if(primeraVuelta)
+                    primeraVuelta = false;
 
-            if(!tipo(lexico)) return; // no se determina de que tipo son las variables
+                leerLexema();
 
-            lexico = siguienteLexema();
+            }while(lexico.compare(",") == 0);
 
-        }while(lexico.compare("," == 0));
+            if(!tipo(lexico))
+            {
+                escribirError("Se esperaba el tipo de variable");
+            }
+
+            leerLexema();
+
+        }while(lexico.compare(",") == 0);
 
         if(lexico.compare(")") != 0)
-            return; // no se cerraron los parentesis!
+        {
+            escribirError("Se esperaba cierre de parentesis");
+        }
     }
     else
     {
-        return;// despues de vars va un identificador o agrupacion de estos
+        escribirError("Se esperaba un identificador o grupo de estos");
     }
+
+    leerLexema();
 }
 
-voidCompilador::estatutos( void )
+void Compilador::estatutos(void)
 {
-    // no necesariamente se debe tener estatutos, requiero de pila para
-    // estos casos... PILA YA!
-
-    //comando();
-
-    //falta pensarle que pex con los ;
-
+    comando();
 }
 
-void Compilador::comando ( void )
+void Compilador::comando (void)
 {
+    if(token.compare(IDENTIFICADOR) == 0)
+    {
+        leerLexema();
+        //separados del resto porque ambos inician con un identificador
+        asigna();
+        lFunc_1();
+        leerLexema();
+    }
+    else
+    {
+        si();
+        desde();
+        caso();
+        regresa();
+        lee();
+        imprime();
+
+        if(lexico.compare("interrumpe") == 0)
+        {
+
+        }
+        else if(lexico.compare("continua") == 0)
+        {
+
+        }
+    }
 
 }
 
 void Compilador::asigna (void)
 {
-    lexico = siguienteLexema();
-    bool hayDimension = false;
-
-    if(lexico.compare(IDENTIFICADOR) != 0)
-        return; // se debe hacer la asignacion a un identificador valido
-
-    lexico = siguienteLexema();
-
-    if(lexico.compare("[") == 0)
+    if(dimension())
     {
-        hayDimension = true;
-        dimension();
+        leerLexema();
     }
 
-    //avanzar en la  lectura
-    if(hayDimension) lexico = siguienteLexema();
-
-    if(lexico.compare(":=") == 0)
-        expr();
-    else
-        return; //se esperaba la asignacion
-}
-
-void Compilador::dimension (void)
-{
-
-}
-
-void Compilador::expr( void )
-{
-    do
+    if(lexico.compare(":=") != 0)
     {
-        opy();
-
-        lexico = siguienteLexema();
-    }while(lexico.compare("||") == 0);
+        escribirError("Se esperaba operador de asignacion \":=\"");
+    }
+    leerLexema();
+    expr();
 }
 
-void Compilador::opy( void )
+bool Compilador::dimension (void)
+{
+    return false;
+}
+
+void Compilador::expr(void)
 {
 
-    do
-    {
-        opno();
+}
 
-        lexico = siguienteLexema();
-    }while(lexico.compare("&&") == 0);
+void Compilador::opy(void)
+{
+
 }
 
 void Compilador::opno( void )
 {
-    if(siguienteLexema().compare("!") != 0) //regresar el lexema a la pila (?)
-    {}
 
-    oprel();
 }
 
 void Compilador::oprel( void )
 {
-
-    do
-    {
-        suma();
-        lexico = siguienteLexema();
-    }while(lexico.compare(LOGICO) == 0);
 
 }
 
 void Compilador::suma( void )
 {
 
-    bool hay_operacion = false;
+   /* bool hay_operacion = false;
     string siguiente;
     lexico = siguienteLexema();
 
@@ -932,7 +942,7 @@ void Compilador::suma( void )
             pila_valores->push(resultado);
 
         }
-    } while (lex.compare("+") == 0 || lex.compare("-") == 0);
+    } while (lex.compare("+") == 0 || lex.compare("-") == 0);*/
 }
 
 void Compilador::multi(void)
@@ -1010,7 +1020,3 @@ void Compilador::constante(void)
 
 }
 
-bool Compilador::siguienteLexemaEs(string esperado)
-{
-
-}*/
