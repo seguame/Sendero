@@ -81,6 +81,7 @@ Compilador::Compilador(string rutaArchivo) :
     _rutaCompletaArchivo = rutaArchivo;
     renglon = "";
     finDeArchivo = false;
+    existeFuncionPrincipal = false;
 
     separarNombreArchivo(_rutaCompletaArchivo);
 
@@ -117,7 +118,6 @@ void Compilador::realizarMagia( void )
         salidaErrores << ss.str() << ",,," << 0 << ",,," << lexico << ",,,Fin de archivo inesperado,,," << renglon << endl;
     }
 
-    //qDebug() << "Terminamos";
     compilable.close();
     salidaInformacion.close();
     salidaErrores.close();
@@ -125,7 +125,9 @@ void Compilador::realizarMagia( void )
 
 void Compilador::hacerAnalisisSintactico()
 {
-    while(!finDeArchivo)
+    programa();
+
+    /*while(!finDeArchivo)
     {
         do
         {
@@ -134,7 +136,7 @@ void Compilador::hacerAnalisisSintactico()
 
         if(!finDeArchivo)
             salidaInformacion << (token + ",,," +  lexico) << endl;
-    }
+    }*/
 }
 
 void Compilador::saltarLineasEnBlanco( void )
@@ -154,9 +156,40 @@ void Compilador::saltarLineasEnBlanco( void )
     }
 }
 
-
-string Compilador::siguienteLexema()
+void Compilador::escribirError(string error)
 {
+    stringstream linea;
+    stringstream colum;
+
+    linea << (_lineaActual + 1);
+    salidaErrores << linea.str() << ",,,";
+    colum << _columnaActual;
+    salidaErrores << colum.str() << ",,,";
+    salidaErrores << lexico << ",,,";
+
+    salidaErrores << error << ",,," << renglon << endl;
+}
+
+void Compilador::escribirLog( void )
+{
+    //stringstream ss;
+    //ss << lexico.length();
+    if(lexico.compare("") != 0 && !finDeArchivo)
+        salidaInformacion << (token + ",,," +  lexico) << endl;
+        //salidaInformacion << (token + ",,," +  lexico + " " + ss.str()) << endl;
+}
+
+void Compilador::leerLexema( void )
+{
+    lexico = siguienteLexema();
+    escribirLog();
+}
+
+
+string Compilador::siguienteLexema( void )
+{
+    token = ERROR;
+    string lexema = "";
 
     if(_columnaActual  >= renglon.size())
     {
@@ -171,10 +204,9 @@ string Compilador::siguienteLexema()
     Entrada entrada;
     Estado estado;
     Estado estadoAnterior;
-    string lexema = "";
     char c = '\0';
     size_t tamanio_linea = renglon.size();
-    token = ERROR;
+
 
     if(enComentarioMultilinea)
     {
@@ -395,7 +427,6 @@ string Compilador::siguienteLexema()
         throw "No se que ocurrio aqui";
     }
 
-
     return lexema;
 }
 
@@ -548,51 +579,77 @@ string Compilador::getNombreArchivo( void )
 //==============================================================
 
 
-/*void Compilador::programa( void )
+
+void Compilador::programa( void )
 {
+    leerLexema();
 
-    if(siguienteLexema().compare("Paquete") != 0)
-        return; //se esperana definicion de paquete
+    if(lexico.compare("paquete") != 0)
+    {
+        escribirError("Se esperaba definicion de paquete");
+    }
 
-    if(siguienteLexema().compare("principal") != 0)
-        return; //se esperaba definicion de paquete principal
+    leerLexema();
+
+    if(lexico.compare("principal") != 0)
+    {
+        escribirError("Se esperaba definicion de \"principal\"");
+    }
 
     do
     {
-        lexema = siguienteLexema();
+        leerLexema();
 
-        if(lexema.compare("importar") == 0)
+        if(lexico.compare("importar") == 0)
             importar();
-        else if(lexema.compare("funcion") == 0)
+        else if(lexico.compare("funcion") == 0)
             funcion();
-        else
-            return; // tronancia
-    }while(true);
+        else if(!finDeArchivo)
+            escribirError("Se espera funcion o importe de paquete");
+
+    }while(!finDeArchivo);
+
+    if(!existeFuncionPrincipal)
+        escribirError("No se encontro la funcion \"principal\"");
 }
 
 void Compilador::importar( void )
 {
-    string lexema = siguienteLexema();
+    bool valido = false;
+    leerLexema();
 
-    if(lexema.compare("(") == 0)
+    if(lexico.compare("(") == 0)
     {
         do
         {
-            lexema = siguienteLexema();
-        }while(lexema.compare(ALFABETICO) == 0);
+            leerLexema();
 
-        if(lexema.compare(")") != 0)
-            return; //solo se aceptan contantes alfabeticas y el cierre de parentesis
+            //validar que no tenga parentesis vacios
+            if(!valido && token.compare(ALFABETICO) == 0)
+            {
+                valido = true;
+            }
+        }while(token.compare(ALFABETICO) == 0);
+
+        if(!valido)
+        {
+            escribirError("Faltan los paquetes a importar");
+        }
+
+        if(lexico.compare(")") != 0)
+        {
+            escribirError("Se esperaba constantes alfabetica o cierre de parentesis");
+        }
     }
-    else if(lexema.compare(ALFABETICO) != 0)
+    else if(token.compare(ALFABETICO) != 0)
     {
-        return; //despues de importar va la constante alfabetica o muchas en parentesis
+        escribirError("Se esperaba constantes alfabetica");
     }
 }
 
 void Compilador::funcion( void )
 {
-    string lexico = siguienteLexema();
+    /*lexico = siguienteLexema();
 
     if(lexico.compare(IDENTIFICADOR) != 0)
     {
@@ -605,12 +662,12 @@ void Compilador::funcion( void )
 
     if(tipo(lexico)) lexico = siguienteLexema(); //si no fuera tipo, no debemos avanzar aun
 
-    bloque();
+    bloque();*/
 }
 
-void Compilador::params( void )
+void Compilador::params( bool avanzar )
 {
-    string lexico = siguienteLexema();
+   /* lexico = siguienteLexema();
 
     if(lexico.compare("(") != 0)
         return; // hace falta la apertura parentesis ¬_¬
@@ -619,12 +676,12 @@ void Compilador::params( void )
     lexico = pars();
 
     if(lexico.compare(")") != 0)
-        return; // no se cerraron parentesis
+        return; // no se cerraron parentesis*/
 }
 
-string Compilador::pars ( void )
+void Compilador::pars ( bool avanzar )
 {
-    string lexico = siguienteLexema();
+   /* lexico = siguienteLexema();
 
     if(lexico.compare(")") == 0)
         return lexico; //funcion sin parametros
@@ -647,7 +704,7 @@ string Compilador::pars ( void )
 
     }while(lexico.compare("," == 0));
 
-    return lexico;
+    return lexico;*/
 
 }
 
@@ -656,12 +713,12 @@ bool Compilador::tipo( string lex )
     return (lex.compare(REAL) == 0 ||
             lex.compare(ENTERO) == 0 ||
             lex.compare(CONST_LOGICA) == 0 ||
-            lex.compare(ALFABETICO) == 0)
+            lex.compare(ALFABETICO) == 0);
 }
 
-void Compilador::bloque ( void )
+/*void Compilador::bloque ( void )
 {
-    string lexico = siguienteLexema();
+    lexico = siguienteLexema();
 
     if(lexico.compare("{") != 0)
         return; // se esperaba la apertura de llaves
@@ -680,7 +737,7 @@ void Compilador::bloque ( void )
 //TODO: cambiar a tipo bool para que retorne su valides como bloque
 void Compilador::vars ( void )
 {
-    string lexico = siguienteLexema();
+    lexico = siguienteLexema();
 
     if(lexico.compare("var") != 0)
         return; //los caminos de la vida, no son lo que yo esperaba (8)
@@ -725,7 +782,7 @@ voidCompilador::estatutos( void )
     // no necesariamente se debe tener estatutos, requiero de pila para
     // estos casos... PILA YA!
 
-    comando();
+    //comando();
 
     //falta pensarle que pex con los ;
 
@@ -738,7 +795,7 @@ void Compilador::comando ( void )
 
 void Compilador::asigna (void)
 {
-    string lexico = siguienteLexema();
+    lexico = siguienteLexema();
     bool hayDimension = false;
 
     if(lexico.compare(IDENTIFICADOR) != 0)
@@ -768,7 +825,6 @@ void Compilador::dimension (void)
 
 void Compilador::expr( void )
 {
-    string lexico;
     do
     {
         opy();
@@ -779,7 +835,7 @@ void Compilador::expr( void )
 
 void Compilador::opy( void )
 {
-    string lexico;
+
     do
     {
         opno();
@@ -798,7 +854,6 @@ void Compilador::opno( void )
 
 void Compilador::oprel( void )
 {
-    string lexico;
 
     do
     {
@@ -813,7 +868,7 @@ void Compilador::suma( void )
 
     bool hay_operacion = false;
     string siguiente;
-    string lexico = siguienteLexema();
+    lexico = siguienteLexema();
 
     do
     {

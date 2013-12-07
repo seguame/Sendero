@@ -45,16 +45,21 @@ class Compilador
     private:
         Entrada siguienteEntrada(char caracter);
         void separarNombreArchivo(const string& str);
+        void leerLexema( void );
         string siguienteLexema( void );
         bool esPalabraReservada( string palabra );
         bool esConstanteLogica( string palabra );
         void hacerAnalisisSintactico( void );
         void saltarLineasEnBlanco( void );
 
+        void escribirError(string error);
+        void escribirLog( void );
+
         ////////////////////
         ifstream compilable;
         bool enComentarioMultilinea;
         bool finDeArchivo;
+        bool existeFuncionPrincipal;
         string renglon;
         unsigned int _lineaActual;
         unsigned int _columnaActual;
@@ -95,35 +100,35 @@ class Compilador
         void programa( void );
         void importar( void );
         void funcion( void );
-        void params( void );
-        string pars ( void );
+        void params( bool avanzar );
+        void pars ( bool avanzar );
         bool tipo( string lex );
-        void bloque ( void );
-        void vars ( void );
-        void estatutos( void );
-        void comando ( void );
-        void asigna (void);
-        void dimension (void);
-        void expr( void );
-        void opy( void );
-        void opno( void );
-        void oprel( void );
-        void suma( void );
-        void multi(void);
-        void expo (void);
-        void signo (void);
-        void termino (void);
-        void constanteTipo(void);
-        void lFunc_1(void);
-        void lFunc_2(void);
-        void vparam(void);
-        void si(void);
-        void desde(void);
-        void caso(void);
-        void regresa (void);
-        void lee(void);
-        void imprime(void);
-        void constante(void);
+        void bloque ( bool avanzar );
+        void vars ( bool avanzar );
+        void estatutos( bool avanzar );
+        void comando ( bool avanzar );
+        void asigna (bool avanzar);
+        void dimension (bool avanzar);
+        void expr( bool avanzar );
+        void opy( bool avanzar );
+        void opno( bool avanzar );
+        void oprel( bool avanzar );
+        void suma( bool avanzar );
+        void multi(bool avanzar);
+        void expo (bool avanzar);
+        void signo (bool avanzar);
+        void termino (bool avanzar);
+        void constanteTipo(bool avanzar);
+        void lFunc_1(bool avanzar);
+        void lFunc_2(bool avanzar);
+        void vparam(bool avanzar);
+        void si(bool avanzar);
+        void desde(bool avanzar);
+        void caso(bool avanzar);
+        void regresa (bool avanzar);
+        void lee(bool avanzar);
+        void imprime(bool avanzar);
+        void constante(bool avanzar);
 };
 
 #endif // COMPILADOR_H
