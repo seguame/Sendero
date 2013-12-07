@@ -70,7 +70,7 @@ Compilador::Compilador(string rutaArchivo) :
     COMPARACION("comparacion"),
     ASIGNACION("asignacion"),
     RESERVADA("reservada"),
-    CONST_LOGICA("constante logica"),
+    CONST_LOGICA("logico"),
     CARACTER("caracter"),
     COMENTARIO("comentario"),
     ERROR("error")
@@ -90,7 +90,7 @@ Compilador::Compilador(string rutaArchivo) :
 }
 
 
-void Compilador::realizarMagia( void )
+void Compilador::realizarMagia(void)
 {
     salidaInformacion.open((_rutaAlArchivo+"/"+_nombreArchivo+".lexemas").c_str());
     salidaErrores.open((_rutaAlArchivo+"/"+_nombreArchivo+".errores").c_str());
@@ -123,7 +123,7 @@ void Compilador::realizarMagia( void )
     salidaErrores.close();
 }
 
-void Compilador::hacerAnalisisSintactico()
+void Compilador::hacerAnalisisSintactico(void)
 {
     programa();
 
@@ -139,7 +139,7 @@ void Compilador::hacerAnalisisSintactico()
     }*/
 }
 
-void Compilador::saltarLineasEnBlanco( void )
+void Compilador::saltarLineasEnBlanco(void)
 {
     while(renglon.compare("") == 0)
     {
@@ -170,23 +170,21 @@ void Compilador::escribirError(string error)
     salidaErrores << error << ",,," << renglon << endl;
 }
 
-void Compilador::escribirLog( void )
+void Compilador::escribirLog(void)
 {
-    //stringstream ss;
-    //ss << lexico.length();
+
     if(lexico.compare("") != 0 && !finDeArchivo)
         salidaInformacion << (token + ",,," +  lexico) << endl;
-        //salidaInformacion << (token + ",,," +  lexico + " " + ss.str()) << endl;
 }
 
-void Compilador::leerLexema( void )
+void Compilador::leerLexema(void)
 {
     lexico = siguienteLexema();
     escribirLog();
 }
 
 
-string Compilador::siguienteLexema( void )
+string Compilador::siguienteLexema(void)
 {
     token = ERROR;
     string lexema = "";
@@ -580,7 +578,7 @@ string Compilador::getNombreArchivo( void )
 
 
 
-void Compilador::programa( void )
+void Compilador::programa(void)
 {
     leerLexema();
 
@@ -613,7 +611,7 @@ void Compilador::programa( void )
         escribirError("No se encontro la funcion \"principal\"");
 }
 
-void Compilador::importar( void )
+void Compilador::importar(void)
 {
     bool valido = false;
     leerLexema();
@@ -647,65 +645,93 @@ void Compilador::importar( void )
     }
 }
 
-void Compilador::funcion( void )
+void Compilador::funcion(void)
 {
-    /*lexico = siguienteLexema();
+    leerLexema();
 
-    if(lexico.compare(IDENTIFICADOR) != 0)
+    if(token.compare(IDENTIFICADOR) != 0)
+        escribirError("Se esperaba identificador de funcion");
+    else
     {
-        return; //despues de declarar una funcion debe estar su nombre
+        if(lexico.compare("principal") == 0)
+        {
+            if(!existeFuncionPrincipal)
+                existeFuncionPrincipal = true;
+            else
+                escribirError("la funcion \"principal\" ya fue declarada");
+        }
     }
 
     params();
 
-    lexico = siguienteLexema();
+    leerLexema();
 
-    if(tipo(lexico)) lexico = siguienteLexema(); //si no fuera tipo, no debemos avanzar aun
-
-    bloque();*/
+    //si lo consecuente es un "tipo" avanzar otro token dentro del bloque
+    //si no lo era, validar en bloque que lo que sigue es un {
+    if(tipo(lexico))
+        bloque(true);
+    else
+        bloque(false);
 }
 
-void Compilador::params( bool avanzar )
+void Compilador::params(void)
 {
-   /* lexico = siguienteLexema();
+    leerLexema();
 
     if(lexico.compare("(") != 0)
-        return; // hace falta la apertura parentesis ¬_¬
+        escribirError("Se esperaba apertura de parentesis despues de nombre de funcion");
 
-    // pars nos debe retornar el cierre de parentesis
-    lexico = pars();
 
-    if(lexico.compare(")") != 0)
-        return; // no se cerraron parentesis*/
+    if(pars()) //si habia parametros
+    {
+        if(lexico.compare(")") != 0)
+            escribirError("Se esperaba cierre de parentesis");
+    }
+    //else, no se checa cierre de parentesis, se hizo en pars
 }
 
-void Compilador::pars ( bool avanzar )
+bool Compilador::pars (void)
 {
-   /* lexico = siguienteLexema();
+    leerLexema();
 
     if(lexico.compare(")") == 0)
-        return lexico; //funcion sin parametros
+        return false; //funcion sin parametros, valido, se retorna que no habia
 
     // la funcion tiene parametros
+
+    bool primeraVuelta = true;
+
     do
     {
         do
         {
-            if(lexico.compare(IDENTIFICADOR) != 0)
-                return ""; // debe de ser un identificador ¬¬
+            if(!primeraVuelta)
+            {
+                if(lexico.compare(",") != 0)
+                    escribirError("Se esperaba coma ','");
+                else
+                    leerLexema();
+            }
 
-            lexico = siguienteLexema();
+            if(token.compare(IDENTIFICADOR) != 0)
+                escribirError("Se esperaba identificador de variable");
+            else if(primeraVuelta)
+                primeraVuelta = false;
 
-        }while(lexico.compare("," == 0));
+            leerLexema();
 
-        if(!tipo(lexico)) return ""; // no se determina de que tipo son las variables
+        }while(lexico.compare(",") == 0);
 
-        lexico = siguienteLexema();
+        if(!tipo(lexico))
+        {
+            escribirError("Se esperaba el tipo de variable");
+        }
 
-    }while(lexico.compare("," == 0));
+        leerLexema();
 
-    return lexico;*/
+    }while(lexico.compare(",") == 0);
 
+    return true;
 }
 
 bool Compilador::tipo( string lex )
@@ -716,26 +742,22 @@ bool Compilador::tipo( string lex )
             lex.compare(ALFABETICO) == 0);
 }
 
-/*void Compilador::bloque ( void )
+void Compilador::bloque (bool avanzar)
 {
-    lexico = siguienteLexema();
+    if(avanzar)
+        leerLexema();
 
     if(lexico.compare("{") != 0)
-        return; // se esperaba la apertura de llaves
+        escribirError("Es esperaba apertura de bloque {");
 
-    lexico = siguienteLexema();
+    leerLexema();
 
-    while(lexico.compare("}") != 0)
-    {
-        vars(); // FIXME: retroceder un valor de pila si algo falla en vars
-        estatutos();
-
-        lexico = siguienteLexema();
-    }
+    if(lexico.compare("}") != 0)
+        escribirError("Es esperaba cierre de bloque }");
 }
 
-//TODO: cambiar a tipo bool para que retorne su valides como bloque
-void Compilador::vars ( void )
+/*//TODO: cambiar a tipo bool para que retorne su valides como bloque
+void Compilador::vars (void)
 {
     lexico = siguienteLexema();
 

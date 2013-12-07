@@ -97,13 +97,13 @@ class Compilador
 
         string lexico;
 
-        void programa( void );
-        void importar( void );
-        void funcion( void );
-        void params( bool avanzar );
-        void pars ( bool avanzar );
-        bool tipo( string lex );
-        void bloque ( bool avanzar );
+        void programa(void);
+        void importar(void);
+        void funcion(void);
+        void params(void);
+        bool pars(void);
+        bool tipo(string lex);
+        void bloque(bool avanzar);
         void vars ( bool avanzar );
         void estatutos( bool avanzar );
         void comando ( bool avanzar );
