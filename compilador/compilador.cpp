@@ -872,7 +872,8 @@ void Compilador::asigna (void)
 
 bool Compilador::dimension (void)
 {
-    return false;
+    if(lexico.compare("[") != 0)
+        return false; //las dimensiones de la vida, no son lo que yo esperaba (8)
 }
 
 void Compilador::expr(void)
