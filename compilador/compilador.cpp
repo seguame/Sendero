@@ -168,8 +168,12 @@ void Compilador::escribirLog(void)
 
 void Compilador::leerLexema(void)
 {
-    lexico = siguienteLexema();
-    escribirLog();
+    do
+    {
+        lexico = siguienteLexema();
+        escribirLog();
+    }while(token.compare(COMENTARIO) == 0);
+
 }
 
 
