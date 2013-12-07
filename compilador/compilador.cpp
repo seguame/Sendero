@@ -830,8 +830,10 @@ void Compilador::comando (void)
     {
         leerLexema();
         //separados del resto porque ambos inician con un identificador
-        asigna();
-        lFunc_1();
+        if(!lFunc_1())
+        {
+            asigna();
+        }
         leerLexema();
     }
     else
@@ -864,7 +866,7 @@ void Compilador::asigna (void)
 
     if(lexico.compare(":=") != 0)
     {
-        escribirError("Se esperaba operador de asignacion \":=\"");
+            escribirError("Se esperaba operador de asignacion \":=\"");
     }
     leerLexema();
     expr();
@@ -874,6 +876,7 @@ bool Compilador::dimension (void)
 {
     if(lexico.compare("[") != 0)
         return false; //las dimensiones de la vida, no son lo que yo esperaba (8)
+    return false;
 }
 
 void Compilador::expr(void)
@@ -971,9 +974,21 @@ void Compilador::constanteTipo(void)
 
 }
 
-void Compilador::lFunc_1(void)
+bool Compilador::lFunc_1(void)
 {
+    if(lexico.compare("(") != 0)
+        return false;
 
+    expr();
+
+    leerLexema();
+
+    if(lexico.compare(")") != 0)
+    {
+        escribirError("Se esperaba cierre de parentesis");
+    }
+
+    return true;
 }
 
 void Compilador::lFunc_2(void)

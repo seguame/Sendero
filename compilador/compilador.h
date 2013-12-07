@@ -119,7 +119,7 @@ class Compilador
         void signo (void);
         void termino (void);
         void constanteTipo(void);
-        void lFunc_1(void);
+        bool lFunc_1(void);
         void lFunc_2(void);
         void vparam(void);
         void si(void);
