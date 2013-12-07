@@ -4,6 +4,7 @@
 #include <fstream>
 #include <stack>
 
+
 #include <QString>
 
 using namespace std;
@@ -48,10 +49,12 @@ class Compilador
         bool esPalabraReservada( string palabra );
         bool esConstanteLogica( string palabra );
         void hacerAnalisisSintactico( void );
+        void saltarLineasEnBlanco( void );
 
-
+        ////////////////////
         ifstream compilable;
         bool enComentarioMultilinea;
+        bool finDeArchivo;
         string renglon;
         unsigned int _lineaActual;
         unsigned int _columnaActual;
@@ -83,7 +86,7 @@ class Compilador
         const string CARACTER;
         const string COMENTARIO;
         const string ERROR;
-
+        ///////////////////////
 
         // Analizador Sintactico
 

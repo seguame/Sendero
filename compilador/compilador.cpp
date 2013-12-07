@@ -1,8 +1,6 @@
 #include <iostream>
 #include <sstream>
 
-
-
 #include <QDebug>
 
 #include "compilador.h"
@@ -66,7 +64,7 @@ Compilador::Compilador(string rutaArchivo) :
     REAL("real"),
     DELIMITADOR("delimitador"),
     OPER_ARITMETICA("aritmetica"),
-    ALFABETICO("alfanumerica"),
+    ALFABETICO("alfabetico"),
     OPER_BINARIO("binaria"),
     OPER_LOGICO("logico"),
     COMPARACION("comparacion"),
@@ -78,9 +76,11 @@ Compilador::Compilador(string rutaArchivo) :
     ERROR("error")
 {
     enComentarioMultilinea = false;
-    _lineaActual = 0;
+    _lineaActual = -1;
     _columnaActual = 0;
     _rutaCompletaArchivo = rutaArchivo;
+    renglon = "";
+    finDeArchivo = false;
 
     separarNombreArchivo(_rutaCompletaArchivo);
 
@@ -125,31 +125,70 @@ void Compilador::realizarMagia( void )
 
 void Compilador::hacerAnalisisSintactico()
 {
-    while(getline(compilable, renglon))
-    {
+    //while(getline(compilable, renglon))
+    //{
         //stringstream ss;
         //ss << (_lineaActual + 1);
         //qDebug() << QString((ss.str() + " " + linea).c_str());
 
-        while(_columnaActual < renglon.size())
+      //  while(_columnaActual < renglon.size())
+       // {
+        //    lexico = siguienteLexema();
+            //qDebug() << QString((token + "\t" + lex).c_str());
+
+            //lineas en blanco
+          //  if(lexico.compare("") != 0)
+            //{
+              //  salidaInformacion << (token + ",,," +  lexico) << endl;
+            //}
+        //}
+        //_lineaActual++;
+        //_columnaActual = 0;
+    //}
+    while(!finDeArchivo)
+    {
+        do
         {
             lexico = siguienteLexema();
-            //qDebug() << QString((token + "\t" + lex).c_str());
-            if(lexico.compare("") != 0)
-            {
-                salidaInformacion << (token + ",,," +  lexico) << endl;
-            }
-        }
-        _lineaActual++;
-        _columnaActual = 0;
+        }while(lexico.compare("") == 0 && !finDeArchivo);
+
+        if(!finDeArchivo)
+            salidaInformacion << (token + ",,," +  lexico) << endl;
     }
 
+}
 
+void Compilador::saltarLineasEnBlanco( void )
+{
+    while(renglon.compare("") == 0)
+    {
+        if(getline(compilable, renglon))
+        {
+            _lineaActual++;
+            _columnaActual = 0;
+        }
+        else
+        {
+            finDeArchivo = true;
+            break;
+        }
+    }
 }
 
 
 string Compilador::siguienteLexema()
 {
+
+    if(_columnaActual  >= renglon.size())
+    {
+        renglon = "";
+        saltarLineasEnBlanco();
+    }
+
+    if(finDeArchivo) return "";
+
+
+
     Entrada entrada;
     Estado estado;
     Estado estadoAnterior;
@@ -377,6 +416,7 @@ string Compilador::siguienteLexema()
     {
         throw "No se que ocurrio aqui";
     }
+
 
     return lexema;
 }
