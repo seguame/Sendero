@@ -107,7 +107,7 @@ class Compilador
         void vars (void);
         void estatutos(void);
         void comando(void);
-        void asigna(void);
+        void asigna(bool checarIdentificador);
         bool dimension(void);
         void expr(bool esOpcional);
         void opy(bool esOpcional);

@@ -856,7 +856,7 @@ void Compilador::comando (void)
             return;
 
         }
-        asigna();
+        asigna(false);
 
     }
     else
@@ -878,9 +878,18 @@ void Compilador::comando (void)
     }
 }
 
-void Compilador::asigna (void)
+void Compilador::asigna (bool checarIdentificador)
 {
     qDebug() << "asigna";
+
+    if(checarIdentificador)
+    {
+        if(token.compare(IDENTIFICADOR) != 0)
+            escribirError("Se espera un identificador para la asignacion");
+
+        leerLexema();
+    }
+
     if(dimension())
     {
         leerLexema();
@@ -1121,9 +1130,9 @@ void Compilador::desde(void)
     if(lexico.compare("desde") != 0)
         return;
 
-    //asigna();
-
     leerLexema();
+    asigna(true);
+
 
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba delimitador de zona de asignacion");
@@ -1134,8 +1143,8 @@ void Compilador::desde(void)
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba delimitador de zona de condicion");
 
-    //asigna();
     leerLexema();
+    asigna(true);
 
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba delimitador de zona de incrementos");
@@ -1312,5 +1321,63 @@ bool Compilador::constanteTipo(string tok)
 void Compilador::constante(void)
 {
     qDebug() << "constante";
+
+    if(lexico.compare("const") != 0)
+        return;
+
+    leerLexema();
+
+    if(token.compare(IDENTIFICADOR) == 0)
+    {
+        leerLexema();
+
+        if(token.compare(ASIGNACION) != 0)
+            escribirError("Se esperaba asignacion despues de identificador");
+
+        leerLexema();
+        if(constanteTipo(token))
+        {
+            //rellenar luego...
+        }
+        else
+        {
+            escribirError("Se esperaba un valor constante");
+        }
+
+    }
+    else if(lexico.compare("(") == 0)
+    {
+        do
+        {
+            leerLexema();
+
+            if(token.compare(IDENTIFICADOR) != 0)
+                escribirError("Se esperaba identificador");
+
+            leerLexema();
+
+            if(token.compare(ASIGNACION) != 0)
+                escribirError("Se esperaba asignacion despues de identificador");
+
+            leerLexema();
+            if(constanteTipo(token))
+            {
+                //rellenar luego...
+            }
+            else
+            {
+                escribirError("Se esperaba un valor constante");
+            }
+
+            leerLexema();
+        }while(lexico.compare(",") != 0);
+
+        if(lexico.compare(")") != 0)
+            escribirError("Se esperaba cierre de parentesis en la definicion de constantes");
+    }
+    else
+    {
+        escribirError("Se esperaba identificador o apertura de parentesis despues de const");
+    }
 }
 
