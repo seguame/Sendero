@@ -1074,7 +1074,20 @@ void Compilador::termino (bool terminoOpcional)
     if(constanteTipo(token))
     {
         leerLexema();
+    }
+    else if(token.compare(IDENTIFICADOR) == 0)
+    {
+        leerLexema();
+        if(lexico.compare("(") == 0)
+        {
+            leerLexema();
+            expr(false);
 
+            if(lexico.compare(")") != 0)
+                escribirError("Se esperaba ) para cerrar la expresion");
+
+            leerLexema();
+        }
     }
     else if(!terminoOpcional)
     {
