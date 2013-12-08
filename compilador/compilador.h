@@ -46,7 +46,7 @@ class Compilador
         Entrada siguienteEntrada(char caracter);
         void separarNombreArchivo(const string& str);
         void leerLexema( void );
-        string siguienteLexema( void );
+        string siguienteLexema(void);
         bool esPalabraReservada( string palabra );
         bool esConstanteLogica( string palabra );
         void hacerAnalisisSintactico( void );

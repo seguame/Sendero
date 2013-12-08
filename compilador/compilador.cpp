@@ -744,6 +744,7 @@ bool Compilador::tipo( string lex )
 
 void Compilador::bloque (bool avanzar)
 {
+    qDebug() << "bloque";
     if(avanzar)
         leerLexema();
 
@@ -761,7 +762,7 @@ void Compilador::bloque (bool avanzar)
 
 void Compilador::vars (void)
 {
-
+    qDebug() << "vars";
     if(lexico.compare("var") != 0)
         return; //los caminos de la vida, no son lo que yo esperaba (8)
 
@@ -825,12 +826,14 @@ void Compilador::vars (void)
 
 void Compilador::estatutos(void)
 {
+    qDebug() << "Estatutos";
     comando();
 }
 
 //TODO, que retorne true si existio comando
 void Compilador::comando (void)
 {
+    qDebug() << "comando";
     if(token.compare(IDENTIFICADOR) == 0)
     {
         leerLexema();
@@ -865,6 +868,7 @@ void Compilador::comando (void)
 
 void Compilador::asigna (void)
 {
+    qDebug() << "asigna";
     if(dimension())
     {
         leerLexema();
@@ -880,6 +884,7 @@ void Compilador::asigna (void)
 
 bool Compilador::dimension (void)
 {
+    qDebug() << "dimension";
     if(lexico.compare("[") != 0)
         return false; //las dimensiones de la vida, no son lo que yo esperaba (8)
     return false;
@@ -887,7 +892,7 @@ bool Compilador::dimension (void)
 
 void Compilador::expr(void)
 {
-
+    qDebug() << "expr";
 }
 
 void Compilador::opy(void)
@@ -982,6 +987,7 @@ void Compilador::constanteTipo(void)
 
 bool Compilador::lFunc_1(void)
 {
+    qDebug() << "lFunc_1";
     if(lexico.compare("(") != 0)
         return false;
 
@@ -1009,6 +1015,7 @@ void Compilador::vparam(void)
 
 void Compilador::si(void)
 {
+    qDebug() << "si";
     if(lexico.compare("si") != 0)
         return;
 
@@ -1027,6 +1034,7 @@ void Compilador::si(void)
 
 void Compilador::desde(void)
 {
+    qDebug() << "desde";
     if(lexico.compare("desde") != 0)
         return;
 
@@ -1056,7 +1064,64 @@ void Compilador::desde(void)
 
 void Compilador::caso(void)
 {
+    qDebug() << "caso";
+    if(lexico.compare("caso") != 0)
+        return;
 
+    leerLexema();
+
+    if(token.compare(IDENTIFICADOR) != 0)
+        escribirError("Se esperaba la variable de \"caso\"");
+
+    leerLexema();
+
+    if(lexico.compare("{") != 0)
+        escribirError("Se esperaba apertura de bloque de \"caso\"");
+
+    leerLexema();
+
+    do
+    {
+        if(lexico.compare("defecto") == 0)
+        {
+            leerLexema();
+            if(lexico.compare(":") != 0)
+            {
+                escribirError("Se esperaba \":\"");
+            }
+
+            leerLexema();
+            estatutos();
+
+        }
+        else if(lexico.compare("valor") == 0)
+        {
+            leerLexema();
+            if(token.compare(ENTERO) != 0)
+            {
+                escribirError("Solo se admiten constantes enteras como casos");
+            }
+
+            leerLexema();
+            if(lexico.compare(":") != 0)
+            {
+                escribirError("Se esperaba \":\"");
+            }
+
+            leerLexema();
+            estatutos();
+        }
+        else
+        {
+            escribirError("Se esperaba \"valor\" | \"defecto\" en el bloque de caso");
+        }
+    }while(lexico.compare("valor") == 0 || lexico.compare("defecto") == 0);
+
+    leerLexema();
+    if(lexico.compare("}") != 0)
+    {
+        escribirError("Se esperaba cierre de bloque");
+    }
 }
 
 void Compilador::regresa (void)
