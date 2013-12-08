@@ -782,6 +782,7 @@ bool Compilador::vars (bool darAvanceAlFinal)
     if(token.compare(IDENTIFICADOR) == 0)
     {
         leerLexema();
+        dimension();
 
         if(!tipo(lexico))
             escribirError("Se esperaba definicion de tipo");
@@ -803,13 +804,17 @@ bool Compilador::vars (bool darAvanceAlFinal)
                         leerLexema();
                 }
 
-                if(token.compare(IDENTIFICADOR) != 0)
-                    escribirError("Se esperaba identificador de variable");
-
                 if(primeraVuelta)
                     primeraVuelta = false;
 
+                if(token.compare(IDENTIFICADOR) != 0)
+                    escribirError("Se esperaba identificador de variable");
+
                 leerLexema();
+                dimension();
+
+
+
 
             }while(lexico.compare(",") == 0);
 
@@ -907,10 +912,7 @@ void Compilador::asigna (bool checarIdentificador)
         leerLexema();
     }
 
-    if(dimension())
-    {
-        leerLexema();
-    }
+    dimension();
 
     if(lexico.compare(":=") != 0)
     {
@@ -920,18 +922,23 @@ void Compilador::asigna (bool checarIdentificador)
     expr(false);
 }
 
-bool Compilador::dimension (void)
+void Compilador::dimension (void)
 {
     qDebug() << "dimension";
     if(lexico.compare("[") != 0)
-        return false; //las dimensiones de la vida, no son lo que yo esperaba (8)
+        return ; //las dimensiones de la vida, no son lo que yo esperaba (8)
 
-    leerLexema();
-    expr(false);
+    do
+    {
+        leerLexema();
+        expr(false);
 
-    if(lexico.compare("]") != 0)
-        escribirError("Se esperaba cierre de corchetes");
-    return true;
+        if(lexico.compare("]") != 0)
+            escribirError("Se esperaba cierre de corchetes");
+
+        leerLexema();
+    }while(lexico.compare("[") == 0);
+
 }
 
 void Compilador::expr(bool terminoOpcional)
@@ -1290,10 +1297,7 @@ bool Compilador::lee(void)
         escribirError("Se esperaba un identificador");
 
     leerLexema();
-    if(dimension())
-    {
-        leerLexema();
-    }
+    dimension();
 
     if(lexico.compare(")") != 0)
         escribirError("Se esperaba cierre de parentesis");
