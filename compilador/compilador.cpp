@@ -850,12 +850,14 @@ void Compilador::comando (void)
         //que llegó es "con" o "fmt"
         leerLexema();
 
-        if(!lFunc_1())
+        if(lFunc_1())
         {
-            asigna();
-        }
+            leerLexema();
+            return;
 
-        leerLexema();
+        }
+        asigna();
+
     }
     else
     {
@@ -889,7 +891,7 @@ void Compilador::asigna (void)
             escribirError("Se esperaba operador de asignacion \":=\"");
     }
     leerLexema();
-    //expr();
+    expr(false);
 }
 
 bool Compilador::dimension (void)
@@ -1116,8 +1118,8 @@ void Compilador::desde(void)
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba delimitador de zona de asignacion");
 
-    //expr();
     leerLexema();
+    expr(true);
 
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba delimitador de zona de condicion");
@@ -1277,8 +1279,8 @@ bool Compilador::imprime(void)
 
     do
     {
-        //expr();
         leerLexema();
+        expr(false);
     }while(lexico.compare(",") == 0);
 
     if(lexico.compare(")") != 0)
