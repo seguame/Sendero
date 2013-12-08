@@ -588,12 +588,9 @@ void Compilador::programa(void)
     {
         leerLexema();
 
-        if(lexico.compare("importar") == 0)
-            importar();
-        else if(lexico.compare("funcion") == 0)
-            funcion();
-        else if(!finDeArchivo)
-            escribirError("Se espera funcion o importe de paquete");
+        importar();
+        funcion();
+        constante();
 
     }while(!finDeArchivo);
 
@@ -603,6 +600,10 @@ void Compilador::programa(void)
 
 void Compilador::importar(void)
 {
+    if(lexico.compare("importar") != 0)
+        return;
+
+
     bool valido = false;
     leerLexema();
 
@@ -639,6 +640,10 @@ void Compilador::importar(void)
 //TODO: chequeo de que si la funcion retorna tipo, este sea valido
 void Compilador::funcion(void)
 {
+    if(lexico.compare("funcion") != 0)
+        return;
+
+
     leerLexema();
 
     if(token.compare(IDENTIFICADOR) != 0)
@@ -1314,6 +1319,8 @@ bool Compilador::constanteTipo(string tok)
 {
     return (tok.compare(REAL) == 0 ||
             tok.compare(ENTERO) == 0 ||
+            tok.compare(HEXADECIMAL) == 0 ||
+            tok.compare(OCTAL) == 0 ||
             tok.compare(CONST_LOGICA) == 0 ||
             tok.compare(ALFABETICO) == 0);
 }
@@ -1347,10 +1354,10 @@ void Compilador::constante(void)
     }
     else if(lexico.compare("(") == 0)
     {
+
         do
         {
             leerLexema();
-
             if(token.compare(IDENTIFICADOR) != 0)
                 escribirError("Se esperaba identificador");
 
@@ -1370,7 +1377,7 @@ void Compilador::constante(void)
             }
 
             leerLexema();
-        }while(lexico.compare(",") != 0);
+        }while(lexico.compare(",") == 0);
 
         if(lexico.compare(")") != 0)
             escribirError("Se esperaba cierre de parentesis en la definicion de constantes");
