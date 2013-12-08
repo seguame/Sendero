@@ -172,7 +172,7 @@ void Compilador::leerLexema(void)
     {
         lexico = siguienteLexema();
         escribirLog();
-    }while(token.compare(COMENTARIO) == 0);
+    }while(token.compare(COMENTARIO) == 0 || lexico.compare("") == 0 && !finDeArchivo);
 
 }
 
