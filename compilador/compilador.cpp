@@ -172,7 +172,7 @@ void Compilador::leerLexema(void)
     {
         lexico = siguienteLexema();
         escribirLog();
-    }while(token.compare(COMENTARIO) == 0 || lexico.compare("") == 0 && !finDeArchivo);
+    }while(((token.compare(COMENTARIO) == 0) || (lexico.compare("") == 0)) && !finDeArchivo);
 
 }
 
@@ -588,11 +588,14 @@ void Compilador::programa(void)
     {
         leerLexema();
 
-        if(!importar())
-            if(!funcion())
-                if(!constante())
-                    if(!finDeArchivo)
-                        escribirError("Se esperaba definicion de constantes, importaciones, o funciones");
+        if(!importar() &&
+           !funcion() &&
+           !constante() &&
+           !vars(false) &&
+           !finDeArchivo)
+        {
+            escribirError("Se esperaba definicion de constantes, importaciones, o funciones");
+        }
 
     }while(!finDeArchivo);
 
@@ -761,18 +764,18 @@ void Compilador::bloque (bool avanzar)
 
     leerLexema();
 
-    vars();
+    vars(true);
     estatutos();
 
     if(lexico.compare("}") != 0)
         escribirError("Se esperaba cierre de bloque }");
 }
 
-void Compilador::vars (void)
+bool Compilador::vars (bool darAvanceAlFinal)
 {
     qDebug() << "vars";
     if(lexico.compare("var") != 0)
-        return; //los caminos de la vida, no son lo que yo esperaba (8)
+        return false; //los caminos de la vida, no son lo que yo esperaba (8)
 
     leerLexema();
 
@@ -829,7 +832,10 @@ void Compilador::vars (void)
         escribirError("Se esperaba un identificador o grupo de estos");
     }
 
-    leerLexema();
+    if(darAvanceAlFinal)
+        leerLexema();
+
+    return true;
 }
 
 void Compilador::estatutos(void)

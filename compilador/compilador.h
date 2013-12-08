@@ -104,7 +104,7 @@ class Compilador
         bool pars();
         bool tipo(string lex);
         void bloque(bool avanzar);
-        void vars (void);
+        bool vars (bool darAvanceAlFinal);
         void estatutos(void);
         void comando(void);
         void asigna(bool checarIdentificador);
