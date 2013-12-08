@@ -588,9 +588,11 @@ void Compilador::programa(void)
     {
         leerLexema();
 
-        importar();
-        funcion();
-        constante();
+        if(!importar())
+            if(!funcion())
+                if(!constante())
+                    if(!finDeArchivo)
+                        escribirError("Se esperaba definicion de constantes, importaciones, o funciones");
 
     }while(!finDeArchivo);
 
@@ -598,10 +600,10 @@ void Compilador::programa(void)
         escribirError("No se encontro la funcion \"principal\"");
 }
 
-void Compilador::importar(void)
+bool Compilador::importar(void)
 {
     if(lexico.compare("importar") != 0)
-        return;
+        return false;
 
 
     bool valido = false;
@@ -634,14 +636,16 @@ void Compilador::importar(void)
     {
         escribirError("Se esperaba constantes alfabetica");
     }
+
+    return true;
 }
 
 
 //TODO: chequeo de que si la funcion retorna tipo, este sea valido
-void Compilador::funcion(void)
+bool Compilador::funcion(void)
 {
     if(lexico.compare("funcion") != 0)
-        return;
+        return false;
 
 
     leerLexema();
@@ -673,6 +677,8 @@ void Compilador::funcion(void)
     {
         bloque(false);
     }
+
+    return true;
 }
 
 void Compilador::params(void)
@@ -1325,12 +1331,12 @@ bool Compilador::constanteTipo(string tok)
             tok.compare(ALFABETICO) == 0);
 }
 
-void Compilador::constante(void)
+bool Compilador::constante(void)
 {
     qDebug() << "constante";
 
     if(lexico.compare("const") != 0)
-        return;
+        return false;
 
     leerLexema();
 
@@ -1386,5 +1392,7 @@ void Compilador::constante(void)
     {
         escribirError("Se esperaba identificador o apertura de parentesis despues de const");
     }
+
+    return true;
 }
 

@@ -98,8 +98,8 @@ class Compilador
         string lexico;
 
         void programa(void);
-        void importar(void);
-        void funcion(void);
+        bool importar(void);
+        bool funcion(void);
         void params(void);
         bool pars();
         bool tipo(string lex);
@@ -128,7 +128,7 @@ class Compilador
         void regresa (void);
         bool lee(void);
         bool imprime(void);
-        void constante(void);
+        bool constante(void);
 };
 
 #endif // COMPILADOR_H
