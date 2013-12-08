@@ -890,11 +890,11 @@ void Compilador::comando (void)
 
         if(lexico.compare("interrumpe") == 0)
         {
-
+            leerLexema();
         }
         else if(lexico.compare("continua") == 0)
         {
-
+            leerLexema();
         }
 
     }
