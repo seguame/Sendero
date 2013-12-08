@@ -1045,10 +1045,10 @@ void Compilador::signo (bool terminoOpcional)
 void Compilador::termino (bool terminoOpcional)
 {
     qDebug() << "termino";
-
     if(constanteTipo(token))
     {
         leerLexema();
+
     }
     else if(!terminoOpcional)
     {
@@ -1063,13 +1063,12 @@ bool Compilador::lFunc_1(void)
     if(lexico.compare("(") != 0)
         return false;
 
-    //expr();
+    vparam();
 
-    leerLexema();
 
     if(lexico.compare(")") != 0)
     {
-        escribirError("Se esperaba cierre de parentesis");
+        escribirError("Se esperaban parametros o cierre de parentesis de funcion");
     }
 
     return true;
@@ -1082,7 +1081,18 @@ void Compilador::lFunc_2(void)
 
 void Compilador::vparam(void)
 {
+    bool opcional = true;
+    do
+    {
+        if(lexico.compare(",") == 0)
+        {
+            opcional = false;
+        }
 
+        leerLexema();
+        expr(opcional);
+
+    }while(lexico.compare(",") == 0);
 }
 
 void Compilador::si(void)
