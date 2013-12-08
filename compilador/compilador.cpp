@@ -108,7 +108,6 @@ void Compilador::realizarMagia(void)
 
     hacerAnalisisSintactico();
 
-
     //////////////////////////////
 
     if(enComentarioMultilinea) //se acabo el archivo y no se cerro el comentario
@@ -122,6 +121,7 @@ void Compilador::realizarMagia(void)
     salidaInformacion.close();
     salidaErrores.close();
 }
+
 
 void Compilador::hacerAnalisisSintactico(void)
 {
@@ -562,14 +562,11 @@ string Compilador::getNombreArchivo( void )
 
 
 
-
 //==============================================================
 //
 //                PARSER !!!!!!!!!!!!!!
 //
 //==============================================================
-
-
 
 void Compilador::programa(void)
 {
@@ -863,7 +860,6 @@ void Compilador::comando (void)
         }
 
     }
-
 }
 
 void Compilador::asigna (void)
@@ -1126,7 +1122,13 @@ void Compilador::caso(void)
 
 void Compilador::regresa (void)
 {
+    qDebug() << "regresa";
+    if(lexico.compare("regresa") != 0)
+        return;
 
+    expr();
+
+    leerLexema();
 }
 
 void Compilador::lee(void)
