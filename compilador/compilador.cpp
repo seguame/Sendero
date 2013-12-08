@@ -1027,8 +1027,32 @@ void Compilador::si(void)
 
 void Compilador::desde(void)
 {
+    if(lexico.compare("desde") != 0)
+        return;
 
+    //asigna();
+
+    leerLexema();
+
+    if(lexico.compare(";") != 0)
+        escribirError("Se esperaba delimitador de zona de asignacion");
+
+    //expr();
+    leerLexema();
+
+    if(lexico.compare(";") != 0)
+        escribirError("Se esperaba delimitador de zona de condicion");
+
+    //asigna();
+    leerLexema();
+
+    if(lexico.compare(";") != 0)
+        escribirError("Se esperaba delimitador de zona de incrementos");
+
+    bloque(true);
+    leerLexema();
 }
+
 
 void Compilador::caso(void)
 {
