@@ -66,7 +66,7 @@ Compilador::Compilador(string rutaArchivo) :
     OPER_ARITMETICA("aritmetica"),
     ALFABETICO("alfabetico"),
     OPER_BINARIO("binaria"),
-    OPER_LOGICO("logico"),
+    OPER_LOGICO("operador logico"),
     COMPARACION("comparacion"),
     ASIGNACION("asignacion"),
     RESERVADA("reservada"),
@@ -162,7 +162,7 @@ void Compilador::escribirError(string error)
 void Compilador::escribirLog(void)
 {
 
-    if(lexico.compare("") != 0 && !finDeArchivo)
+    if(lexico.compare("") != 0 && !finDeArchivo && !token.compare(COMENTARIO) == 0)
         salidaInformacion << (token + ",,," +  lexico) << endl;
 }
 
@@ -889,7 +889,7 @@ void Compilador::asigna (void)
             escribirError("Se esperaba operador de asignacion \":=\"");
     }
     leerLexema();
-    expr();
+    //expr();
 }
 
 bool Compilador::dimension (void)
@@ -900,100 +900,160 @@ bool Compilador::dimension (void)
     return false;
 }
 
-void Compilador::expr(void)
+void Compilador::expr(bool terminoOpcional)
 {
     qDebug() << "expr";
-}
 
-void Compilador::opy(void)
-{
-
-}
-
-void Compilador::opno( void )
-{
-
-}
-
-void Compilador::oprel( void )
-{
-
-}
-
-void Compilador::suma( void )
-{
-
-   /* bool hay_operacion = false;
-    string siguiente;
-    lexico = siguienteLexema();
+    string actual;
 
     do
     {
-        if((lexico.compare("+") == 0 || lexico.compare("-") == 0))
+        if(lexico.compare("||") == 0)
         {
-            siguiente = lexico;
-            hay_operacion = true;
-            lex = lexico();
+            actual = lexico;
+            leerLexema();
         }
 
-        multiplicacionDivisionModulo();
+        opy(terminoOpcional);
 
-        if (hay_operacion)
+    }while(lexico.compare("||") == 0);
+}
+
+void Compilador::opy(bool terminoOpcional)
+{
+    qDebug() << "opy";
+    string actual;
+    do
+    {
+        if(lexico.compare("&&") == 0)
         {
-            hay_operacion = false;
-
-            hacerMagiaDeTresDirecciones(siguiente);
-
-            operador_derecho = pila_valores->top();
-            pila_valores->pop();
-
-            operador_izquierdo = pila_valores->top();
-            pila_valores->pop();
-
-            if(siguiente.compare("+") == 0)
-            {
-                resultado = operador_izquierdo + operador_derecho;
-            }
-            else if (siguiente.compare("-") == 0)
-            {
-                resultado = operador_izquierdo - operador_derecho;
-            }
-            else
-            {
-                cerr << "Algo fue mal en el analisis: Evaluador::sumaResta" << endl;
-                exit(1);
-            }
-
-            pila_valores->push(resultado);
-
+            actual = lexico;
+            leerLexema();
         }
-    } while (lex.compare("+") == 0 || lex.compare("-") == 0);*/
+
+        opno(terminoOpcional);
+
+    }while(lexico.compare("&&") == 0);
 }
 
-void Compilador::multi(void)
+void Compilador::opno(bool terminoOpcional)
+{
+    qDebug() << "opno";
+    string actual;
+
+    if(lexico.compare("!") == 0)
+    {
+        actual = lexico;
+        leerLexema();
+    }
+
+    oprel(terminoOpcional);
+}
+
+void Compilador::oprel(bool terminoOpcional)
 {
 
+    qDebug() << "oprel";
+    string actual;
+    do
+    {
+        if(token.compare(COMPARACION) == 0)
+        {
+            qDebug() << "Es comparacion";
+            actual = lexico;
+            leerLexema();
+        }
+
+        suma(terminoOpcional);
+
+    }while(token.compare(COMPARACION) == 0);
 }
 
-void Compilador::expo (void)
+void Compilador::suma(bool terminoOpcional)
 {
+    qDebug() << "suma";
+    string actual;
 
+    do
+    {
+        if(lexico.compare("+") == 0 || lexico.compare("-") == 0)
+        {
+            actual = lexico;
+            leerLexema();
+        }
+
+        multi(terminoOpcional);
+
+    }while(lexico.compare("+") == 0 || lexico.compare("-") == 0);
 }
 
-void Compilador::signo (void)
+void Compilador::multi(bool terminoOpcional)
 {
+    qDebug() << "multi";
 
+    string actual;
+
+    do
+    {
+        if(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0)
+        {
+            actual = lexico;
+            leerLexema();
+        }
+
+        expo(terminoOpcional);
+
+    }while(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0);
 }
 
-void Compilador::termino (void)
+void Compilador::expo (bool terminoOpcional)
 {
+    qDebug() << "expo";
 
+    string actual;
+
+    do
+    {
+        if(lexico.compare("^") == 0)
+        {
+            actual = lexico;
+            leerLexema();
+        }
+
+        signo(terminoOpcional);
+
+    }while(lexico.compare("^") == 0);
 }
 
-void Compilador::constanteTipo(void)
+void Compilador::signo (bool terminoOpcional)
 {
+    qDebug() << "signo";
 
+    string actual;
+
+    if(lexico.compare("-") == 0)
+    {
+        actual = lexico;
+        leerLexema();
+    }
+
+    termino(terminoOpcional);
 }
+
+void Compilador::termino (bool terminoOpcional)
+{
+    qDebug() << "termino";
+
+    if(constanteTipo(token))
+    {
+        leerLexema();
+    }
+    else if(!terminoOpcional)
+    {
+        escribirError("Se esperaba un termino");
+    }
+}
+
 
 bool Compilador::lFunc_1(void)
 {
@@ -1001,7 +1061,7 @@ bool Compilador::lFunc_1(void)
     if(lexico.compare("(") != 0)
         return false;
 
-    expr();
+    //expr();
 
     leerLexema();
 
@@ -1029,9 +1089,10 @@ void Compilador::si(void)
     if(lexico.compare("si") != 0)
         return;
 
-    expr();
+    leerLexema();
+    expr(false);
 
-    bloque(true);
+    bloque(false);
 
     leerLexema();
 
@@ -1130,7 +1191,7 @@ void Compilador::caso(void)
     leerLexema();
     if(lexico.compare("}") != 0)
     {
-        escribirError("Se esperaba cierre de bloque");
+        escribirError("Se esperaba cierre de bloque de casos");
     }
 }
 
@@ -1140,9 +1201,9 @@ void Compilador::regresa (void)
     if(lexico.compare("regresa") != 0)
         return;
 
-    expr();
-
     leerLexema();
+    expr(true);
+
 }
 
 bool Compilador::lee(void)
@@ -1216,7 +1277,7 @@ bool Compilador::imprime(void)
 
     do
     {
-        expr();
+        //expr();
         leerLexema();
     }while(lexico.compare(",") == 0);
 
@@ -1226,6 +1287,14 @@ bool Compilador::imprime(void)
     leerLexema();
     return true;
 
+}
+
+bool Compilador::constanteTipo(string tok)
+{
+    return (tok.compare(REAL) == 0 ||
+            tok.compare(ENTERO) == 0 ||
+            tok.compare(CONST_LOGICA) == 0 ||
+            tok.compare(ALFABETICO) == 0);
 }
 
 void Compilador::constante(void)
