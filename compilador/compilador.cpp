@@ -919,7 +919,13 @@ bool Compilador::dimension (void)
     qDebug() << "dimension";
     if(lexico.compare("[") != 0)
         return false; //las dimensiones de la vida, no son lo que yo esperaba (8)
-    return false;
+
+    leerLexema();
+    expr(false);
+
+    if(lexico.compare("]") != 0)
+        escribirError("Se esperaba cierre de corchetes");
+    return true;
 }
 
 void Compilador::expr(bool terminoOpcional)
