@@ -1188,7 +1188,44 @@ bool Compilador::lee(void)
 bool Compilador::imprime(void)
 {
     qDebug() << "imprime";
-    return false;
+    if(lexico.compare("fmt") != 0)
+        return false;
+
+    leerLexema();
+
+    if(lexico.compare(".") != 0)
+        escribirError("Se esperaba accesor \".\"");
+
+    leerLexema();
+
+    if(lexico.compare("Imprime") == 0)
+    {
+    }
+    else if(lexico.compare("Imprimenl") == 0)
+    {
+    }
+    else
+    {
+        escribirError("metodo de \"fmt\" desconocido");
+    }
+
+    leerLexema();
+
+    if(lexico.compare("(") != 0)
+        escribirError("Se esperaba apertura de parentesis");
+
+    do
+    {
+        expr();
+        leerLexema();
+    }while(lexico.compare(",") == 0);
+
+    if(lexico.compare(")") != 0)
+        escribirError("Se esperaba cierre de parentesis");
+
+    leerLexema();
+    return true;
+
 }
 
 void Compilador::constante(void)
