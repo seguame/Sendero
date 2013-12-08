@@ -833,12 +833,28 @@ void Compilador::comando (void)
     qDebug() << "comando";
     if(token.compare(IDENTIFICADOR) == 0)
     {
+        qDebug() << "inicia con identificador";
+
+        if(!lee())
+        {
+            if(imprime())
+                return;
+        }
+        else
+        {
+            return;
+        }
+
+
+        //Antes no hago la lectura para checar si el identificador
+        //que llegó es "con" o "fmt"
         leerLexema();
-        //separados del resto porque ambos inician con un identificador
+
         if(!lFunc_1())
         {
             asigna();
         }
+
         leerLexema();
     }
     else
@@ -847,8 +863,6 @@ void Compilador::comando (void)
         desde();
         caso();
         regresa();
-        lee();
-        imprime();
 
         if(lexico.compare("interrumpe") == 0)
         {
@@ -1131,18 +1145,54 @@ void Compilador::regresa (void)
     leerLexema();
 }
 
-void Compilador::lee(void)
+bool Compilador::lee(void)
 {
+    qDebug() << "lee";
+    if(lexico.compare("con") != 0)
+        return false;
 
+    leerLexema();
+
+    if(lexico.compare(".") != 0)
+        escribirError("Se esperaba accesor \".\"");
+
+    leerLexema();
+
+    if(lexico.compare("Lee") != 0)
+        escribirError("metodo de \"con\" desconocido");
+
+    leerLexema();
+
+    if(lexico.compare("(") != 0)
+        escribirError("Se esperaba apertura de parentesis");
+
+    leerLexema();
+
+    if(token.compare(IDENTIFICADOR) != 0)
+        escribirError("Se esperaba un identificador");
+
+    leerLexema();
+    if(dimension())
+    {
+        leerLexema();
+    }
+
+    if(lexico.compare(")") != 0)
+        escribirError("Se esperaba cierre de parentesis");
+
+    leerLexema();
+
+    return true;
 }
 
-void Compilador::imprime(void)
+bool Compilador::imprime(void)
 {
-
+    qDebug() << "imprime";
+    return false;
 }
 
 void Compilador::constante(void)
 {
-
+    qDebug() << "constante";
 }
 

@@ -126,8 +126,8 @@ class Compilador
         void desde(void);
         void caso(void);
         void regresa (void);
-        void lee(void);
-        void imprime(void);
+        bool lee(void);
+        bool imprime(void);
         void constante(void);
 };
 
