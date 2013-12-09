@@ -857,33 +857,59 @@ void Compilador::comando (void)
     {
         qDebug() << "inicia con identificador";
 
-        if(!lee())
+        if(lexico.compare("con") == 0)
         {
-            if(imprime())
-                return;
+            lee();
+        }
+        else if(lexico.compare("fmt") == 0)
+        {
+            imprime();
         }
         else
         {
-            return;
-        }
-
-
-        //Antes no hago la lectura para checar si el identificador
-        //que llegó es "con" o "fmt"
-        leerLexema();
-
-        if(lFunc_1())
-        {
+            //Antes no hago la lectura para checar si el identificador
+            //que llegó es "con" o "fmt"
             leerLexema();
-            return;
 
+            if(lexico.compare("(") == 0)
+            {
+                lFunc_1();
+                leerLexema();
+            }
+            else
+            {
+                asigna(false);
+            }
         }
-        asigna(false);
-
     }
     else
     {
-        si();
+
+        if(lexico.compare("si") == 0)
+        {
+            si();
+        }
+        else if(lexico.compare("desde") == 0)
+        {
+            desde();
+        }
+        else if(lexico.compare("caso") == 0)
+        {
+            caso();
+        }
+        else if(lexico.compare("regresa") == 0)
+        {
+            regresa();
+        }
+        else if(lexico.compare("interrumpe") == 0)
+        {
+            leerLexema();
+        }
+        else if(lexico.compare("continua") == 0)
+        {
+            leerLexema();
+        }
+        /*si();
         desde();
         caso();
         regresa();
@@ -896,7 +922,7 @@ void Compilador::comando (void)
         {
             leerLexema();
         }
-
+    */
     }
 }
 
@@ -1112,8 +1138,6 @@ void Compilador::termino (bool terminoOpcional)
 bool Compilador::lFunc_1(void)
 {
     qDebug() << "lFunc_1";
-    if(lexico.compare("(") != 0)
-        return false;
 
     vparam();
 
@@ -1150,8 +1174,6 @@ void Compilador::vparam(void)
 bool Compilador::si(void)
 {
     qDebug() << "si";
-    if(lexico.compare("si") != 0)
-        return false;
 
     leerLexema();
     expr(false);
@@ -1172,8 +1194,6 @@ bool Compilador::si(void)
 bool Compilador::desde(void)
 {
     qDebug() << "desde";
-    if(lexico.compare("desde") != 0)
-        return false;
 
     leerLexema();
     asigna(true);
@@ -1204,8 +1224,6 @@ bool Compilador::desde(void)
 bool Compilador::caso(void)
 {
     qDebug() << "caso";
-    if(lexico.compare("caso") != 0)
-        return false;
 
     leerLexema();
 
@@ -1268,8 +1286,6 @@ bool Compilador::caso(void)
 bool Compilador::regresa (void)
 {
     qDebug() << "regresa";
-    if(lexico.compare("regresa") != 0)
-        return false;
 
     leerLexema();
     expr(true);
@@ -1280,8 +1296,6 @@ bool Compilador::regresa (void)
 bool Compilador::lee(void)
 {
     qDebug() << "lee";
-    if(lexico.compare("con") != 0)
-        return false;
 
     leerLexema();
 
@@ -1317,8 +1331,6 @@ bool Compilador::lee(void)
 bool Compilador::imprime(void)
 {
     qDebug() << "imprime";
-    if(lexico.compare("fmt") != 0)
-        return false;
 
     leerLexema();
 
