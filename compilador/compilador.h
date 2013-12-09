@@ -122,10 +122,10 @@ class Compilador
         bool lFunc_1(void);
         void lFunc_2(void);
         void vparam(void);
-        void si(void);
-        void desde(void);
-        void caso(void);
-        void regresa (void);
+        bool si(void);
+        bool desde(void);
+        bool caso(void);
+        bool regresa (void);
         bool lee(void);
         bool imprime(void);
         bool constante(void);

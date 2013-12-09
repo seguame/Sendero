@@ -1147,11 +1147,11 @@ void Compilador::vparam(void)
     }while(lexico.compare(",") == 0);
 }
 
-void Compilador::si(void)
+bool Compilador::si(void)
 {
     qDebug() << "si";
     if(lexico.compare("si") != 0)
-        return;
+        return false;
 
     leerLexema();
     expr(false);
@@ -1165,13 +1165,15 @@ void Compilador::si(void)
         bloque(true);
         leerLexema();
     }
+
+    return true;
 }
 
-void Compilador::desde(void)
+bool Compilador::desde(void)
 {
     qDebug() << "desde";
     if(lexico.compare("desde") != 0)
-        return;
+        return false;
 
     leerLexema();
     asigna(true);
@@ -1194,14 +1196,16 @@ void Compilador::desde(void)
 
     bloque(true);
     leerLexema();
+
+    return true;
 }
 
 
-void Compilador::caso(void)
+bool Compilador::caso(void)
 {
     qDebug() << "caso";
     if(lexico.compare("caso") != 0)
-        return;
+        return false;
 
     leerLexema();
 
@@ -1257,17 +1261,20 @@ void Compilador::caso(void)
     {
         escribirError("Se esperaba cierre de bloque de casos");
     }
+
+    return true;
 }
 
-void Compilador::regresa (void)
+bool Compilador::regresa (void)
 {
     qDebug() << "regresa";
     if(lexico.compare("regresa") != 0)
-        return;
+        return false;
 
     leerLexema();
     expr(true);
 
+    return true;
 }
 
 bool Compilador::lee(void)
