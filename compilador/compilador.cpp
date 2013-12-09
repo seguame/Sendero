@@ -846,10 +846,19 @@ bool Compilador::vars (bool darAvanceAlFinal)
 void Compilador::estatutos(void)
 {
     qDebug() << "Estatutos";
-    comando();
+
+    do
+    {
+        if(lexico.compare(";") == 0)
+            leerLexema();
+
+        comando();
+
+    }while(lexico.compare(";") == 0);
 }
 
-//TODO, que retorne true si existio comando
+//TODO, que retorne true si existio comando que debe ser delimitado con
+// los puntos y comas, por ejemplo, las que no terminan con bloques
 void Compilador::comando (void)
 {
     qDebug() << "comando";
@@ -909,20 +918,6 @@ void Compilador::comando (void)
         {
             leerLexema();
         }
-        /*si();
-        desde();
-        caso();
-        regresa();
-
-        if(lexico.compare("interrumpe") == 0)
-        {
-            leerLexema();
-        }
-        else if(lexico.compare("continua") == 0)
-        {
-            leerLexema();
-        }
-    */
     }
 }
 
@@ -966,174 +961,6 @@ void Compilador::dimension (void)
     }while(lexico.compare("[") == 0);
 
 }
-
-void Compilador::expr(bool terminoOpcional)
-{
-    qDebug() << "expr";
-
-    string actual;
-
-    do
-    {
-        if(lexico.compare("||") == 0)
-        {
-            actual = lexico;
-            leerLexema();
-        }
-
-        opy(terminoOpcional);
-
-    }while(lexico.compare("||") == 0);
-}
-
-void Compilador::opy(bool terminoOpcional)
-{
-    qDebug() << "opy";
-    string actual;
-    do
-    {
-        if(lexico.compare("&&") == 0)
-        {
-            actual = lexico;
-            leerLexema();
-        }
-
-        opno(terminoOpcional);
-
-    }while(lexico.compare("&&") == 0);
-}
-
-void Compilador::opno(bool terminoOpcional)
-{
-    qDebug() << "opno";
-    string actual;
-
-    if(lexico.compare("!") == 0)
-    {
-        actual = lexico;
-        leerLexema();
-    }
-
-    oprel(terminoOpcional);
-}
-
-void Compilador::oprel(bool terminoOpcional)
-{
-
-    qDebug() << "oprel";
-    string actual;
-    do
-    {
-        if(token.compare(COMPARACION) == 0)
-        {
-            qDebug() << "Es comparacion";
-            actual = lexico;
-            leerLexema();
-        }
-
-        suma(terminoOpcional);
-
-    }while(token.compare(COMPARACION) == 0);
-}
-
-void Compilador::suma(bool terminoOpcional)
-{
-    qDebug() << "suma";
-    string actual;
-
-    do
-    {
-        if(lexico.compare("+") == 0 || lexico.compare("-") == 0)
-        {
-            actual = lexico;
-            leerLexema();
-        }
-
-        multi(terminoOpcional);
-
-    }while(lexico.compare("+") == 0 || lexico.compare("-") == 0);
-}
-
-void Compilador::multi(bool terminoOpcional)
-{
-    qDebug() << "multi";
-
-    string actual;
-
-    do
-    {
-        if(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0)
-        {
-            actual = lexico;
-            leerLexema();
-        }
-
-        expo(terminoOpcional);
-
-    }while(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0);
-}
-
-void Compilador::expo (bool terminoOpcional)
-{
-    qDebug() << "expo";
-
-    string actual;
-
-    do
-    {
-        if(lexico.compare("^") == 0)
-        {
-            actual = lexico;
-            leerLexema();
-        }
-
-        signo(terminoOpcional);
-
-    }while(lexico.compare("^") == 0);
-}
-
-void Compilador::signo (bool terminoOpcional)
-{
-    qDebug() << "signo";
-
-    string actual;
-
-    if(lexico.compare("-") == 0)
-    {
-        actual = lexico;
-        leerLexema();
-    }
-
-    termino(terminoOpcional);
-}
-
-void Compilador::termino (bool terminoOpcional)
-{
-    qDebug() << "termino";
-    if(constanteTipo(token))
-    {
-        leerLexema();
-    }
-    else if(token.compare(IDENTIFICADOR) == 0)
-    {
-        leerLexema();
-        if(lexico.compare("(") == 0)
-        {
-            leerLexema();
-            expr(false);
-
-            if(lexico.compare(")") != 0)
-                escribirError("Se esperaba ) para cerrar la expresion");
-
-            leerLexema();
-        }
-    }
-    else if(!terminoOpcional)
-    {
-        escribirError("Se esperaba un termino");
-    }
-}
-
 
 bool Compilador::lFunc_1(void)
 {
@@ -1196,11 +1023,24 @@ bool Compilador::desde(void)
     qDebug() << "desde";
 
     leerLexema();
-    asigna(true);
+
+    do
+    {
+        if(lexico.compare(",") == 0)
+            leerLexema();
+
+        //por si llega estando el cuerpo vacio
+        if(lexico.compare(";") == 0)
+            break;
+
+        asigna(true);
+
+    }while(lexico.compare(",") == 0);
+
 
 
     if(lexico.compare(";") != 0)
-        escribirError("Se esperaba delimitador de zona de asignacion");
+        escribirError("Se esperaba asignaciones separadas por coma o un delimitador de zona de asignacion");
 
     leerLexema();
     expr(true);
@@ -1209,12 +1049,23 @@ bool Compilador::desde(void)
         escribirError("Se esperaba delimitador de zona de condicion");
 
     leerLexema();
-    asigna(true);
+    do
+    {
+        if(lexico.compare(",") == 0)
+            leerLexema();
 
-    if(lexico.compare(";") != 0)
-        escribirError("Se esperaba delimitador de zona de incrementos");
+        //por si llega estando el cuerpo vacio
+        if(lexico.compare("{") == 0)
+            break;
 
-    bloque(true);
+        asigna(true);
+
+    }while(lexico.compare(",") == 0);
+
+    //if(lexico.compare(";") != 0)
+    //    escribirError("Se esperaba delimitador de zona de incrementos");
+
+    bloque(false);
     leerLexema();
 
     return true;
@@ -1444,3 +1295,171 @@ bool Compilador::constante(void)
     return true;
 }
 
+
+void Compilador::expr(bool terminoOpcional)
+{
+    qDebug() << "expr";
+
+    string actual;
+
+    do
+    {
+        if(lexico.compare("||") == 0)
+        {
+            actual = lexico;
+            leerLexema();
+        }
+
+        opy(terminoOpcional);
+
+    }while(lexico.compare("||") == 0);
+}
+
+void Compilador::opy(bool terminoOpcional)
+{
+    qDebug() << "opy";
+    string actual;
+    do
+    {
+        if(lexico.compare("&&") == 0)
+        {
+            actual = lexico;
+            leerLexema();
+        }
+
+        opno(terminoOpcional);
+
+    }while(lexico.compare("&&") == 0);
+}
+
+void Compilador::opno(bool terminoOpcional)
+{
+    qDebug() << "opno";
+    string actual;
+
+    if(lexico.compare("!") == 0)
+    {
+        actual = lexico;
+        leerLexema();
+    }
+
+    oprel(terminoOpcional);
+}
+
+void Compilador::oprel(bool terminoOpcional)
+{
+
+    qDebug() << "oprel";
+    string actual;
+    do
+    {
+        if(token.compare(COMPARACION) == 0)
+        {
+            qDebug() << "Es comparacion";
+            actual = lexico;
+            leerLexema();
+            terminoOpcional = false;
+        }
+
+        suma(terminoOpcional);
+
+    }while(token.compare(COMPARACION) == 0);
+}
+
+void Compilador::suma(bool terminoOpcional)
+{
+    qDebug() << "suma";
+    string actual;
+
+    do
+    {
+        if(lexico.compare("+") == 0 || lexico.compare("-") == 0)
+        {
+            actual = lexico;
+            leerLexema();
+        }
+
+        multi(terminoOpcional);
+
+    }while(lexico.compare("+") == 0 || lexico.compare("-") == 0);
+}
+
+void Compilador::multi(bool terminoOpcional)
+{
+    qDebug() << "multi";
+
+    string actual;
+
+    do
+    {
+        if(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0)
+        {
+            actual = lexico;
+            leerLexema();
+        }
+
+        expo(terminoOpcional);
+
+    }while(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0);
+}
+
+void Compilador::expo (bool terminoOpcional)
+{
+    qDebug() << "expo";
+
+    string actual;
+
+    do
+    {
+        if(lexico.compare("^") == 0)
+        {
+            actual = lexico;
+            leerLexema();
+        }
+
+        signo(terminoOpcional);
+
+    }while(lexico.compare("^") == 0);
+}
+
+void Compilador::signo (bool terminoOpcional)
+{
+    qDebug() << "signo";
+
+    string actual;
+
+    if(lexico.compare("-") == 0)
+    {
+        actual = lexico;
+        leerLexema();
+    }
+
+    termino(terminoOpcional);
+}
+
+void Compilador::termino (bool terminoOpcional)
+{
+    qDebug() << "termino";
+    if(constanteTipo(token))
+    {
+        leerLexema();
+    }
+    else if(token.compare(IDENTIFICADOR) == 0)
+    {
+        leerLexema();
+        if(lexico.compare("(") == 0)
+        {
+            leerLexema();
+            expr(false);
+
+            if(lexico.compare(")") != 0)
+                escribirError("Se esperaba ) para cerrar la expresion");
+
+            leerLexema();
+        }
+    }
+    else if(!terminoOpcional)
+    {
+        escribirError("Se esperaba un termino");
+    }
+}
