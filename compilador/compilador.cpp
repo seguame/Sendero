@@ -979,7 +979,12 @@ bool Compilador::lFunc_1(void)
 
 void Compilador::lFunc_2(void)
 {
+    vparam();
 
+    if(lexico.compare(")") != 0)
+        escribirError("Se esperaba ) para cerrar la expresion");
+
+    leerLexema();
 }
 
 void Compilador::vparam(void)
@@ -1449,14 +1454,22 @@ void Compilador::termino (bool terminoOpcional)
         leerLexema();
         if(lexico.compare("(") == 0)
         {
-            leerLexema();
-            expr(false);
-
-            if(lexico.compare(")") != 0)
-                escribirError("Se esperaba ) para cerrar la expresion");
-
-            leerLexema();
+            lFunc_2();
         }
+        else
+        {
+            dimension();
+        }
+    }
+    else if(lexico.compare("(") == 0)
+    {
+        leerLexema();
+        expr(false);
+
+        if(lexico.compare(")") != 0)
+            escribirError("Se esperaba ) para cerrar la expresion");
+
+        leerLexema();
     }
     else if(!terminoOpcional)
     {
