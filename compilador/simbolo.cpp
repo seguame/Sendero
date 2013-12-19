@@ -1,8 +1,9 @@
 #include "simbolo.h"
 
 template <typename T>
-Simbolo::Simbolo(T const& valor, Tipo const tipo):
+Simbolo::Simbolo(T const& valor, std::string const simbolo, Tipo const tipo):
     _ptr(new dato<T>(valor)),
+    _simbolo(simbolo),
     _tipo(tipo)
 {
 }
@@ -38,4 +39,9 @@ T& Simbolo::get()
 Tipo Simbolo::getTipo() const
 {
     return _tipo;
+}
+
+std::string Simbolo::getSimbolo() const
+{
+    return _simbolo;
 }

@@ -2,6 +2,7 @@
 #define SIMBOLO_H
 
 #include <algorithm>
+#include <string>
 #include "enumerators.h"
 
 class Simbolo
@@ -31,17 +32,19 @@ class Simbolo
         };
 
         base* _ptr;
+        const std::string _simbolo;
         const Tipo _tipo;
 
 
     public:
-        template <typename T> Simbolo(T const& valor, Tipo const tipo);
+        template <typename T> Simbolo(T const& valor, std::string const simbolo, Tipo const tipo);
         Simbolo(Simbolo const& otro);
         Simbolo& operator= (Simbolo const& otro);
         ~Simbolo();
         void swap(Simbolo& otro);
         template <typename T> T& get();
         Tipo getTipo() const;
+        std::string getSimbolo() const;
 };
 
 #endif // SIMBOLO_H
