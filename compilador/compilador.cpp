@@ -162,7 +162,7 @@ void Compilador::escribirError(string error)
 void Compilador::escribirLog(void)
 {
 
-    if(lexico.compare("") != 0 && !finDeArchivo && !token.compare(COMENTARIO) == 0)
+    if(lexico.compare("") != 0 && !finDeArchivo && !token.compare(COMENTARIO) == 0 && tipo(token))
         salidaInformacion << (token + ",,," +  lexico) << endl;
 }
 
@@ -1093,6 +1093,8 @@ bool Compilador::caso(void)
 {
     qDebug() << "caso";
 
+    bool existeUnDefault = false;
+
     leerLexema();
 
     if(token.compare(IDENTIFICADOR) != 0)
@@ -1109,6 +1111,15 @@ bool Compilador::caso(void)
     {
         if(lexico.compare("defecto") == 0)
         {
+            if(!existeUnDefault)
+            {
+                existeUnDefault = true;
+            }
+            else
+            {
+                escribirError("Multiplies etiquetas \"defecto\" en el \"caso\"");
+            }
+
             leerLexema();
             if(lexico.compare(":") != 0)
             {
