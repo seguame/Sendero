@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <stack>
+#include <map>
 
 
 #include <QString>
@@ -38,6 +39,7 @@ class Compilador
 {
     public:
         Compilador(string rutaArchivo);
+        ~Compilador();
         void realizarMagia( void );
         string getRutaAlArchivo( void );
         string getNombreArchivo( void );
@@ -129,6 +131,17 @@ class Compilador
         bool lee(void);
         bool imprime(void);
         bool constante(void);
+
+
+
+        ////////////////////////
+        //Semantico
+
+        map<string, string> *mapa_tipo_simbolo;
+        map<string, int> *mapa_simbolos_enteros;
+        map<string, string> *mapa_simbolo_cadenas;
+        map<string, bool> *mapa_simbolo_booleanos;
+        map<string, double> *mapa_simbolos_reales;
 };
 
 #endif // COMPILADOR_H
