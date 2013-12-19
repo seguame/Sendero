@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include <string>
+#include <cstring>
+#include <typeinfo>
 #include "enumerators.h"
 
 class Simbolo
@@ -33,16 +35,18 @@ class Simbolo
 
         base* _ptr;
         const std::string _simbolo;
-        const Tipo _tipo;
+        Tipo _tipo;
 
 
     public:
-        template <typename T> Simbolo(T const& valor, std::string const simbolo, Tipo const tipo);
+        template <typename T> Simbolo(std::string const simbolo, T const& valor);
+        Simbolo(std::string const simbolo);
         Simbolo(Simbolo const& otro);
         Simbolo& operator= (Simbolo const& otro);
         ~Simbolo();
         void swap(Simbolo& otro);
-        template <typename T> T& get();
+        template <typename T> T& getValor();
+        template <typename T> void setValor(T const& valor);
         Tipo getTipo() const;
         std::string getSimbolo() const;
 };
