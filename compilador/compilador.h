@@ -106,7 +106,7 @@ class Compilador
         void bloque(bool avanzar);
         bool vars (bool darAvanceAlFinal);
         void estatutos(void);
-        void comando(void);
+        bool comando(void);
         void asigna(bool checarIdentificador);
         void dimension(void);
         void expr(bool esOpcional);

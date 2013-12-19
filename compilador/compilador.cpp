@@ -847,21 +847,28 @@ void Compilador::estatutos(void)
 {
     qDebug() << "Estatutos";
 
+    bool requiereSeparador;
+
     do
     {
         if(lexico.compare(";") == 0)
+        {
             leerLexema();
+        }
 
-        comando();
+        requiereSeparador = comando();
 
-    }while(lexico.compare(";") == 0);
+
+    }while(lexico.compare(";") == 0 || !requiereSeparador);
 }
 
-//TODO, que retorne true si existio comando que debe ser delimitado con
-// los puntos y comas, por ejemplo, las que no terminan con bloques
-void Compilador::comando (void)
+
+bool Compilador::comando (void)
 {
     qDebug() << "comando";
+
+    bool requiereSeparador = true;
+
     if(token.compare(IDENTIFICADOR) == 0)
     {
         qDebug() << "inicia con identificador";
@@ -897,14 +904,17 @@ void Compilador::comando (void)
         if(lexico.compare("si") == 0)
         {
             si();
+            requiereSeparador = false;
         }
         else if(lexico.compare("desde") == 0)
         {
             desde();
+            requiereSeparador = false;
         }
         else if(lexico.compare("caso") == 0)
         {
             caso();
+            requiereSeparador = false;
         }
         else if(lexico.compare("regresa") == 0)
         {
@@ -919,6 +929,8 @@ void Compilador::comando (void)
             leerLexema();
         }
     }
+
+    return requiereSeparador;
 }
 
 void Compilador::asigna (bool checarIdentificador)
