@@ -36,6 +36,8 @@ class Simbolo
         base* _ptr;
         const std::string _simbolo;
         Tipo _tipo;
+        bool _dimensionado;
+        unsigned int _cantDimensiones;
 
 
     public:
@@ -48,7 +50,12 @@ class Simbolo
         template <typename T> T& getValor();
         template <typename T> void setValor(T const& valor);
         Tipo getTipo() const;
+        void setTipo(Tipo tipo);
         std::string getSimbolo() const;
+        void setEsDimensionado(bool b);
+        bool esDimensionado() const;
+        void setCantidadDimensiones(int cantidad);
+        unsigned int getCantidadDimensiones() const;
 };
 
 #endif // SIMBOLO_H

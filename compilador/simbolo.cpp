@@ -62,3 +62,28 @@ std::string Simbolo::getSimbolo() const
 {
     return _simbolo;
 }
+
+void Simbolo::setTipo(Tipo tipo)
+{
+    _tipo = tipo;
+}
+
+void Simbolo::setEsDimensionado(bool b)
+{
+    _dimensionado = b;
+}
+
+bool Simbolo::esDimensionado() const
+{
+    return _dimensionado;
+}
+
+void Simbolo::setCantidadDimensiones(int cantidad)
+{
+    _cantDimensiones = cantidad;
+}
+
+unsigned int Simbolo::getCantidadDimensiones() const
+{
+    return _cantDimensiones;
+}
