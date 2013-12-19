@@ -162,7 +162,7 @@ void Compilador::escribirError(string error)
 void Compilador::escribirLog(void)
 {
 
-    if(lexico.compare("") != 0 && !finDeArchivo && !token.compare(COMENTARIO) == 0 && tipo(token))
+    if(lexico.compare("") != 0 && !finDeArchivo && !token.compare(COMENTARIO) == 0)
         salidaInformacion << (token + ",,," +  lexico) << endl;
 }
 
@@ -674,11 +674,12 @@ bool Compilador::funcion(void)
     //si no lo era, validar en bloque que lo que sigue es un {
     if(tipo(lexico))
     {
-        bloque(true);
+        leerLexema();
+        bloque();
     }
     else
     {
-        bloque(false);
+        bloque();
     }
 
     return true;
@@ -753,11 +754,9 @@ bool Compilador::tipo( string lex )
             lex.compare(ALFABETICO) == 0);
 }
 
-void Compilador::bloque (bool avanzar)
+void Compilador::bloque ()
 {
     qDebug() << "bloque";
-    if(avanzar)
-        leerLexema();
 
     if(lexico.compare("{") != 0)
         escribirError("Es esperaba apertura de bloque {");
@@ -1022,13 +1021,14 @@ bool Compilador::si(void)
     leerLexema();
     expr(false);
 
-    bloque(false);
+    bloque();
 
     leerLexema();
 
     if(lexico.compare("sino") == 0)
     {
-        bloque(true);
+        leerLexema();
+        bloque();
         leerLexema();
     }
 
@@ -1082,7 +1082,7 @@ bool Compilador::desde(void)
     //if(lexico.compare(";") != 0)
     //    escribirError("Se esperaba delimitador de zona de incrementos");
 
-    bloque(false);
+    bloque();
     leerLexema();
 
     return true;

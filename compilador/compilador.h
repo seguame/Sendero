@@ -103,7 +103,7 @@ class Compilador
         void params(void);
         bool pars();
         bool tipo(string lex);
-        void bloque(bool avanzar);
+        void bloque();
         bool vars (bool darAvanceAlFinal);
         void estatutos(void);
         bool comando(void);
