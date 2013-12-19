@@ -85,20 +85,14 @@ Compilador::Compilador(string rutaArchivo) :
 
     separarNombreArchivo(_rutaCompletaArchivo);
 
-    mapa_tipo_simbolo = new map<string, string>();
-    mapa_simbolos_enteros = new  map<string, int>();
-    mapa_simbolo_cadenas = new map<string, string>();
-    mapa_simbolo_booleanos = new map<string, bool>();
-    mapa_simbolos_reales = new map<string, double>();
+    mapa_simbolos = new map<string, Simbolo>();
+    mapa_firma_funcion = new map<string, vector<Tipo>* >();
 }
 
 Compilador::~Compilador()
 {
-    delete mapa_tipo_simbolo;
-    delete mapa_simbolos_enteros;
-    delete mapa_simbolo_cadenas;
-    delete mapa_simbolo_booleanos;
-    delete mapa_simbolos_reales;
+    delete mapa_simbolos;
+    delete mapa_firma_funcion;
 }
 
 
@@ -116,11 +110,8 @@ void Compilador::realizarMagia(void)
     }
 
     // limpieza de las tablas
-    mapa_tipo_simbolo->erase(mapa_tipo_simbolo->begin(), mapa_tipo_simbolo->end());
-    mapa_simbolos_enteros->erase(mapa_simbolos_enteros->begin(), mapa_simbolos_enteros->end());
-    mapa_simbolo_cadenas->erase(mapa_simbolo_cadenas->begin(), mapa_simbolo_cadenas->end());
-    mapa_simbolo_booleanos->erase(mapa_simbolo_booleanos->begin(), mapa_simbolo_booleanos->end());
-    mapa_simbolos_reales->erase(mapa_simbolos_reales->begin(), mapa_simbolos_reales->end());
+    mapa_simbolos->erase(mapa_simbolos->begin(), mapa_simbolos->end());
+    mapa_firma_funcion->erase(mapa_firma_funcion->begin(), mapa_firma_funcion->end());
 
     ///////////////////////////////
 

@@ -2,7 +2,10 @@
 #define COMPILADOR_H
 
 #include <fstream>
+#include <map>
+#include <vector>
 #include "enumerators.h"
+#include "simbolo.h"
 
 #include <QString>
 
@@ -111,11 +114,8 @@ class Compilador
         ////////////////////////
         //Semantico
 
-        map<string, string> *mapa_tipo_simbolo;
-        map<string, int> *mapa_simbolos_enteros;
-        map<string, string> *mapa_simbolo_cadenas;
-        map<string, bool> *mapa_simbolo_booleanos;
-        map<string, double> *mapa_simbolos_reales;
+        map<string, Simbolo> *mapa_simbolos;
+        map<string, vector<Tipo>* > *mapa_firma_funcion;
 };
 
 #endif // COMPILADOR_H
