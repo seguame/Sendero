@@ -63,9 +63,10 @@ std::string Simbolo::getIdentificador() const
     return _identificador;
 }
 
-void Simbolo::setTipo(Tipo tipo)
+Simbolo* Simbolo::setTipo(Tipo tipo)
 {
     _tipo = tipo;
+    return this;
 }
 
 void Simbolo::setEsDimensionado(bool b)
