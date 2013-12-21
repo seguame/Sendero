@@ -586,6 +586,8 @@ void Compilador::programa(void)
         escribirError("Se esperaba definicion de \"principal\"");
     }
 
+    tablaDeSimbolos->nuevoScope(); // el Scope Global
+
     do
     {
         leerLexema();
@@ -600,6 +602,8 @@ void Compilador::programa(void)
         }
 
     }while(!finDeArchivo);
+
+    tablaDeSimbolos->borrarScope();
 
     if(!existeFuncionPrincipal)
         escribirError("No se encontro la funcion \"principal\"");
@@ -778,21 +782,41 @@ bool Compilador::vars (bool darAvanceAlFinal)
     if(lexico.compare("var") != 0)
         return false; //los caminos de la vida, no son lo que yo esperaba (8)
 
+    //preparando el apilamiento de variables para ser almacenadas
+    //en la tabla de simbolos
+    tablaDeSimbolos->prepararPila();
+
     leerLexema();
 
     if(token.compare(IDENTIFICADOR) == 0)
     {
+        tablaDeSimbolos->apilarSimbolo(lexico);
+
         leerLexema();
         dimension();
 
         if(!tipo(lexico))
+        {
+            tablaDeSimbolos->purgarPila();
             escribirError("Se esperaba definicion de tipo");
+        }
+        else
+        {
+            //el lexico contiene el tipo de variable a almacenar
+            tablaDeSimbolos->almacenarPila(determinarTipo(lexico));
+        }
     }
     else if(lexico.compare("(") == 0)
     {
         leerLexema();
         bool primeraVuelta = true;
 
+
+        /*
+         * Se iran apilando los distintos identificadores
+         * para al final determinar su tipo y por ultimo almacenarlos
+         * en la tabla de simbolos si son validos [se le da su tipo]
+         */
         do
         {
             do
@@ -809,19 +833,29 @@ bool Compilador::vars (bool darAvanceAlFinal)
                     primeraVuelta = false;
 
                 if(token.compare(IDENTIFICADOR) != 0)
+                {
                     escribirError("Se esperaba identificador de variable");
+                }
+                else
+                {
+                    //lexico contiene el nombre del identificador
+                    tablaDeSimbolos->apilarSimbolo(lexico);
+                }
 
                 leerLexema();
                 dimension();
-
-
-
 
             }while(lexico.compare(",") == 0);
 
             if(!tipo(lexico))
             {
+                tablaDeSimbolos->purgarPila();
                 escribirError("Se esperaba el tipo de variable");
+            }
+            else
+            {
+                //lexico contiene el tipo de dato a ser apilado
+                tablaDeSimbolos->almacenarPila(determinarTipo(lexico));
             }
 
             leerLexema();
@@ -840,6 +874,9 @@ bool Compilador::vars (bool darAvanceAlFinal)
 
     if(darAvanceAlFinal)
         leerLexema();
+
+    //por si quedo algun elemento volando
+    tablaDeSimbolos->purgarPila();
 
     return true;
 }
