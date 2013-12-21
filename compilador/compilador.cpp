@@ -767,6 +767,9 @@ void Compilador::bloque ()
     if(lexico.compare("{") != 0)
         escribirError("Es esperaba apertura de bloque {");
 
+    // Se crea un scope interno
+    tablaDeSimbolos->nuevoScope();
+
     leerLexema();
 
     vars(true);
@@ -774,6 +777,9 @@ void Compilador::bloque ()
 
     if(lexico.compare("}") != 0)
         escribirError("Se esperaba cierre de bloque }");
+
+    // se elimina todo lo contenido dentro del scope
+    tablaDeSimbolos->borrarScope();
 }
 
 bool Compilador::vars (bool darAvanceAlFinal)
