@@ -1,6 +1,7 @@
 #ifndef TABLASIMBOLOS_H
 #define TABLASIMBOLOS_H
 
+#include <stack>
 #include <vector>
 #include <string>
 #include <map>  //cambiar a unordered_map para eficiencia una vez se determine
@@ -22,15 +23,23 @@ public:
     bool insertarSimbolo(Simbolo* x);
     Simbolo* buscarSimbolo(string x);
     bool removerSimbolo(string x);
-    void nuevoScope();
-    void borrarScope();
-    void purgarTabla();
+    void nuevoScope(void);
+    void borrarScope(void);
+    void purgarTabla(void);
+
+
+    void prepararPila(void);
+    void apilarSimbolo(string s);
+    void almacenarPila(Tipo tipo);
+    void purgarPila(void);
+
 
 private:
     bool existeSimbolo(const string identificador, map <string, Simbolo*>* temp);
 
 private:
     vector< map <string, Simbolo*>* > *simbolos;
+    stack<Simbolo*> *pila;
 };
 
 #endif // TABLASIMBOLOS_H

@@ -21,7 +21,7 @@ TablaSimbolos::~TablaSimbolos()
  */
 bool TablaSimbolos::insertarSimbolo(Simbolo* x)
 {
-    qDebug() << "Insertando simbolo en tabla";
+    qDebug() << "Insertando simbolo en tabla: " << x->getIdentificador().c_str();
     map <string, Simbolo*>* temp = simbolos->back();
 
     if(!existeSimbolo(x->getIdentificador(), temp))
@@ -42,7 +42,7 @@ bool TablaSimbolos::insertarSimbolo(Simbolo* x)
  */
 Simbolo* TablaSimbolos::buscarSimbolo(string x)
 {
-    qDebug() << "Buscando simbolo en la tabla";
+    qDebug() << "Buscando simbolo " << x.c_str() << "en la tabla";
     for(vector<map<string, Simbolo*>*>::reverse_iterator mapa = simbolos->rbegin(); mapa != simbolos->rend(); ++mapa)
     {
         map<string, Simbolo*>* m = *mapa;
@@ -107,4 +107,38 @@ bool TablaSimbolos::existeSimbolo(const string identificador, map <string, Simbo
 {
     qDebug() << "Checando existencia de simbolo";
     return temp->find(identificador) != temp->end();
+}
+
+
+void TablaSimbolos::prepararPila(void)
+{
+    qDebug() << "Preparando apilamiento";
+    delete pila;
+    pila = new stack<Simbolo*>();
+}
+
+void TablaSimbolos::apilarSimbolo(string s)
+{
+    qDebug() << "Apilando " << s.c_str();
+    pila->push(new Simbolo(s));
+}
+
+void TablaSimbolos::almacenarPila(Tipo tipo)
+{
+    qDebug() << "Almacenando contenido de la pila";
+    while(!pila->empty())
+    {
+        this->insertarSimbolo(pila->top()->setTipo(tipo));
+        pila->pop();
+    }
+}
+
+void TablaSimbolos::purgarPila(void)
+{
+    qDebug() << "Purgando la pila";
+    while(!pila->empty())
+    {
+        delete pila->top();
+        pila->pop();
+    }
 }
