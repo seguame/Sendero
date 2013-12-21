@@ -19,6 +19,18 @@ class Compilador
         string getRutaAlArchivo( void );
         string getNombreArchivo( void );
 
+        Tipo determinarTipo(std::string t)
+        {
+            if(t.compare(REAL) == 0) return T_REAL;
+            if(t.compare(ENTERO) == 0) return T_ENTERO;
+            if(t.compare(HEXADECIMAL) == 0) return T_ENTERO;
+            if(t.compare(OCTAL) == 0) return T_ENTERO;
+            if(t.compare(CONST_LOGICA) == 0) return T_BOOLEANO;
+            if(t.compare(ALFABETICO) == 0) return T_CADENA;
+
+            return T_INDEFINIDO;
+        }
+
     private:
         Entrada siguienteEntrada(char caracter);
         void separarNombreArchivo(const string& str);
