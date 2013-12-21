@@ -7,6 +7,8 @@
 #include <typeinfo>
 #include "enumerators.h"
 
+#include <QDebug>
+
 class Simbolo
 {
     private:
