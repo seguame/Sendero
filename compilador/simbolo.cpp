@@ -15,6 +15,7 @@ Simbolo::Simbolo(std::string const identificador):
 
 Simbolo::~Simbolo()
 {
+    qDebug() << "borrando " << _identificador.c_str();
     delete this->_ptr;
 }
 

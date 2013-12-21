@@ -89,6 +89,16 @@ void TablaSimbolos::nuevoScope(void)
 void TablaSimbolos::borrarScope(void)
 {
     qDebug() << "Borrando scope, esto puede dar un bug";
+
+    map <string, Simbolo*>* mapa = simbolos->back();
+
+    for(map <string, Simbolo*>::iterator it = mapa->begin(); it != mapa->end(); )
+    {
+        //borrando los simbolos
+        pair<string, Simbolo*> par = *it;
+        delete par.second;
+        mapa->erase(it++);
+    }
     delete simbolos->back();
     simbolos->erase(simbolos->begin() + (simbolos->size() - 1));
 }
