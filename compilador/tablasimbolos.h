@@ -9,6 +9,8 @@
 #include "enumerators.h"
 #include "simbolo.h"
 
+#include <QDebug>
+
 using namespace std;
 
 class TablaSimbolos
@@ -17,15 +19,18 @@ public:
     TablaSimbolos();
     ~TablaSimbolos();
 
-    bool insertarSimbolo(Simbolo x);
-    Simbolo buscarSimbolo(string x);
+    bool insertarSimbolo(Simbolo* x);
+    Simbolo* buscarSimbolo(string x);
     bool removerSimbolo(string x);
     void nuevoScope();
     void borrarScope();
     void purgarTabla();
 
 private:
-    vector< map <string, Simbolo> > *simbolos;
+    bool existeSimbolo(const string identificador, map <string, Simbolo*>* temp);
+
+private:
+    vector< map <string, Simbolo*>* > *simbolos;
 };
 
 #endif // TABLASIMBOLOS_H
