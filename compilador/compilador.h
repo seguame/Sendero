@@ -111,7 +111,7 @@ class Compilador
 
         ////////////////////////
         //Semantico
-        TablaSimbolos tablaDeSimbolos;
+        TablaSimbolos* tablaDeSimbolos;
 
 };
 
