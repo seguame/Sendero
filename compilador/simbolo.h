@@ -34,15 +34,15 @@ class Simbolo
         };
 
         base* _ptr;
-        const std::string _simbolo;
+        const std::string _identificador;
         Tipo _tipo;
         bool _dimensionado;
         unsigned int _cantDimensiones;
 
 
     public:
-        template <typename T> Simbolo(std::string const simbolo, T const& valor);
-        Simbolo(std::string const simbolo);
+        template <typename T> Simbolo(std::string const identificador, T const& valor);
+        Simbolo(std::string const identificador);
         Simbolo(Simbolo const& otro);
         Simbolo& operator= (Simbolo const& otro);
         ~Simbolo();
@@ -51,7 +51,7 @@ class Simbolo
         template <typename T> void setValor(T const& valor);
         Tipo getTipo() const;
         void setTipo(Tipo tipo);
-        std::string getSimbolo() const;
+        std::string getIdentificador() const;
         void setEsDimensionado(bool b);
         bool esDimensionado() const;
         void setCantidadDimensiones(int cantidad);

@@ -1,15 +1,15 @@
 #include "simbolo.h"
 
 template <typename T>
-Simbolo::Simbolo(std::string const simbolo, T const& valor):
+Simbolo::Simbolo(std::string const identificador, T const& valor):
     _ptr(new dato<T>(valor)),
-    _simbolo(simbolo)
+    _identificador(identificador)
 {
 }
 
-Simbolo::Simbolo(std::string const simbolo):
+Simbolo::Simbolo(std::string const identificador):
     _ptr(new dato<int>(0)), //Si no le doy valor de inicio, caput :/
-    _simbolo(simbolo)
+    _identificador(identificador)
 {
 }
 
@@ -58,9 +58,9 @@ Tipo Simbolo::getTipo() const
     return _tipo;
 }
 
-std::string Simbolo::getSimbolo() const
+std::string Simbolo::getIdentificador() const
 {
-    return _simbolo;
+    return _identificador;
 }
 
 void Simbolo::setTipo(Tipo tipo)

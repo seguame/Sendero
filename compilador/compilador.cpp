@@ -84,15 +84,12 @@ Compilador::Compilador(string rutaArchivo) :
     existeFuncionPrincipal = false;
 
     separarNombreArchivo(_rutaCompletaArchivo);
-
-    mapa_simbolos = new map<string, Simbolo>();
-    mapa_firma_funcion = new map<string, vector<Tipo>* >();
+    tablaDeSimbolos = new tablaDeSimbolos();
 }
 
 Compilador::~Compilador()
 {
-    delete mapa_simbolos;
-    delete mapa_firma_funcion;
+    delete tablaDeSimbolos;
 }
 
 
@@ -108,10 +105,6 @@ void Compilador::realizarMagia(void)
         qDebug() << "No se pudo abrir el archivo a compilar";
         return;
     }
-
-    // limpieza de las tablas
-    mapa_simbolos->erase(mapa_simbolos->begin(), mapa_simbolos->end());
-    mapa_firma_funcion->erase(mapa_firma_funcion->begin(), mapa_firma_funcion->end());
 
     ///////////////////////////////
 
