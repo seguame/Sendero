@@ -993,9 +993,7 @@ void Compilador::asigna (bool checarIdentificador)
         }
         else
         {
-            Simbolo* asignable = tablaDeSimbolos->buscarSimbolo(lexico);
-
-            if(asignable == NULL)
+            if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
             {
                 escribirError(lexico + " no esta definido");
             }
@@ -1163,9 +1161,7 @@ bool Compilador::caso(void)
     }
     else
     {
-        Simbolo* asignable = tablaDeSimbolos->buscarSimbolo(lexico);
-
-        if(asignable == NULL)
+        if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
         {
             escribirError(lexico + " no esta definido");
         }
@@ -1270,9 +1266,7 @@ bool Compilador::lee(void)
     }
     else
     {
-        Simbolo* asignable = tablaDeSimbolos->buscarSimbolo(lexico);
-
-        if(asignable == NULL)
+        if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
         {
             escribirError(lexico + " no esta definido");
         }
