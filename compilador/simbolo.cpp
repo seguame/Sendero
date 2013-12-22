@@ -3,13 +3,15 @@
 template <typename T>
 Simbolo::Simbolo(std::string const identificador, T const& valor):
     _ptr(new dato<T>(valor)),
-    _identificador(identificador)
+    _identificador(identificador),
+    _constante(false)
 {
 }
 
 Simbolo::Simbolo(std::string const identificador):
     _ptr(new dato<int>(0)), //Si no le doy valor de inicio, caput :/
-    _identificador(identificador)
+    _identificador(identificador),
+    _constante(false)
 {
 }
 
@@ -37,7 +39,7 @@ void Simbolo::swap(Simbolo& otro)
 }
 
 template <typename T>
-T& Simbolo::getValor()
+T& Simbolo::getValor(void)
 {
     return dynamic_cast<dato<T>&>(*this->_ptr)._valor;
 }
@@ -54,12 +56,12 @@ void Simbolo::setValor(T const& valor)
     _ptr = new dato<T>(valor);
 }
 
-Tipo Simbolo::getTipo() const
+Tipo Simbolo::getTipo(void) const
 {
     return _tipo;
 }
 
-std::string Simbolo::getIdentificador() const
+std::string Simbolo::getIdentificador(void) const
 {
     return _identificador;
 }
@@ -75,7 +77,7 @@ void Simbolo::setEsDimensionado(bool b)
     _dimensionado = b;
 }
 
-bool Simbolo::esDimensionado() const
+bool Simbolo::esDimensionado(void) const
 {
     return _dimensionado;
 }
@@ -85,7 +87,18 @@ void Simbolo::setCantidadDimensiones(int cantidad)
     _cantDimensiones = cantidad;
 }
 
-unsigned int Simbolo::getCantidadDimensiones() const
+unsigned int Simbolo::getCantidadDimensiones(void) const
 {
     return _cantDimensiones;
+}
+
+Simbolo* Simbolo::setConstante(void)
+{
+    _constante = true;
+    return this;
+}
+
+bool Simbolo::esConstante(void) const
+{
+    return _constante;
 }
