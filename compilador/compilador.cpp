@@ -1158,7 +1158,18 @@ bool Compilador::caso(void)
     leerLexema();
 
     if(token.compare(IDENTIFICADOR) != 0)
+    {
         escribirError("Se esperaba la variable de \"caso\"");
+    }
+    else
+    {
+        Simbolo* asignable = tablaDeSimbolos->buscarSimbolo(lexico);
+
+        if(asignable == NULL)
+        {
+            escribirError(lexico + " no esta definido");
+        }
+    }
 
     leerLexema();
 
@@ -1254,7 +1265,18 @@ bool Compilador::lee(void)
     leerLexema();
 
     if(token.compare(IDENTIFICADOR) != 0)
+    {
         escribirError("Se esperaba un identificador");
+    }
+    else
+    {
+        Simbolo* asignable = tablaDeSimbolos->buscarSimbolo(lexico);
+
+        if(asignable == NULL)
+        {
+            escribirError(lexico + " no esta definido");
+        }
+    }
 
     leerLexema();
     dimension();
