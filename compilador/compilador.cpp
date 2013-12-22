@@ -1550,6 +1550,11 @@ void Compilador::termino (bool terminoOpcional)
     }
     else if(token.compare(IDENTIFICADOR) == 0)
     {
+        if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
+        {
+            escribirError(lexico + " no esta definido");
+        }
+
         leerLexema();
         if(lexico.compare("(") == 0)
         {
