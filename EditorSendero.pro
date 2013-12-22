@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     ui/EditorCodigo/resaltador_sintaxis.cpp \
     compilador/compilador.cpp \
     compilador/simbolo.cpp \
-    compilador/tablasimbolos.cpp
+    compilador/tablasimbolos.cpp \
+    compilador/utils/conversor.cpp
 
 HEADERS  += \
     ui/VentanaPrincipal.h \
@@ -29,7 +30,8 @@ HEADERS  += \
     compilador/compilador.h \
     compilador/simbolo.h \
     compilador/enumerators.h \
-    compilador/tablasimbolos.h
+    compilador/tablasimbolos.h \
+    compilador/utils/conversor.h
 
 RESOURCES += \
     Imagenes.qrc
