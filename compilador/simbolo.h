@@ -45,8 +45,16 @@ class Simbolo
 
 
     public:
-        template <typename T> Simbolo(std::string const& identificador, T const& valor);
-        Simbolo(std::string const& identificador);
+        //template <typename T> Simbolo(std::string const& identificador, T const& valor);
+        Simbolo(std::string const& identificador):
+            _ptr(new dato<long>(0)), //Si no le doy valor de inicio, caput :/
+            _identificador(identificador),
+            _tipo(T_INDEFINIDO),
+            _constante(false),
+            _dimensionado(false),
+            _cantDimensiones(0)
+            {
+            }
         Simbolo(Simbolo const& otro);
         Simbolo& operator= (Simbolo const& otro);
         ~Simbolo();
