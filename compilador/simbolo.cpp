@@ -4,14 +4,20 @@ template <typename T>
 Simbolo::Simbolo(std::string const identificador, T const& valor):
     _ptr(new dato<T>(valor)),
     _identificador(identificador),
-    _constante(false)
+    _constante(false),
+    _dimensionado(false),
+    _cantDimensiones(0),
+    _tipo(T_INDEFINIDO)
 {
 }
 
 Simbolo::Simbolo(std::string const identificador):
     _ptr(new dato<int>(0)), //Si no le doy valor de inicio, caput :/
     _identificador(identificador),
-    _constante(false)
+    _constante(false),
+    _dimensionado(false),
+    _cantDimensiones(0),
+    _tipo(T_INDEFINIDO)
 {
 }
 
@@ -72,9 +78,10 @@ Simbolo* Simbolo::setTipo(Tipo tipo)
     return this;
 }
 
-void Simbolo::setEsDimensionado(bool b)
+Simbolo* Simbolo::setEsDimensionado(void)
 {
-    _dimensionado = b;
+    _dimensionado = true;
+    return this;
 }
 
 bool Simbolo::esDimensionado(void) const

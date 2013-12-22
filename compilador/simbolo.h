@@ -55,7 +55,7 @@ class Simbolo
         Tipo getTipo(void) const;
         Simbolo* setTipo(Tipo tipo);
         std::string getIdentificador() const;
-        void setEsDimensionado(bool b);
+        Simbolo* setEsDimensionado(void);
         bool esDimensionado(void) const;
         void setCantidadDimensiones(int cantidad);
         unsigned int getCantidadDimensiones(void) const;
