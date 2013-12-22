@@ -4,6 +4,7 @@
 #include <stack>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <map>  //cambiar a unordered_map para eficiencia una vez se determine
                 //que podemos compilar en windows tambien
 
@@ -21,7 +22,7 @@ public:
     ~TablaSimbolos();
 
     bool insertarSimbolo(Simbolo* x);
-    Simbolo* buscarSimbolo(string x);
+    Simbolo* buscarSimbolo(string x) const;
     bool removerSimbolo(string x);
     void nuevoScope(void);
     void borrarScope(void);
@@ -35,7 +36,7 @@ public:
 
 
 private:
-    bool existeSimbolo(const string identificador, map <string, Simbolo*>* temp);
+    bool existeSimbolo(const string identificador, map <string, Simbolo*>* temp) const;
 
 private:
     vector< map <string, Simbolo*>* > *simbolos;

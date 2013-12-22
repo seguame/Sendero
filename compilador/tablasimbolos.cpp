@@ -40,7 +40,7 @@ bool TablaSimbolos::insertarSimbolo(Simbolo* x)
  * @param x, identificador a buscar
  * @return NULL si no está definido, el simbolo en caso contrario
  */
-Simbolo* TablaSimbolos::buscarSimbolo(string x)
+Simbolo* TablaSimbolos::buscarSimbolo(string x) const
 {
     qDebug() << "Buscando simbolo " << x.c_str() << "en la tabla";
     for(vector<map<string, Simbolo*>*>::reverse_iterator mapa = simbolos->rbegin(); mapa != simbolos->rend(); ++mapa)
@@ -98,6 +98,11 @@ void TablaSimbolos::borrarScope(void)
     {
         //borrando los simbolos
         pair<string, Simbolo*> par = *it;
+
+        std::stringstream nivel;
+        nivel << simbolos->size();
+        qDebug() << "Nivel " << nivel.str().c_str() << " " << par.second->toString().c_str();
+
         delete par.second;
         mapa->erase(it++);
     }
@@ -115,7 +120,7 @@ void TablaSimbolos::purgarTabla(void)
     simbolos->clear();
 }
 
-bool TablaSimbolos::existeSimbolo(const string identificador, map <string, Simbolo*>* temp)
+bool TablaSimbolos::existeSimbolo(const string identificador, map <string, Simbolo*>* temp) const
 {
     qDebug() << "Checando existencia de simbolo";
     return temp->find(identificador) != temp->end();
