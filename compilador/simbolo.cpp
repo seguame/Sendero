@@ -21,17 +21,23 @@ Simbolo::Simbolo(std::string const& identificador):
 {
 }
 
+Simbolo::Simbolo(Simbolo const& otro):
+    _ptr(otro._ptr->clone()),
+    _identificador(otro.getIdentificador()),
+    _tipo(otro.getTipo()),
+    _constante(otro.esConstante()),
+    _dimensionado(otro.esDimensionado()),
+    _cantDimensiones(otro.getCantidadDimensiones())
+{
+}
+
 Simbolo::~Simbolo()
 {
     qDebug() << "borrando " << _identificador.c_str();
     delete this->_ptr;
 }
 
-Simbolo::Simbolo(Simbolo const& otro):
-    _ptr(otro._ptr->clone()),
-    _tipo(otro.getTipo())
-{
-}
+
 
 Simbolo& Simbolo::operator=(Simbolo const& otro)
 {
