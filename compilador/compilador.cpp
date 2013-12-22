@@ -929,6 +929,10 @@ bool Compilador::comando (void)
         {
             //Antes no hago la lectura para checar si el identificador
             //que llegó es "con" o "fmt"
+
+
+            //TODO: Verificar por semantica si el identificador esta registrado como funcion o como
+            //      variable para caer en el caso correcto
             leerLexema();
 
             if(lexico.compare("(") == 0)
@@ -984,7 +988,18 @@ void Compilador::asigna (bool checarIdentificador)
     if(checarIdentificador)
     {
         if(token.compare(IDENTIFICADOR) != 0)
+        {
             escribirError("Se espera un identificador para la asignacion");
+        }
+        else
+        {
+            Simbolo* asignable = tablaDeSimbolos->buscarSimbolo(lexico);
+
+            if(asignable == NULL)
+            {
+                escribirError(lexico + " no esta definido");
+            }
+        }
 
         leerLexema();
     }
