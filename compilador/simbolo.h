@@ -5,6 +5,7 @@
 #include <string>
 #include <cstring>
 #include <typeinfo>
+#include <sstream>
 #include "enumerators.h"
 
 #include <QDebug>
@@ -40,12 +41,12 @@ class Simbolo
         Tipo _tipo;
         bool _constante;
         bool _dimensionado;
-        unsigned int _cantDimensiones;
+        int _cantDimensiones;
 
 
     public:
-        template <typename T> Simbolo(std::string const identificador, T const& valor);
-        Simbolo(std::string const identificador);
+        template <typename T> Simbolo(std::string const& identificador, T const& valor);
+        Simbolo(std::string const& identificador);
         Simbolo(Simbolo const& otro);
         Simbolo& operator= (Simbolo const& otro);
         ~Simbolo();
@@ -58,9 +59,10 @@ class Simbolo
         Simbolo* setEsDimensionado(void);
         bool esDimensionado(void) const;
         void setCantidadDimensiones(int cantidad);
-        unsigned int getCantidadDimensiones(void) const;
+        int getCantidadDimensiones(void) const;
         Simbolo* setConstante(void);
         bool esConstante(void) const;
+        std::string toString(void) const;
 };
 
 #endif // SIMBOLO_H

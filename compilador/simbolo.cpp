@@ -1,23 +1,23 @@
 #include "simbolo.h"
 
 template <typename T>
-Simbolo::Simbolo(std::string const identificador, T const& valor):
+Simbolo::Simbolo(std::string const& identificador, T const& valor):
     _ptr(new dato<T>(valor)),
     _identificador(identificador),
+    _tipo(T_INDEFINIDO),
     _constante(false),
     _dimensionado(false),
-    _cantDimensiones(0),
-    _tipo(T_INDEFINIDO)
+    _cantDimensiones(0)
 {
 }
 
-Simbolo::Simbolo(std::string const identificador):
+Simbolo::Simbolo(std::string const& identificador):
     _ptr(new dato<int>(0)), //Si no le doy valor de inicio, caput :/
     _identificador(identificador),
+    _tipo(T_INDEFINIDO),
     _constante(false),
     _dimensionado(false),
-    _cantDimensiones(0),
-    _tipo(T_INDEFINIDO)
+    _cantDimensiones(0)
 {
 }
 
@@ -94,7 +94,7 @@ void Simbolo::setCantidadDimensiones(int cantidad)
     _cantDimensiones = cantidad;
 }
 
-unsigned int Simbolo::getCantidadDimensiones(void) const
+int Simbolo::getCantidadDimensiones(void) const
 {
     return _cantDimensiones;
 }
@@ -108,4 +108,13 @@ Simbolo* Simbolo::setConstante(void)
 bool Simbolo::esConstante(void) const
 {
     return _constante;
+}
+
+std::string Simbolo::toString(void) const
+{
+    std::stringstream dimensiones;
+    dimensiones << _cantDimensiones;
+    std::string tipo = (_tipo == T_ENTERO ? "Entero" : _tipo == T_REAL ? "Real" : _tipo == T_BOOLEANO ? "Booleano" : _tipo == T_CADENA ? "Cadena" : "Indefinido");
+
+    return "ID: " + _identificador + " Tipo: " + tipo + " Const: " + (_constante ? "Si" : "No") + " Dimen: " + (_dimensionado ? "Si":"No") + " #: " + dimensiones.str();
 }
