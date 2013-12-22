@@ -69,6 +69,8 @@ bool TablaSimbolos::removerSimbolo(string x)
     qDebug() << "Borrando simbolo del scope actual";
     map<string, Simbolo*>* mapa = simbolos->back();
 
+    //TODO: Eliminar referencia de simbolo
+
     return mapa->erase(x) == 1;
 }
 
@@ -138,7 +140,11 @@ void TablaSimbolos::almacenarPila(Tipo tipo)
     qDebug() << "Almacenando contenido de la pila";
     while(!pila->empty())
     {
-        this->insertarSimbolo(pila->top()->setTipo(tipo));
+        if(!this->insertarSimbolo(pila->top()->setTipo(tipo)))
+        {
+            //TODO: Añadir reporte de este error
+            qDebug() << pila->top()->getIdentificador().c_str() << " ya está definido";
+        }
         pila->pop();
     }
 }
