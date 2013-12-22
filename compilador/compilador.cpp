@@ -1369,24 +1369,34 @@ bool Compilador::constante(void)
     if(lexico.compare("const") != 0)
         return false;
 
+
+    //preparando el apilamiento de variables para ser almacenadas
+    //en la tabla de simbolos
+    tablaDeSimbolos->prepararPila();
+
     leerLexema();
 
     if(token.compare(IDENTIFICADOR) == 0)
     {
+        tablaDeSimbolos->apilarSimbolo(lexico);
+
         leerLexema();
 
         if(token.compare(ASIGNACION) != 0)
             escribirError("Se esperaba asignacion despues de identificador");
 
         leerLexema();
-        if(constanteTipo(token))
-        {
-            //rellenar luego...
-        }
+
+        if(token.compare(REAL) == 0)
+            tablaDeSimbolos->almacenarPila(T_REAL);
+        else if(token.compare(ENTERO) == 0 || token.compare(HEXADECIMAL) == 0 ||token.compare(OCTAL) == 0)
+            tablaDeSimbolos->almacenarPila(T_ENTERO);
+        else if(token.compare(CONST_LOGICA) == 0)
+            tablaDeSimbolos->almacenarPila(T_BOOLEANO);
+        else if(token.compare(ALFABETICO) == 0)
+            tablaDeSimbolos->almacenarPila(T_CADENA);
         else
-        {
             escribirError("Se esperaba un valor constante");
-        }
 
     }
     else if(lexico.compare("(") == 0)
@@ -1396,7 +1406,13 @@ bool Compilador::constante(void)
         {
             leerLexema();
             if(token.compare(IDENTIFICADOR) != 0)
+            {
                 escribirError("Se esperaba identificador");
+            }
+            else
+            {
+                tablaDeSimbolos->apilarSimbolo(lexico);
+            }
 
             leerLexema();
 
@@ -1404,14 +1420,18 @@ bool Compilador::constante(void)
                 escribirError("Se esperaba asignacion despues de identificador");
 
             leerLexema();
-            if(constanteTipo(token))
-            {
-                //rellenar luego...
-            }
+
+
+            if(token.compare(REAL) == 0)
+                tablaDeSimbolos->almacenarPila(T_REAL);
+            else if(token.compare(ENTERO) == 0 || token.compare(HEXADECIMAL) == 0 ||token.compare(OCTAL) == 0)
+                tablaDeSimbolos->almacenarPila(T_ENTERO);
+            else if(token.compare(CONST_LOGICA) == 0)
+                tablaDeSimbolos->almacenarPila(T_BOOLEANO);
+            else if(token.compare(ALFABETICO) == 0)
+                tablaDeSimbolos->almacenarPila(T_CADENA);
             else
-            {
                 escribirError("Se esperaba un valor constante");
-            }
 
             leerLexema();
         }while(lexico.compare(",") == 0);
@@ -1423,6 +1443,9 @@ bool Compilador::constante(void)
     {
         escribirError("Se esperaba identificador o apertura de parentesis despues de const");
     }
+
+    //por si quedo algun elemento volando
+    tablaDeSimbolos->purgarPila();
 
     return true;
 }
