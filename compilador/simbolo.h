@@ -51,8 +51,24 @@ class Simbolo
         Simbolo& operator= (Simbolo const& otro);
         ~Simbolo();
         void swap(Simbolo& otro);
-        template <typename T> T& getValor(void);
-        template <typename T> void setValor(T const& valor);
+        template <typename T> T& getValor(void) const
+        {
+            return dynamic_cast<dato<T>&>(*this->_ptr)._valor;
+        }
+
+        template <typename T> Simbolo* setValor(T const& valor)
+        {
+            if(!esConstante())
+            {
+                delete _ptr;
+                _ptr = new dato<T>(valor);
+            }
+            else
+            {
+                qDebug() << "No se debe cambiar un valor constante!!!";
+            }
+            return this;
+        }
         Tipo getTipo(void) const;
         Simbolo* setTipo(Tipo tipo);
         std::string getIdentificador() const;

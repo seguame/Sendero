@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include "compilador.h"
+#include "utils/conversor.h"
 
 const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 {
@@ -1370,17 +1371,11 @@ bool Compilador::constante(void)
         return false;
 
 
-    //preparando el apilamiento de variables para ser almacenadas
-    //en la tabla de simbolos
-    tablaDeSimbolos->prepararPila();
-
     leerLexema();
 
     if(token.compare(IDENTIFICADOR) == 0)
     {
-        string temp = lexico; //para buscarlo al final y marcarlo como constante
-
-        tablaDeSimbolos->apilarSimbolo(lexico);
+        Simbolo* simb = new Simbolo(lexico);
 
         leerLexema();
 
@@ -1390,26 +1385,45 @@ bool Compilador::constante(void)
         leerLexema();
 
         if(token.compare(REAL) == 0)
-            tablaDeSimbolos->almacenarPila(T_REAL);
+        {
+            double valor;
+
+            Conversor::cadena2Real(valor, lexico.c_str());
+            simb->setValor(valor)->setConstante()->setTipo(T_REAL);
+
+            tablaDeSimbolos->insertarSimbolo(simb);
+        }
         else if(token.compare(ENTERO) == 0 || token.compare(HEXADECIMAL) == 0 ||token.compare(OCTAL) == 0)
-            tablaDeSimbolos->almacenarPila(T_ENTERO);
+        {
+            long valor;
+
+            Conversor::cadena2Entero(valor, lexico.c_str());
+            simb->setValor(valor)->setConstante()->setTipo(T_ENTERO);
+
+            tablaDeSimbolos->insertarSimbolo(simb);
+        }
         else if(token.compare(CONST_LOGICA) == 0)
-            tablaDeSimbolos->almacenarPila(T_BOOLEANO);
+        {
+            bool valor;
+
+            Conversor::cadena2Booleano(valor, lexico.c_str());
+            simb->setValor(valor)->setConstante()->setTipo(T_BOOLEANO);
+
+            tablaDeSimbolos->insertarSimbolo(simb);
+        }
         else if(token.compare(ALFABETICO) == 0)
-            tablaDeSimbolos->almacenarPila(T_CADENA);
+        {
+            simb->setValor(lexico)->setConstante()->setTipo(T_CADENA);
+
+            tablaDeSimbolos->insertarSimbolo(simb);
+        }
         else
             escribirError("Se esperaba un valor constante");
 
-
-        Simbolo *s = tablaDeSimbolos->buscarSimbolo(temp);
-        if(s != NULL)
-        {
-            s->setConstante();
-        }
     }
     else if(lexico.compare("(") == 0)
     {
-        string temp;
+        Simbolo* simb;
         do
         {
             leerLexema();
@@ -1419,8 +1433,7 @@ bool Compilador::constante(void)
             }
             else
             {
-                tablaDeSimbolos->apilarSimbolo(lexico);
-                temp = lexico;
+                simb = new Simbolo(lexico);
             }
 
             leerLexema();
@@ -1432,22 +1445,40 @@ bool Compilador::constante(void)
 
 
             if(token.compare(REAL) == 0)
-                tablaDeSimbolos->almacenarPila(T_REAL);
+            {
+                double valor;
+
+                Conversor::cadena2Real(valor, lexico.c_str());
+                simb->setValor(valor)->setConstante()->setTipo(T_REAL);
+
+                tablaDeSimbolos->insertarSimbolo(simb);
+            }
             else if(token.compare(ENTERO) == 0 || token.compare(HEXADECIMAL) == 0 ||token.compare(OCTAL) == 0)
-                tablaDeSimbolos->almacenarPila(T_ENTERO);
+            {
+                long valor;
+
+                Conversor::cadena2Entero(valor, lexico.c_str());
+                simb->setValor(valor)->setConstante()->setTipo(T_ENTERO);
+
+                tablaDeSimbolos->insertarSimbolo(simb);
+            }
             else if(token.compare(CONST_LOGICA) == 0)
-                tablaDeSimbolos->almacenarPila(T_BOOLEANO);
+            {
+                bool valor;
+
+                Conversor::cadena2Booleano(valor, lexico.c_str());
+                simb->setValor(valor)->setConstante()->setTipo(T_BOOLEANO);
+
+                tablaDeSimbolos->insertarSimbolo(simb);
+            }
             else if(token.compare(ALFABETICO) == 0)
-                tablaDeSimbolos->almacenarPila(T_CADENA);
+            {
+                simb->setValor(lexico)->setConstante()->setTipo(T_CADENA);
+
+                tablaDeSimbolos->insertarSimbolo(simb);
+            }
             else
                 escribirError("Se esperaba un valor constante");
-
-
-            Simbolo *s = tablaDeSimbolos->buscarSimbolo(temp);
-            if(s != NULL)
-            {
-                s->setConstante();
-            }
 
             leerLexema();
         }while(lexico.compare(",") == 0);
@@ -1460,8 +1491,6 @@ bool Compilador::constante(void)
         escribirError("Se esperaba identificador o apertura de parentesis despues de const");
     }
 
-    //por si quedo algun elemento volando
-    tablaDeSimbolos->purgarPila();
 
     return true;
 }

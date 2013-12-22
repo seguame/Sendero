@@ -50,13 +50,13 @@ void Simbolo::swap(Simbolo& otro)
     std::swap(this->_ptr, otro._ptr);
 }
 
-template <typename T>
+/*template <typename T>
 T& Simbolo::getValor(void)
 {
     return dynamic_cast<dato<T>&>(*this->_ptr)._valor;
-}
+}*/
 
-template <typename T>
+/*template <typename T>
 void Simbolo::setValor(T const& valor)
 {
     //un metodo ineficiente pero aun no encuentro el
@@ -66,7 +66,7 @@ void Simbolo::setValor(T const& valor)
     //se asigna una nueva cadena
     delete _ptr;
     _ptr = new dato<T>(valor);
-}
+}*/
 
 Tipo Simbolo::getTipo(void) const
 {
