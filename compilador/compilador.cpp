@@ -1378,6 +1378,8 @@ bool Compilador::constante(void)
 
     if(token.compare(IDENTIFICADOR) == 0)
     {
+        string temp = lexico; //para buscarlo al final y marcarlo como constante
+
         tablaDeSimbolos->apilarSimbolo(lexico);
 
         leerLexema();
@@ -1398,10 +1400,16 @@ bool Compilador::constante(void)
         else
             escribirError("Se esperaba un valor constante");
 
+
+        Simbolo *s = tablaDeSimbolos->buscarSimbolo(temp);
+        if(s != NULL)
+        {
+            s->setConstante();
+        }
     }
     else if(lexico.compare("(") == 0)
     {
-
+        string temp;
         do
         {
             leerLexema();
@@ -1412,6 +1420,7 @@ bool Compilador::constante(void)
             else
             {
                 tablaDeSimbolos->apilarSimbolo(lexico);
+                temp = lexico;
             }
 
             leerLexema();
@@ -1432,6 +1441,13 @@ bool Compilador::constante(void)
                 tablaDeSimbolos->almacenarPila(T_CADENA);
             else
                 escribirError("Se esperaba un valor constante");
+
+
+            Simbolo *s = tablaDeSimbolos->buscarSimbolo(temp);
+            if(s != NULL)
+            {
+                s->setConstante();
+            }
 
             leerLexema();
         }while(lexico.compare(",") == 0);
