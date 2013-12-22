@@ -672,6 +672,9 @@ bool Compilador::funcion(void)
         }
     }
 
+    //Un scope propio para las variables dela firma de funcion
+    tablaDeSimbolos->nuevoScope();
+
     params();
 
     leerLexema();
@@ -687,6 +690,10 @@ bool Compilador::funcion(void)
     {
         bloque();
     }
+
+
+    //aparte del scope propio de la funcion, tambien se eliminan las de la firma de funcion
+    tablaDeSimbolos->borrarScope();
 
     return true;
 }
@@ -716,6 +723,10 @@ bool Compilador::pars(void)
 
     // la funcion tiene parametros
 
+    //preparando el apilamiento de variables para ser almacenadas
+    //en la tabla de simbolos
+    tablaDeSimbolos->prepararPila();
+
     bool primeraVuelta = true;
 
     do
@@ -731,7 +742,15 @@ bool Compilador::pars(void)
             }
 
             if(token.compare(IDENTIFICADOR) != 0)
+            {
                 escribirError("Se esperaba identificador de variable");
+            }
+            else
+            {
+                //lexico contiene el nombre del identificador
+                tablaDeSimbolos->apilarSimbolo(lexico);
+            }
+
 
             if(primeraVuelta)
                 primeraVuelta = false;
@@ -742,12 +761,21 @@ bool Compilador::pars(void)
 
         if(!tipo(lexico))
         {
+            tablaDeSimbolos->purgarPila();
             escribirError("Se esperaba el tipo de variable");
+        }
+        else
+        {
+            //lexico contiene el tipo de dato a ser apilado
+            tablaDeSimbolos->almacenarPila(determinarTipo(lexico));
         }
 
         leerLexema();
 
     }while(lexico.compare(",") == 0);
+
+    //por si quedo algun elemento volando
+    tablaDeSimbolos->purgarPila();
 
     return true;
 }
