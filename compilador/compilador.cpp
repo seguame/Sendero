@@ -1431,10 +1431,9 @@ bool Compilador::constante(void)
             {
                 escribirError("Se esperaba identificador");
             }
-            else
-            {
-                simb = new Simbolo(lexico);
-            }
+
+            simb = new Simbolo(lexico);
+
 
             leerLexema();
 
