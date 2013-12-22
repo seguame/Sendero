@@ -8,6 +8,8 @@ STR2X_ERROR Conversor::cadena2Entero(long &l, char const *s, int base)
     errno = 0;
     L = strtol(s, &fin, base);
 
+    l = L;
+
     if ((errno == ERANGE && L == LONG_MAX))
     {
         return OVERFLOW;
@@ -22,8 +24,6 @@ STR2X_ERROR Conversor::cadena2Entero(long &l, char const *s, int base)
     {
         return INCONVERTIBLE;
     }
-
-    l = L;
 
     return EXITO;
 }
@@ -47,19 +47,22 @@ STR2X_ERROR Conversor::cadena2Booleano(bool &b, char const *s)
 
 STR2X_ERROR Conversor::cadena2Real(double &d, char const *s)
 {
-    char *fin;
-    double  D;
+    char* fin;
     errno = 0;
-    D = strtod(s, &fin);
+
+    char* anterior = setlocale(LC_NUMERIC, "C");
+    d = strtod(s, &fin);
+    setlocale(LC_NUMERIC, anterior);
 
     if (errno == ERANGE)
     {
         return OVERFLOW;
     }
+
     if (*s == '\0' || *fin != '\0')
     {
         return INCONVERTIBLE;
     }
-    d = D;
+
     return EXITO;
 }
