@@ -671,6 +671,11 @@ bool Compilador::funcion(void)
             else
                 escribirError("la funcion \"principal\" ya fue declarada");
         }
+
+        Simbolo* simbolo = new Simbolo(lexico);
+
+        simbolo->setTipo(T_FUNCION)->esConstante(); //este ultimo como mera validacion de seguridad de que no se le asigne nada
+        tablaDeSimbolos->insertarSimbolo(simbolo);
     }
 
     //Un scope propio para las variables dela firma de funcion
