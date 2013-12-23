@@ -1,26 +1,5 @@
 #include "simbolo.h"
 
-/*template <typename T>
-Simbolo::Simbolo(std::string const& identificador, T const& valor):
-    _ptr(new dato<T>(valor)),
-    _identificador(identificador),
-    _tipo(T_INDEFINIDO),
-    _constante(false),
-    _dimensionado(false),
-    _cantDimensiones(0)
-{
-}
-*/
-/*Simbolo::Simbolo(std::string const& identificador):
-    _ptr(new dato<int>(0)), //Si no le doy valor de inicio, caput :/
-    _identificador(identificador),
-    _tipo(T_INDEFINIDO),
-    _constante(false),
-    _dimensionado(false),
-    _cantDimensiones(0)
-{
-}*/
-
 Simbolo::Simbolo(Simbolo const& otro):
     _ptr(otro._ptr->clone()),
     _identificador(otro.getIdentificador()),
@@ -51,23 +30,6 @@ void Simbolo::swap(Simbolo& otro)
     std::swap(this->_ptr, otro._ptr);
 }
 
-/*template <typename T>
-T& Simbolo::getValor(void)
-{
-    return dynamic_cast<dato<T>&>(*this->_ptr)._valor;
-}*/
-
-/*template <typename T>
-void Simbolo::setValor(T const& valor)
-{
-    //un metodo ineficiente pero aun no encuentro el
-    //modo de dejar sin inicializar ptr_ y hacer validacio aqui
-    //sobre si requiero solo reasignar el valor o debo crearlo
-    //este par de lineas serian lo que se usaria para cuando
-    //se asigna una nueva cadena
-    delete _ptr;
-    _ptr = new dato<T>(valor);
-}*/
 
 Tipo Simbolo::getTipo(void) const
 {
@@ -121,12 +83,12 @@ std::string Simbolo::toString(void) const
 {
     std::stringstream dimensiones;
     dimensiones << _cantDimensiones;
-    std::string tipo = (_tipo == T_ENTERO ? "Entero" : _tipo == T_REAL ? "Real" : _tipo == T_BOOLEANO ? "Booleano" : _tipo == T_CADENA ? "Cadena" : "Indefinido");
+    std::string tipo = (_tipo == T_ENTERO ? "Entero" : _tipo == T_REAL ? "Real" : _tipo == T_BOOLEANO ? "Booleano" : _tipo == T_CADENA ? "Cadena" : _tipo == T_FUNCION ? "Funcion" : "Indefinido");
 
 
     std::stringstream valor;
 
-    if(_ptr == NULL || _seteado == false)
+    if(_ptr == NULL || (_seteado == false && _tipo != T_FUNCION))
     {
         valor << "NULO";
     }
@@ -135,20 +97,19 @@ std::string Simbolo::toString(void) const
         switch(_tipo)
         {
             case T_ENTERO:
-            qDebug() << "entero";
                 valor << this->getValor<long>();
                 break;
             case T_REAL:
-            qDebug() << "real";
                 valor << this->getValor<double>();
                 break;
             case T_BOOLEANO:
-            qDebug() << "bool";
                 valor << this->getValor<bool>();
                 break;
             case T_CADENA:
-            qDebug() << "string";
                 valor << (this->getValor<std::string>());
+                break;
+            case T_FUNCION:
+                valor << "FUNCION";
                 break;
             default:
                 valor << "NULO";
