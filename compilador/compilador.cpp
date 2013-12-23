@@ -675,7 +675,12 @@ bool Compilador::funcion(void)
         Simbolo* simbolo = new Simbolo(lexico);
 
         simbolo->setTipo(T_FUNCION)->esConstante(); //este ultimo como mera validacion de seguridad de que no se le asigne nada
-        tablaDeSimbolos->insertarSimbolo(simbolo);
+
+        if(!tablaDeSimbolos->insertarSimbolo(simbolo))
+        {
+            delete simbolo;
+            escribirError("La funcion \"" + lexico + "\" ya fue declarada previamente");
+        }
     }
 
     //Un scope propio para las variables dela firma de funcion
