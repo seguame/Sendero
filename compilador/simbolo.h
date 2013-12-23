@@ -43,6 +43,8 @@ class Simbolo
         bool _dimensionado;
         int _cantDimensiones;
 
+        bool _seteado; //control interno
+
 
     public:
         //template <typename T> Simbolo(std::string const& identificador, T const& valor);
@@ -52,7 +54,8 @@ class Simbolo
             _tipo(T_INDEFINIDO),
             _constante(false),
             _dimensionado(false),
-            _cantDimensiones(0)
+            _cantDimensiones(0),
+            _seteado(false)
             {
             }
         Simbolo(Simbolo const& otro);
@@ -68,6 +71,8 @@ class Simbolo
         {
             if(!esConstante())
             {
+                if(!_seteado) _seteado = true;
+
                 delete _ptr;
                 _ptr = new dato<T>(valor);
             }

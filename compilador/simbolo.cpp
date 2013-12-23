@@ -27,7 +27,8 @@ Simbolo::Simbolo(Simbolo const& otro):
     _tipo(otro.getTipo()),
     _constante(otro.esConstante()),
     _dimensionado(otro.esDimensionado()),
-    _cantDimensiones(otro.getCantidadDimensiones())
+    _cantDimensiones(otro.getCantidadDimensiones()),
+    _seteado(otro._seteado)
 {
 }
 
@@ -125,7 +126,7 @@ std::string Simbolo::toString(void) const
 
     std::stringstream valor;
 
-    if(_ptr == NULL)
+    if(_ptr == NULL || _seteado == false)
     {
         valor << "NULO";
     }
