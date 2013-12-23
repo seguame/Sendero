@@ -5,6 +5,7 @@
 #include <climits>
 #include <cstring>
 #include <cerrno>
+#include <clocale>
 
 enum STR2X_ERROR { EXITO, OVERFLOW, UNDERFLOW, INCONVERTIBLE };
 
