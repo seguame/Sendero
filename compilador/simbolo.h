@@ -82,6 +82,7 @@ class Simbolo
             }
             return this;
         }
+        std::string getStringTipo(void) const;
         Tipo getTipo(void) const;
         Simbolo* setTipo(Tipo tipo);
         std::string getIdentificador() const;

@@ -30,6 +30,15 @@ void Simbolo::swap(Simbolo& otro)
     std::swap(this->_ptr, otro._ptr);
 }
 
+std::string Simbolo::getStringTipo(void) const
+{
+    return (_tipo == T_ENTERO ? "Entero" :
+            _tipo == T_REAL ? "Real" :
+            _tipo == T_BOOLEANO ? "Logico" :
+            _tipo == T_CADENA ? "Alfabetico" :
+            _tipo == T_FUNCION ? "Funcion" :
+            "Indefinido");
+}
 
 Tipo Simbolo::getTipo(void) const
 {
@@ -83,7 +92,7 @@ std::string Simbolo::toString(void) const
 {
     std::stringstream dimensiones;
     dimensiones << _cantDimensiones;
-    std::string tipo = (_tipo == T_ENTERO ? "Entero" : _tipo == T_REAL ? "Real" : _tipo == T_BOOLEANO ? "Booleano" : _tipo == T_CADENA ? "Cadena" : _tipo == T_FUNCION ? "Funcion" : "Indefinido");
+    std::string tipo = getStringTipo();
 
 
     std::stringstream valor;
