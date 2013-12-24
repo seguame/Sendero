@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     compilador/simbolo.cpp \
     compilador/tablasimbolos.cpp \
     compilador/utils/conversor.cpp \
-    compilador/utils/reportadorerrores.cpp
+    compilador/utils/reportadorerrores.cpp \
+    compilador/utils/ReporteadorException.cpp
 
 HEADERS  += \
     ui/VentanaPrincipal.h \
@@ -33,7 +34,8 @@ HEADERS  += \
     compilador/enumerators.h \
     compilador/tablasimbolos.h \
     compilador/utils/conversor.h \
-    compilador/utils/reportadorerrores.h
+    compilador/utils/reportadorerrores.h \
+    compilador/utils/ReporteadorException.h
 
 RESOURCES += \
     Imagenes.qrc
