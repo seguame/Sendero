@@ -200,3 +200,29 @@ void TablaSimbolos::purgarPila(void)
         pila->pop();
     }
 }
+
+void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)
+{
+     //Un scope propio para las variables de la firma de funcion
+    nuevoScope();
+
+    if(funcion != NULL)
+    {
+        contextoFuncion = funcion->setTipo(T_FUNCION)->setConstante();
+    }
+}
+
+void TablaSimbolos::setTipoRetornoFuncion(Tipo t)
+{
+    if(contextoFuncion != NULL)
+    {
+        contextoFuncion->setTipoRetorno(t);
+    }
+}
+
+void TablaSimbolos::salirContextoFuncion(void)
+{
+    //aparte del scope propio de la funcion, tambien se eliminan las de la firma de funcion
+    borrarScope();
+    contextoFuncion = NULL;
+}

@@ -38,7 +38,9 @@ public:
     void almacenarPila(Tipo tipo);
     void purgarPila(void);
 
-
+    void entrarContextoFuncion(Simbolo* funcion);
+    void setTipoRetornoFuncion(Tipo t);
+    void salirContextoFuncion(void);
 
 
 private:
@@ -48,6 +50,8 @@ private:
     Compilador* refCompilador;
     vector< map <string, Simbolo*>* > *simbolos;
     stack<Simbolo*> *pila;
+
+    Simbolo* contextoFuncion;
 };
 
 #endif // TABLASIMBOLOS_H
