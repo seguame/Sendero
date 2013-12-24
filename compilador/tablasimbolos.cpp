@@ -192,6 +192,16 @@ void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
     }
 }
 
+void TablaSimbolos::apilarTipo(Tipo tipo)
+{
+    pilaTipos->push(tipo);
+}
+
+void TablaSimbolos::checarValidezDeOperaciones(void)
+{
+
+}
+
 void TablaSimbolos::purgarPilas(void)
 {
     qDebug() << "Purgando las pilas";

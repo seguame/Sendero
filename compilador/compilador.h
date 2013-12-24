@@ -28,7 +28,7 @@ class Compilador
             if(t.compare(CONST_LOGICA) == 0) return T_BOOLEANO;
             if(t.compare(ALFABETICO) == 0) return T_CADENA;
 
-            return T_INDEFINIDO;
+            return T_INVALIDO;
         }
 
     private:

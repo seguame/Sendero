@@ -36,6 +36,8 @@ public:
     void prepararPilas(void);
     void apilarSimbolo(string identificador, bool estaInicializado);
     void almacenarPilaSimbolos(Tipo tipo);
+    void apilarTipo(Tipo tipo);
+    void checarValidezDeOperaciones(void);
     void purgarPilas(void);
 
     void entrarContextoFuncion(Simbolo* funcion);

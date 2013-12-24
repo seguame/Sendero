@@ -621,7 +621,7 @@ bool Compilador::funcion(void)
         return false;
 
     Simbolo* func = NULL;
-    Tipo tipoRetorno = T_INDEFINIDO;
+    Tipo tipoRetorno = T_INVALIDO;
 
     leerLexema();
 
@@ -1633,13 +1633,23 @@ void Compilador::termino (bool terminoOpcional)
     qDebug() << "termino";
     if(constanteTipo(token))
     {
+        tablaDeSimbolos->apilarTipo(determinarTipo(token));
         leerLexema();
     }
     else if(token.compare(IDENTIFICADOR) == 0)
     {
-        if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
+        Simbolo* temp = tablaDeSimbolos->buscarSimbolo(lexico);
+
+        if(temp == NULL)
         {
             escribirError(lexico + " no esta definido");
+        }
+        else
+        {
+            if(temp->getTipo() != T_FUNCION)
+            {
+                tablaDeSimbolos->apilarTipo(temp->getTipo());
+            }
         }
 
         leerLexema();

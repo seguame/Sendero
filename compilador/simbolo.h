@@ -51,12 +51,12 @@ class Simbolo
         Simbolo(std::string const& identificador):
             _ptr(NULL),
             _identificador(identificador),
-            _tipo(T_INDEFINIDO),
+            _tipo(T_INVALIDO),
             _constante(false),
             _dimensionado(false),
             _cantDimensiones(0),
             _inicializado(false),
-            _retorno(T_INDEFINIDO)
+            _retorno(T_INVALIDO)
             {
             }
         Simbolo(Simbolo const& otro);
