@@ -730,6 +730,9 @@ bool Compilador::pars(void)
             else
             {
                 //lexico contiene el nombre del identificador
+                //como son parametros de una funcion se sobreentiende que
+                //van con un valor asociado, asi que se marcan como
+                //que fueron inicializadas
                 tablaDeSimbolos->apilarSimbolo(lexico, true);
             }
 
