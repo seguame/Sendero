@@ -647,8 +647,9 @@ bool Compilador::funcion(void)
         }
     }
 
-    //Un scope propio para las variables de la firma de funcion
-    tablaDeSimbolos->nuevoScope();
+
+    tablaDeSimbolos->entrarContextoFuncion(func);
+
 
     params();
 
@@ -659,6 +660,10 @@ bool Compilador::funcion(void)
     if(tipo(lexico))
     {
         tipoRetorno = determinarTipo(lexico);
+
+        //setear que la funcion retorna algo
+        tablaDeSimbolos->setTipoRetornoFuncion(tipoRetorno);
+
         leerLexema();
         bloque();
     }
@@ -667,15 +672,7 @@ bool Compilador::funcion(void)
         bloque();
     }
 
-
-    if(func != NULL)
-    {
-        //Almacenando lo obtenido del simbolo de la funcion
-        func->setTipo(T_FUNCION)->setTipoRetorno(tipoRetorno)->esConstante(); //este ultimo como mera validacion de seguridad de que no se le asigne nada
-    }
-
-    //aparte del scope propio de la funcion, tambien se eliminan las de la firma de funcion
-    tablaDeSimbolos->borrarScope();
+    tablaDeSimbolos->salirContextoFuncion();
 
     return true;
 }
@@ -947,7 +944,7 @@ bool Compilador::comando (void)
 
             if(temp == NULL)
             {
-                escribirError(lexico + " no esta definido");
+                 asigna(); //para que siga el flujo normar de lectura, dentro se reporta el error
             }
             else
             {
