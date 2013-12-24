@@ -27,7 +27,10 @@ void ReportadorErrores::Inicializar(const string &ruta)
 void ReportadorErrores::Terminar(void)
 {
     if(instancia != NULL)
+    {
         delete instancia;
+        instancia = NULL;
+    }
 }
 
 
