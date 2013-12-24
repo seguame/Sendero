@@ -620,6 +620,8 @@ bool Compilador::funcion(void)
     if(lexico.compare("funcion") != 0)
         return false;
 
+    Simbolo* func = NULL;
+    Tipo tipoRetorno = T_INDEFINIDO;
 
     leerLexema();
 
@@ -635,18 +637,17 @@ bool Compilador::funcion(void)
                 escribirError("la funcion \"principal\" ya fue declarada");
         }
 
-        Simbolo* simbolo = new Simbolo(lexico);
+        func = new Simbolo(lexico);
 
-        simbolo->setTipo(T_FUNCION)->esConstante(); //este ultimo como mera validacion de seguridad de que no se le asigne nada
-
-        if(!tablaDeSimbolos->insertarSimbolo(simbolo))
+        if(!tablaDeSimbolos->insertarSimbolo(func))
         {
-            delete simbolo;
+            delete func;
+            func = NULL;
             escribirError("La funcion \"" + lexico + "\" ya fue declarada previamente");
         }
     }
 
-    //Un scope propio para las variables dela firma de funcion
+    //Un scope propio para las variables de la firma de funcion
     tablaDeSimbolos->nuevoScope();
 
     params();
@@ -657,6 +658,7 @@ bool Compilador::funcion(void)
     //si no lo era, validar en bloque que lo que sigue es un {
     if(tipo(lexico))
     {
+        tipoRetorno = determinarTipo(lexico);
         leerLexema();
         bloque();
     }
@@ -665,6 +667,12 @@ bool Compilador::funcion(void)
         bloque();
     }
 
+
+    if(func != NULL)
+    {
+        //Almacenando lo obtenido del simbolo de la funcion
+        func->setTipo(T_FUNCION)->setTipoRetorno(tipoRetorno)->esConstante(); //este ultimo como mera validacion de seguridad de que no se le asigne nada
+    }
 
     //aparte del scope propio de la funcion, tambien se eliminan las de la firma de funcion
     tablaDeSimbolos->borrarScope();
