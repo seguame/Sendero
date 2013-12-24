@@ -38,7 +38,7 @@ ReportadorErrores* ReportadorErrores::ObtenerInstancia(void)
 {
     if(instancia == NULL)
     {
-        throw new ReporteadorException;
+        throw ReporteadorException();
     }
 
     return instancia;
