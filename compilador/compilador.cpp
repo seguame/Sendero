@@ -943,19 +943,32 @@ bool Compilador::comando (void)
             //Antes no hago la lectura para checar si el identificador
             //que llegó es "con" o "fmt"
 
+            Simbolo* temp = tablaDeSimbolos->buscarSimbolo(lexico);
 
-            //TODO: Verificar por semantica si el identificador esta registrado como funcion o como
-            //      variable para caer en el caso correcto
-            leerLexema();
-
-            if(lexico.compare("(") == 0)
+            if(temp == NULL)
             {
-                lFunc_1();
-                leerLexema();
+                escribirError(lexico + " no esta definido");
             }
             else
             {
-                asigna(false);
+                if(temp->getTipo() == T_FUNCION)
+                {
+                    leerLexema();
+
+                    if(lexico.compare("(") == 0)
+                    {
+                        lFunc_1();
+                        leerLexema();
+                    }
+                    else
+                    {
+                        escribirError("Se esperaba apertura de parentesis despues de la funcion " + temp->getIdentificador());
+                    }
+                }
+                else
+                {
+                    asigna();
+                }
             }
         }
     }
@@ -994,26 +1007,24 @@ bool Compilador::comando (void)
     return requiereSeparador;
 }
 
-void Compilador::asigna (bool checarIdentificador)
+void Compilador::asigna (void)
 {
     qDebug() << "asigna";
 
-    if(checarIdentificador)
+    if(token.compare(IDENTIFICADOR) != 0)
     {
-        if(token.compare(IDENTIFICADOR) != 0)
-        {
-            escribirError("Se espera un identificador para la asignacion");
-        }
-        else
-        {
-            if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
-            {
-                escribirError(lexico + " no esta definido");
-            }
-        }
-
-        leerLexema();
+        escribirError("Se espera un identificador para la asignacion");
     }
+    else
+    {
+        if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
+        {
+            escribirError(lexico + " no esta definido");
+        }
+    }
+
+    leerLexema();
+
 
     dimension();
 
@@ -1121,7 +1132,7 @@ bool Compilador::desde(void)
         if(lexico.compare(";") == 0)
             break;
 
-        asigna(true);
+        asigna();
 
     }while(lexico.compare(",") == 0);
 
@@ -1146,7 +1157,7 @@ bool Compilador::desde(void)
         if(lexico.compare("{") == 0)
             break;
 
-        asigna(true);
+        asigna();
 
     }while(lexico.compare(",") == 0);
 

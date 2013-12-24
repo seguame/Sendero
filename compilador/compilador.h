@@ -96,7 +96,7 @@ class Compilador
         bool vars (bool darAvanceAlFinal);
         void estatutos(void);
         bool comando(void);
-        void asigna(bool checarIdentificador);
+        void asigna(void);
         void dimension(void);
         void expr(bool esOpcional);
         void opy(bool esOpcional);
