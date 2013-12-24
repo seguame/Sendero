@@ -43,6 +43,7 @@ class Simbolo
         bool _dimensionado;
         int _cantDimensiones;
         bool _inicializado;
+        Tipo _retorno; //usado en funciones
 
 
     public:
@@ -54,7 +55,8 @@ class Simbolo
             _constante(false),
             _dimensionado(false),
             _cantDimensiones(0),
-            _inicializado(false)
+            _inicializado(false),
+            _retorno(T_INDEFINIDO)
             {
             }
         Simbolo(Simbolo const& otro);
@@ -123,6 +125,8 @@ class Simbolo
         std::string toString(void) const;
         Simbolo* setInicializado(void);
         bool estaInicializado(void) const;
+        Simbolo* setTipoRetorno(Tipo t);
+        Tipo getTipoRetorno(void) const;
 };
 
 #endif // SIMBOLO_H
