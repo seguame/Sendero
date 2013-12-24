@@ -1,9 +1,11 @@
 #include "tablasimbolos.h"
 
-TablaSimbolos::TablaSimbolos()
+TablaSimbolos::TablaSimbolos(Compilador* c)
+    :pila(NULL)
 {
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
+    refCompilador = c;
 }
 
 TablaSimbolos::~TablaSimbolos()
@@ -24,7 +26,7 @@ bool TablaSimbolos::insertarSimbolo(Simbolo* x)
     qDebug() << "Insertando simbolo en tabla: " << x->getIdentificador().c_str();
     map <string, Simbolo*>* temp = simbolos->back();
 
-    if(!existeSimbolo(x->getIdentificador(), temp))
+    if(!existeSimbolo(x, temp))
     {
         pair<string, Simbolo*> par(x->getIdentificador(), x);
         temp->insert(par);
@@ -120,17 +122,44 @@ void TablaSimbolos::purgarTabla(void)
     simbolos->clear();
 }
 
-bool TablaSimbolos::existeSimbolo(const string identificador, map <string, Simbolo*>* temp) const
+bool TablaSimbolos::existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* temp) const
 {
     qDebug() << "Checando existencia de simbolo";
-    return temp->find(identificador) != temp->end();
+
+    map<string, Simbolo*>::const_iterator otro = temp->find(buscable->getIdentificador());
+
+    if(otro != temp->end())
+    {
+        pair<string, Simbolo*> par = *otro;
+        string error = buscable->getIdentificador() + " ya fue definido como ";
+
+        if(par.second->esConstante())
+        {
+            error += "constante de tipo " + par.second->getStringTipo();
+        }
+        else
+        {
+            error += par.second->getStringTipo() + " y aqui se declara como " + buscable->getStringTipo();
+        }
+
+        refCompilador->escribirError(error);
+        //ReportadorErrores::ObtenerInstancia()->escribirError(0, 0,buscable->getIdentificador(), error, "");
+
+        return true;
+    }
+
+    return false;
 }
 
 
 void TablaSimbolos::prepararPila(void)
 {
     qDebug() << "Preparando apilamiento";
-    delete pila;
+    if(pila != NULL)
+    {
+        delete pila;
+        pila = NULL;
+    }
     pila = new stack<Simbolo*>();
 }
 

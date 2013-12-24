@@ -7,6 +7,7 @@
 
 using namespace std;
 
+class TablaSimbolos;
 
 class Compilador
 {
@@ -16,6 +17,7 @@ class Compilador
         void realizarMagia( void );
         string getRutaAlArchivo( void );
         string getNombreArchivo( void );
+        void escribirError(string error);
 
         Tipo determinarTipo(std::string t)
         {
@@ -39,7 +41,6 @@ class Compilador
         void hacerAnalisisSintactico( void );
         void saltarLineasEnBlanco( void );
 
-        void escribirError(string error);
         void escribirLog( void );
 
         ////////////////////
@@ -47,13 +48,15 @@ class Compilador
         bool enComentarioMultilinea;
         bool finDeArchivo;
         bool existeFuncionPrincipal;
-        string renglon;
-        unsigned int _lineaActual;
-        unsigned int _columnaActual;
+
         string token;
         string _rutaCompletaArchivo;
         string _rutaAlArchivo;
         string _nombreArchivo;
+
+        string renglon;
+        unsigned int _lineaActual;
+        unsigned int _columnaActual;
 
 
         ofstream salidaInformacion;

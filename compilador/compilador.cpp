@@ -83,7 +83,7 @@ Compilador::Compilador(string rutaArchivo) :
     existeFuncionPrincipal = false;
 
     separarNombreArchivo(_rutaCompletaArchivo);
-    tablaDeSimbolos = new TablaSimbolos();
+    tablaDeSimbolos = new TablaSimbolos(this);
 }
 
 Compilador::~Compilador()

@@ -10,15 +10,19 @@
 
 #include "enumerators.h"
 #include "simbolo.h"
+#include "utils/reportadorerrores.h"
+#include "compilador.h"
 
 #include <QDebug>
 
 using namespace std;
 
+class Compilador;
+
 class TablaSimbolos
 {
 public:
-    TablaSimbolos();
+    TablaSimbolos(Compilador* c);
     ~TablaSimbolos();
 
     bool insertarSimbolo(Simbolo* x);
@@ -36,9 +40,10 @@ public:
 
 
 private:
-    bool existeSimbolo(const string identificador, map <string, Simbolo*>* temp) const;
+    bool existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* temp) const;
 
 private:
+    Compilador* refCompilador;
     vector< map <string, Simbolo*>* > *simbolos;
     stack<Simbolo*> *pila;
 };
