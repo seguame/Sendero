@@ -5,8 +5,6 @@
 #include "enumerators.h"
 #include "tablasimbolos.h"
 
-#include <QString>
-
 using namespace std;
 
 
@@ -59,7 +57,6 @@ class Compilador
 
 
         ofstream salidaInformacion;
-        //ofstream salidaErrores;
 
         static const Estado matriz_transiciones[ESTADOS][ENTRADAS];
         static const string palabras_reservadas[PALABRAS_RESERVADAS];

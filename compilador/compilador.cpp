@@ -1,6 +1,3 @@
-#include <iostream>
-#include <sstream>
-
 #include <QDebug>
 
 #include "compilador.h"
@@ -231,10 +228,7 @@ string Compilador::siguienteLexema(void)
         {
             estadoAnterior = estado;
             estado = matriz_transiciones[estado][entrada];
-            /*int f = estado;
-            stringstream ss;
-            ss << f;
-            qDebug() << c << QString((ss.str().c_str()));*/
+
             if(estado != ERR && estado != ACP)
             {
                 lexema += c;
@@ -250,11 +244,6 @@ string Compilador::siguienteLexema(void)
             estadoAnterior = estado;
             estado = ACP;
         }
-
-        /*if(entrada == ESPACIO && estado != e16 && estado != e33 && estado != e34 && estado != e35)
-        {
-            estado = ACP;
-        }*/
 
         if(_columnaActual >= tamanio_linea)
         {
@@ -394,9 +383,6 @@ string Compilador::siguienteLexema(void)
                 break;
         }
 
-        //Remover los espacios en blanco laterales del renglon
-        //No se hace antes para no moficiar el conteo de columnas
-        //remove(renglon.begin(), renglon.end(), ' ');
         error += " y llego: " + c;
 
         escribirError(error);
@@ -412,9 +398,6 @@ string Compilador::siguienteLexema(void)
 
 Entrada Compilador::siguienteEntrada(char caracter)
 {
-    //stringstream ss;
-    //ss << _columnaActual;
-    //qDebug() << QString(((ss.str()+ " ")+=caracter).c_str());
     char c = tolower(caracter);
     switch(c)
     {
@@ -502,11 +485,6 @@ Entrada Compilador::siguienteEntrada(char caracter)
             return ESPACIO;
 
         default:
-            //int f = c;
-            //stringstream ss;
-            //ss << f;
-            //qDebug() << QString((string("Caracter no reconocido: ")+=c).c_str());
-            //qDebug() << QString((ss.str().c_str()));
             return OTRO;
     }
 }
