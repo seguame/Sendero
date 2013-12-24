@@ -49,8 +49,7 @@ private:
 private:
     Compilador* refCompilador;
     vector< map <string, Simbolo*>* > *simbolos;
-    stack<Simbolo*> *pila;
-
+    stack<Simbolo*> *pilaSimbolos;
     Simbolo* contextoFuncion;
 };
 

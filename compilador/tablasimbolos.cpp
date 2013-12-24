@@ -1,7 +1,7 @@
 #include "tablasimbolos.h"
 
 TablaSimbolos::TablaSimbolos(Compilador* c)
-    :pila(NULL)
+    :pilaSimbolos(NULL)
 {
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
@@ -143,7 +143,6 @@ bool TablaSimbolos::existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* tem
         }
 
         refCompilador->escribirError(error);
-        //ReportadorErrores::ObtenerInstancia()->escribirError(0, 0,buscable->getIdentificador(), error, "");
 
         return true;
     }
@@ -155,12 +154,20 @@ bool TablaSimbolos::existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* tem
 void TablaSimbolos::prepararPila(void)
 {
     qDebug() << "Preparando apilamiento";
-    if(pila != NULL)
+    if(pilaSimbolos == NULL)
     {
-        delete pila;
-        pila = NULL;
+        pilaSimbolos = new stack<Simbolo*>();
     }
-    pila = new stack<Simbolo*>();
+    else
+    {
+        while(!pilaSimbolos->empty())
+        {
+            delete pilaSimbolos->top();
+            pilaSimbolos->pop();
+        }
+    }
+
+
 }
 
 void TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
@@ -174,30 +181,26 @@ void TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
         s->setInicializado();
     }
 
-    pila->push(s);
+    pilaSimbolos->push(s);
 }
 
 void TablaSimbolos::almacenarPila(Tipo tipo)
 {
     qDebug() << "Almacenando contenido de la pila";
-    while(!pila->empty())
+    while(!pilaSimbolos->empty())
     {
-        if(!this->insertarSimbolo(pila->top()->setTipo(tipo)))
-        {
-            //TODO: Añadir reporte de este error
-            qDebug() << pila->top()->getIdentificador().c_str() << " ya está definido";
-        }
-        pila->pop();
+        this->insertarSimbolo(pilaSimbolos->top()->setTipo(tipo));
+        pilaSimbolos->pop();
     }
 }
 
 void TablaSimbolos::purgarPila(void)
 {
     qDebug() << "Purgando la pila";
-    while(!pila->empty())
+    while(!pilaSimbolos->empty())
     {
-        delete pila->top();
-        pila->pop();
+        delete pilaSimbolos->top();
+        pilaSimbolos->pop();
     }
 }
 
