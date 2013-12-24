@@ -5,6 +5,7 @@
 
 #include "compilador.h"
 #include "utils/conversor.h"
+#include "utils/reportadorerrores.h"
 
 const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 {
@@ -97,7 +98,8 @@ Compilador::~Compilador()
 void Compilador::realizarMagia(void)
 {
     salidaInformacion.open((_rutaAlArchivo+"/"+_nombreArchivo+".lexemas").c_str());
-    salidaErrores.open((_rutaAlArchivo+"/"+_nombreArchivo+".errores").c_str());
+
+    ReportadorErrores::Inicializar(_rutaAlArchivo+"/"+_nombreArchivo);
 
     compilable.open(_rutaCompletaArchivo.c_str());
 
@@ -115,14 +117,12 @@ void Compilador::realizarMagia(void)
 
     if(enComentarioMultilinea) //se acabo el archivo y no se cerro el comentario
     {
-        stringstream ss;
-        ss << _lineaActual;
-        salidaErrores << ss.str() << ",,," << 0 << ",,," << lexico << ",,,Fin de archivo inesperado,,," << renglon << endl;
+        escribirError("Fin de archivo inesperado");
     }
 
     compilable.close();
     salidaInformacion.close();
-    salidaErrores.close();
+    ReportadorErrores::Terminar();
 }
 
 
@@ -150,16 +150,7 @@ void Compilador::saltarLineasEnBlanco(void)
 
 void Compilador::escribirError(string error)
 {
-    stringstream linea;
-    stringstream colum;
-
-    linea << (_lineaActual + 1);
-    salidaErrores << linea.str() << ",,,";
-    colum << _columnaActual;
-    salidaErrores << colum.str() << ",,,";
-    salidaErrores << lexico << ",,,";
-
-    salidaErrores << error << ",,," << renglon << endl;
+    ReportadorErrores::ObtenerInstancia()->escribirError(_lineaActual, _columnaActual, lexico, error, renglon);
 }
 
 void Compilador::escribirLog(void)
@@ -352,69 +343,63 @@ string Compilador::siguienteLexema(void)
     }
     else if(estado == ERR)
     {
-        stringstream linea;
-        stringstream colum;
-
-        linea << (_lineaActual + 1);
-        salidaErrores << linea.str() << ",,,";
-        colum << _columnaActual;
-        salidaErrores << colum.str() << ",,,";
-        salidaErrores << lexema << ",,,";
+        string error;
 
         switch(estadoAnterior)
         {
             case e4: case e5:
-                salidaErrores << "Constante hexadecimal incompleta. Se esperaba 0-9|A-F";
+                error = "Constante hexadecimal incompleta. Se esperaba 0-9|A-F";
                 break;
 
             case e1:
-                salidaErrores << "Valor Octal|Hexadecimal|Decimal invalido. Se esperaba 0-7|.|X";
+                error = "Valor Octal|Hexadecimal|Decimal invalido. Se esperaba 0-7|.|X";
                 break;
             case e2: case e3:
-                salidaErrores << "Valor Octal invalido. Se esperaba 0-7";
+                error = "Valor Octal invalido. Se esperaba 0-7";
                 break;
             case e7:
-                salidaErrores << "Falta parte decimal. Se esperaba digito";
+                error = "Falta parte decimal. Se esperaba digito";
                 break;
 
             case e9:
-                salidaErrores << "Falta parte exponencial. Se esperaba +|-|digito";
+                error = "Falta parte exponencial. Se esperaba +|-|digito";
                 break;
 
             case e10:
-                salidaErrores << "Falta parte exponencial. Se esperaba digito";
+                error = "Falta parte exponencial. Se esperaba digito";
                 break;
 
             case e13:
-                salidaErrores << "_ invalido como identificador. Se espera _+|[letra|digito]+";
+                error = "_ invalido como identificador. Se espera _+|[letra|digito]+";
                 break;
 
             case e16:
-                salidaErrores << "Fin de cadena no encontrado. Se esperaba \"";
+                error = "Fin de cadena no encontrado. Se esperaba \"";
                 break;
 
             case e20:
-                salidaErrores << "Se esperaba = | : despues de =";
+                error = "Se esperaba = | : despues de =";
                 break;
 
             case e29:
-                salidaErrores << "se esperaba un caracter cualquiera excepto \"'\"";
+                error = "se esperaba un caracter cualquiera excepto \"'\"";
                 break;
 
             case e30:
-                salidaErrores << "se esperaba\"'\"";
+                error = "se esperaba\"'\"";
                 break;
 
             default:
-                salidaErrores << "DEBUG";
+                error = "DEBUG";
                 break;
         }
 
         //Remover los espacios en blanco laterales del renglon
         //No se hace antes para no moficiar el conteo de columnas
         //remove(renglon.begin(), renglon.end(), ' ');
+        error += " y llego: " + c;
 
-        salidaErrores << " y llego: " << c << ",,," << renglon << endl;
+        escribirError(error);
     }
     else
     {
