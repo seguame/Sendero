@@ -7,7 +7,7 @@ Simbolo::Simbolo(Simbolo const& otro):
     _constante(otro.esConstante()),
     _dimensionado(otro.esDimensionado()),
     _cantDimensiones(otro.getCantidadDimensiones()),
-    _seteado(otro._seteado)
+    _inicializado(otro.estaInicializado())
 {
 }
 
@@ -88,6 +88,17 @@ bool Simbolo::esConstante(void) const
     return _constante;
 }
 
+Simbolo* Simbolo::setInicializado(void)
+{
+    _inicializado = true;
+    return this;
+}
+
+bool Simbolo::estaInicializado(void) const
+{
+    return _inicializado;
+}
+
 std::string Simbolo::toString(void) const
 {
     std::stringstream dimensiones;
@@ -97,7 +108,7 @@ std::string Simbolo::toString(void) const
 
     std::stringstream valor;
 
-    if(_ptr == NULL || (_seteado == false && _tipo != T_FUNCION))
+    if(_ptr == NULL || (!estaInicializado() && _tipo != T_FUNCION))
     {
         valor << "NULO";
     }
@@ -106,18 +117,23 @@ std::string Simbolo::toString(void) const
         switch(_tipo)
         {
             case T_ENTERO:
+            qDebug() << "Entero";
                 valor << this->getValor<long>();
                 break;
             case T_REAL:
+            qDebug() << "real";
                 valor << this->getValor<double>();
                 break;
             case T_BOOLEANO:
+            qDebug() << "bool";
                 valor << this->getValor<bool>();
                 break;
             case T_CADENA:
+            qDebug() << "cadena";
                 valor << (this->getValor<std::string>());
                 break;
             case T_FUNCION:
+            qDebug() << "funcion";
                 valor << "FUNCION";
                 break;
             default:
@@ -125,6 +141,8 @@ std::string Simbolo::toString(void) const
                 break;
         }
     }
+    qDebug() << "pasamos";
 
-    return "ID: " + _identificador + " Tipo: " + tipo + " Const: " + (_constante ? "Si" : "No") + " Dimen: " + (_dimensionado ? "Si":"No") + " #: " + dimensiones.str() + " Valor: " + valor.str();
+    return "ID: " + _identificador + " Tipo: " + tipo + " Const: " + (_constante ? "Si" : "No") + " Dimen: " + (_dimensionado ? "Si":"No") + " #: " + dimensiones.str() +
+            " Inicializado: " + (_inicializado ? "Si":"No") + " Valor: " + valor.str();
 }

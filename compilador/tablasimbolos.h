@@ -34,9 +34,11 @@ public:
 
 
     void prepararPila(void);
-    void apilarSimbolo(string s);
+    void apilarSimbolo(string identificador, bool estaInicializado);
     void almacenarPila(Tipo tipo);
     void purgarPila(void);
+
+
 
 
 private:

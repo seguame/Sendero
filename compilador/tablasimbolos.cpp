@@ -163,10 +163,18 @@ void TablaSimbolos::prepararPila(void)
     pila = new stack<Simbolo*>();
 }
 
-void TablaSimbolos::apilarSimbolo(string s)
+void TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
 {
-    qDebug() << "Apilando " << s.c_str();
-    pila->push(new Simbolo(s));
+    qDebug() << "Apilando " << identificador.c_str();
+
+    Simbolo* s = new Simbolo(identificador);
+
+    if(estaInicializado)
+    {
+        s->setInicializado();
+    }
+
+    pila->push(s);
 }
 
 void TablaSimbolos::almacenarPila(Tipo tipo)

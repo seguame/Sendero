@@ -722,7 +722,7 @@ bool Compilador::pars(void)
             else
             {
                 //lexico contiene el nombre del identificador
-                tablaDeSimbolos->apilarSimbolo(lexico);
+                tablaDeSimbolos->apilarSimbolo(lexico, true);
             }
 
 
@@ -798,7 +798,7 @@ bool Compilador::vars (bool darAvanceAlFinal)
 
     if(token.compare(IDENTIFICADOR) == 0)
     {
-        tablaDeSimbolos->apilarSimbolo(lexico);
+        tablaDeSimbolos->apilarSimbolo(lexico, false);
 
         leerLexema();
         dimension();
@@ -847,7 +847,7 @@ bool Compilador::vars (bool darAvanceAlFinal)
                 else
                 {
                     //lexico contiene el nombre del identificador
-                    tablaDeSimbolos->apilarSimbolo(lexico);
+                    tablaDeSimbolos->apilarSimbolo(lexico, false);
                 }
 
                 leerLexema();

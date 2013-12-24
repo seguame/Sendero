@@ -42,20 +42,19 @@ class Simbolo
         bool _constante;
         bool _dimensionado;
         int _cantDimensiones;
-
-        bool _seteado; //control interno
+        bool _inicializado;
 
 
     public:
         //template <typename T> Simbolo(std::string const& identificador, T const& valor);
         Simbolo(std::string const& identificador):
-            _ptr(new dato<long>(0)), //Si no le doy valor de inicio, caput :/
+            _ptr(NULL),
             _identificador(identificador),
             _tipo(T_INDEFINIDO),
             _constante(false),
             _dimensionado(false),
             _cantDimensiones(0),
-            _seteado(false)
+            _inicializado(false)
             {
             }
         Simbolo(Simbolo const& otro);
@@ -71,10 +70,39 @@ class Simbolo
         {
             if(!esConstante())
             {
-                if(!_seteado) _seteado = true;
+                if(!_inicializado)
+                {
+                    _inicializado = true;
+                }
 
-                delete _ptr;
-                _ptr = new dato<T>(valor);
+                /*if(_ptr != NULL)
+                {
+                    delete _ptr;
+                    _ptr = NULL;
+                }
+                _ptr = new dato<T>(valor);*/
+
+                if(_ptr != NULL)
+                {
+                    if(strcmp(typeid(valor).name(), (typeid(std::string*).name())) == 0)
+                    {
+                        qDebug() << "Cambio de cadena";
+                        delete _ptr;
+                        _ptr = NULL;
+                        _ptr = new dato<T>(valor);
+                    }
+                    else
+                    {
+                        qDebug() << "reasignacion";
+                        dynamic_cast<dato<T>&>(*this->_ptr)._valor = valor;
+
+                    }
+                }
+                else
+                {
+                    qDebug() << "Nuevo valor de tipo " << typeid(valor).name();
+                    _ptr = new dato<T>(valor);
+                }
             }
             else
             {
@@ -93,6 +121,8 @@ class Simbolo
         Simbolo* setConstante(void);
         bool esConstante(void) const;
         std::string toString(void) const;
+        Simbolo* setInicializado(void);
+        bool estaInicializado(void) const;
 };
 
 #endif // SIMBOLO_H
