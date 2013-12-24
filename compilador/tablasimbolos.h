@@ -33,10 +33,10 @@ public:
     void purgarTabla(void);
 
 
-    void prepararPila(void);
+    void prepararPilas(void);
     void apilarSimbolo(string identificador, bool estaInicializado);
-    void almacenarPila(Tipo tipo);
-    void purgarPila(void);
+    void almacenarPilaSimbolos(Tipo tipo);
+    void purgarPilas(void);
 
     void entrarContextoFuncion(Simbolo* funcion);
     void setTipoRetornoFuncion(Tipo t);
@@ -50,6 +50,8 @@ private:
     Compilador* refCompilador;
     vector< map <string, Simbolo*>* > *simbolos;
     stack<Simbolo*> *pilaSimbolos;
+    stack<Tipo> *pilaTipos;
+
     Simbolo* contextoFuncion;
 };
 

@@ -1,7 +1,8 @@
 #include "tablasimbolos.h"
 
-TablaSimbolos::TablaSimbolos(Compilador* c)
-    :pilaSimbolos(NULL)
+TablaSimbolos::TablaSimbolos(Compilador* c):
+    pilaSimbolos(NULL),
+    pilaTipos(NULL)
 {
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
@@ -151,23 +152,20 @@ bool TablaSimbolos::existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* tem
 }
 
 
-void TablaSimbolos::prepararPila(void)
+void TablaSimbolos::prepararPilas(void)
 {
     qDebug() << "Preparando apilamiento";
     if(pilaSimbolos == NULL)
     {
         pilaSimbolos = new stack<Simbolo*>();
     }
-    else
+
+    if(pilaTipos == NULL)
     {
-        while(!pilaSimbolos->empty())
-        {
-            delete pilaSimbolos->top();
-            pilaSimbolos->pop();
-        }
+        pilaTipos = new stack<Tipo>();
     }
 
-
+    purgarPilas();
 }
 
 void TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
@@ -184,7 +182,7 @@ void TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
     pilaSimbolos->push(s);
 }
 
-void TablaSimbolos::almacenarPila(Tipo tipo)
+void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
 {
     qDebug() << "Almacenando contenido de la pila";
     while(!pilaSimbolos->empty())
@@ -194,13 +192,18 @@ void TablaSimbolos::almacenarPila(Tipo tipo)
     }
 }
 
-void TablaSimbolos::purgarPila(void)
+void TablaSimbolos::purgarPilas(void)
 {
-    qDebug() << "Purgando la pila";
+    qDebug() << "Purgando las pilas";
     while(!pilaSimbolos->empty())
     {
         delete pilaSimbolos->top();
         pilaSimbolos->pop();
+    }
+
+    while(!pilaTipos->empty())
+    {
+        pilaTipos->pop();
     }
 }
 

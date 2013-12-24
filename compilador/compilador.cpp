@@ -704,7 +704,7 @@ bool Compilador::pars(void)
 
     //preparando el apilamiento de variables para ser almacenadas
     //en la tabla de simbolos
-    tablaDeSimbolos->prepararPila();
+    tablaDeSimbolos->prepararPilas();
 
     bool primeraVuelta = true;
 
@@ -743,13 +743,13 @@ bool Compilador::pars(void)
 
         if(!tipo(lexico))
         {
-            tablaDeSimbolos->purgarPila();
+            tablaDeSimbolos->purgarPilas();
             escribirError("Se esperaba el tipo de variable");
         }
         else
         {
             //lexico contiene el tipo de dato a ser apilado
-            tablaDeSimbolos->almacenarPila(determinarTipo(lexico));
+            tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico));
         }
 
         leerLexema();
@@ -757,7 +757,7 @@ bool Compilador::pars(void)
     }while(lexico.compare(",") == 0);
 
     //por si quedo algun elemento volando
-    tablaDeSimbolos->purgarPila();
+    tablaDeSimbolos->purgarPilas();
 
     return true;
 }
@@ -800,7 +800,7 @@ bool Compilador::vars (bool darAvanceAlFinal)
 
     //preparando el apilamiento de variables para ser almacenadas
     //en la tabla de simbolos
-    tablaDeSimbolos->prepararPila();
+    tablaDeSimbolos->prepararPilas();
 
     leerLexema();
 
@@ -813,13 +813,13 @@ bool Compilador::vars (bool darAvanceAlFinal)
 
         if(!tipo(lexico))
         {
-            tablaDeSimbolos->purgarPila();
+            tablaDeSimbolos->purgarPilas();
             escribirError("Se esperaba definicion de tipo");
         }
         else
         {
             //el lexico contiene el tipo de variable a almacenar
-            tablaDeSimbolos->almacenarPila(determinarTipo(lexico));
+            tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico));
         }
     }
     else if(lexico.compare("(") == 0)
@@ -865,13 +865,13 @@ bool Compilador::vars (bool darAvanceAlFinal)
 
             if(!tipo(lexico))
             {
-                tablaDeSimbolos->purgarPila();
+                tablaDeSimbolos->purgarPilas();
                 escribirError("Se esperaba el tipo de variable");
             }
             else
             {
                 //lexico contiene el tipo de dato a ser apilado
-                tablaDeSimbolos->almacenarPila(determinarTipo(lexico));
+                tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico));
             }
 
             leerLexema();
@@ -892,7 +892,7 @@ bool Compilador::vars (bool darAvanceAlFinal)
         leerLexema();
 
     //por si quedo algun elemento volando
-    tablaDeSimbolos->purgarPila();
+    tablaDeSimbolos->purgarPilas();
 
     return true;
 }
