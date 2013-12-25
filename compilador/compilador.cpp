@@ -794,6 +794,8 @@ void Compilador::bloque ()
 
 bool Compilador::vars (bool darAvanceAlFinal)
 {
+    Simbolo* temp = NULL;
+
     qDebug() << "vars";
     if(lexico.compare("var") != 0)
         return false; //los caminos de la vida, no son lo que yo esperaba (8)
@@ -806,10 +808,10 @@ bool Compilador::vars (bool darAvanceAlFinal)
 
     if(token.compare(IDENTIFICADOR) == 0)
     {
-        tablaDeSimbolos->apilarSimbolo(lexico, false);
+        temp = tablaDeSimbolos->apilarSimbolo(lexico, false);
 
         leerLexema();
-        dimension();
+        dimension(temp, false);
 
         if(!tipo(lexico))
         {
@@ -855,11 +857,11 @@ bool Compilador::vars (bool darAvanceAlFinal)
                 else
                 {
                     //lexico contiene el nombre del identificador
-                    tablaDeSimbolos->apilarSimbolo(lexico, false);
+                    temp = tablaDeSimbolos->apilarSimbolo(lexico, false);
                 }
 
                 leerLexema();
-                dimension();
+                dimension(temp, false);
 
             }while(lexico.compare(",") == 0);
 
@@ -1006,6 +1008,7 @@ bool Compilador::comando (void)
 
 void Compilador::asigna (void)
 {
+    Simbolo* temp = NULL;
     qDebug() << "asigna";
 
     if(token.compare(IDENTIFICADOR) != 0)
@@ -1014,7 +1017,8 @@ void Compilador::asigna (void)
     }
     else
     {
-        if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
+        temp = tablaDeSimbolos->buscarSimbolo(lexico);
+        if(temp == NULL)
         {
             escribirError(lexico + " no esta definido");
         }
@@ -1023,7 +1027,7 @@ void Compilador::asigna (void)
     leerLexema();
 
 
-    dimension();
+    dimension(temp, true);
 
     if(lexico.compare(":=") != 0)
     {
@@ -1033,11 +1037,40 @@ void Compilador::asigna (void)
     expr(false);
 }
 
-void Compilador::dimension (void)
+void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
 {
     qDebug() << "dimension";
+
+    unsigned int contDimension = 0;
+
     if(lexico.compare("[") != 0)
+    {
+        if(verificarDimensiones)
+        {
+            if(simb != NULL && simb->getCantidadDimensiones() != 0)
+            {
+                ReportadorErrores::ObtenerInstancia()->escribirError(_lineaActual,
+                                                                     _columnaActual,
+                                                                     simb->getIdentificador(),
+                                                                     "Variable debe tener dimension",
+                                                                     renglon);
+            }
+        }
+
         return ; //las dimensiones de la vida, no son lo que yo esperaba (8)
+    }
+
+    if(verificarDimensiones)
+    {
+        if(simb != NULL && simb->getCantidadDimensiones() == 0)
+        {
+            ReportadorErrores::ObtenerInstancia()->escribirError(_lineaActual,
+                                                                 _columnaActual,
+                                                                 simb->getIdentificador(),
+                                                                 "Variable no dimensionada",
+                                                                 renglon);
+        }
+    }
 
     do
     {
@@ -1045,10 +1078,42 @@ void Compilador::dimension (void)
         expr(false);
 
         if(lexico.compare("]") != 0)
+        {
             escribirError("Se esperaba cierre de corchetes");
+        }
+        else
+        {
+            ++contDimension;
+        }
 
         leerLexema();
     }while(lexico.compare("[") == 0);
+
+    if(verificarDimensiones)
+    {
+        if(simb != NULL && (simb->getCantidadDimensiones() != contDimension) && (simb->getCantidadDimensiones() != 0))
+        {
+
+            stringstream obtenidos;
+            stringstream requeridos;
+
+            obtenidos << contDimension;
+            requeridos << simb->getCantidadDimensiones();
+
+            ReportadorErrores::ObtenerInstancia()->escribirError(_lineaActual,
+                                                                 _columnaActual,
+                                                                 simb->getIdentificador(),
+                                                                 "Variable incongruene en dimensiones, declarada con " + requeridos.str() + " y se le da " + obtenidos.str(),
+                                                                 renglon);
+        }
+    }
+    else
+    {
+        if(simb != NULL)
+        {
+            simb->setCantidadDimensiones(contDimension);
+        }
+    }
 
 }
 
@@ -1262,6 +1327,7 @@ bool Compilador::regresa (void)
 
 bool Compilador::lee(void)
 {
+    Simbolo* temp = NULL;
     qDebug() << "lee";
 
     leerLexema();
@@ -1287,14 +1353,15 @@ bool Compilador::lee(void)
     }
     else
     {
-        if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
+        temp = tablaDeSimbolos->buscarSimbolo(lexico);
+        if(temp == NULL)
         {
             escribirError(lexico + " no esta definido");
         }
     }
 
     leerLexema();
-    dimension();
+    dimension(temp, true);
 
     if(lexico.compare(")") != 0)
         escribirError("Se esperaba cierre de parentesis");
@@ -1659,7 +1726,7 @@ void Compilador::termino (bool terminoOpcional)
         }
         else
         {
-            dimension();
+            dimension(temp, true);
         }
     }
     else if(lexico.compare("(") == 0)

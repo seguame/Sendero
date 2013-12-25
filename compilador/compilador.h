@@ -97,7 +97,7 @@ class Compilador
         void estatutos(void);
         bool comando(void);
         void asigna(void);
-        void dimension(void);
+        void dimension(Simbolo* simb, bool verificarDimension);
         void expr(bool esOpcional);
         void opy(bool esOpcional);
         void opno(bool esOpcional);
