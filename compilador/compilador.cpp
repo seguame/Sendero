@@ -636,12 +636,12 @@ bool Compilador::funcion(void)
         }
 
         func = new Simbolo(lexico);
+        func->setTipo(T_FUNCION);
 
         if(!tablaDeSimbolos->insertarSimbolo(func))
         {
             delete func;
             func = NULL;
-            escribirError("La funcion \"" + lexico + "\" ya fue declarada previamente");
         }
     }
 
