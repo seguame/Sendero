@@ -168,7 +168,7 @@ void TablaSimbolos::prepararPilas(void)
     purgarPilas();
 }
 
-void TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
+Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
 {
     qDebug() << "Apilando " << identificador.c_str();
 
@@ -180,6 +180,8 @@ void TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
     }
 
     pilaSimbolos->push(s);
+
+    return s;
 }
 
 void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)

@@ -34,7 +34,7 @@ public:
 
 
     void prepararPilas(void);
-    void apilarSimbolo(string identificador, bool estaInicializado);
+    Simbolo* apilarSimbolo(string identificador, bool estaInicializado);
     void almacenarPilaSimbolos(Tipo tipo);
     void apilarTipo(Tipo tipo);
     void checarValidezDeOperaciones(void);
