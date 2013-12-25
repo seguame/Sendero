@@ -1007,6 +1007,10 @@ bool Compilador::comando (void)
 void Compilador::asigna (void)
 {
     Simbolo* temp = NULL;
+
+    //Limpieza de la pila de tipos, apilaremos el tipo de la variable
+    //destino para comparar al final que sea algo valido
+    tablaDeSimbolos->prepararPilas();
     qDebug() << "asigna";
 
     if(token.compare(IDENTIFICADOR) != 0)
@@ -1020,11 +1024,17 @@ void Compilador::asigna (void)
         {
             escribirError(lexico + " no esta definido");
         }
+        else
+        {
+            //Obteniendo el tipo de la variable destino
+            tablaDeSimbolos->apilarTipo(temp->getTipo());
+        }
     }
 
     leerLexema();
 
-
+    //Dimension verificará que la variable encontrada cumpla
+    //con lo especificado en ella
     dimension(temp, true);
 
     if(lexico.compare(":=") != 0)
@@ -1032,7 +1042,12 @@ void Compilador::asigna (void)
             escribirError("Se esperaba operador de asignacion \":=\"");
     }
     leerLexema();
+
+    //no es opcional el termino
     expr(false);
+
+    //revisar todo lo obtenido a lo largo de la expresion y validar
+    tablaDeSimbolos->checarValidezDeOperaciones();
 }
 
 void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
@@ -1698,6 +1713,7 @@ void Compilador::termino (bool terminoOpcional)
     qDebug() << "termino";
     if(constanteTipo(token))
     {
+        //Llegó un dato constante, determinar su tipo y apilarlo
         tablaDeSimbolos->apilarTipo(determinarTipo(token));
         leerLexema();
     }
@@ -1713,6 +1729,8 @@ void Compilador::termino (bool terminoOpcional)
         {
             if(temp->getTipo() != T_FUNCION)
             {
+                //Llego una variable definia que no es funcion
+                //apilar su tipo de dato
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
             }
         }
@@ -1724,6 +1742,7 @@ void Compilador::termino (bool terminoOpcional)
         }
         else
         {
+            //verificar que cumpla con su especificacion de dimension
             dimension(temp, true);
         }
     }
@@ -1739,6 +1758,6 @@ void Compilador::termino (bool terminoOpcional)
     }
     else if(!terminoOpcional)
     {
-        escribirError("Se esperaba un termino");
+        escribirError("Se esperaba un término");
     }
 }

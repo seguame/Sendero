@@ -204,7 +204,11 @@ void TablaSimbolos::apilarTipo(Tipo tipo)
 
 void TablaSimbolos::checarValidezDeOperaciones(void)
 {
-
+    while(!pilaTipos->empty())
+    {
+        qDebug() << pilaTipos->top();
+        pilaTipos->pop();
+    }
 }
 
 void TablaSimbolos::purgarPilas(void)
