@@ -134,16 +134,19 @@ bool TablaSimbolos::existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* tem
         pair<string, Simbolo*> par = *otro;
         string error = buscable->getIdentificador() + " ya fue definido como ";
 
-        if(par.second->esConstante())
+        if(par.second->getTipo() != T_FUNCION)
         {
-            error += "constante de tipo " + par.second->getStringTipo();
-        }
-        else
-        {
-            error += par.second->getStringTipo() + " y aqui se declara como " + buscable->getStringTipo();
-        }
+            if(par.second->esConstante())
+            {
+                error += "constante de tipo " + par.second->getStringTipo();
+            }
+            else
+            {
+                error += par.second->getStringTipo() + " y aqui se declara como " + buscable->getStringTipo();
+            }
 
-        refCompilador->escribirError(error);
+            refCompilador->escribirError(error);
+        }
 
         return true;
     }

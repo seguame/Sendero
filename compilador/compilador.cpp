@@ -633,8 +633,6 @@ bool Compilador::funcion(void)
         {
             if(!existeFuncionPrincipal)
                 existeFuncionPrincipal = true;
-            else
-                escribirError("la funcion \"principal\" ya fue declarada");
         }
 
         func = new Simbolo(lexico);
