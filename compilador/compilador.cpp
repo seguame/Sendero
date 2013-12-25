@@ -765,6 +765,7 @@ bool Compilador::tipo( string lex )
     return (lex.compare(REAL) == 0 ||
             lex.compare(ENTERO) == 0 ||
             lex.compare(CONST_LOGICA) == 0 ||
+            lex.compare(CARACTER) == 0 ||
             lex.compare(ALFABETICO) == 0);
 }
 
@@ -1436,6 +1437,7 @@ bool Compilador::constanteTipo(string tok)
             tok.compare(HEXADECIMAL) == 0 ||
             tok.compare(OCTAL) == 0 ||
             tok.compare(CONST_LOGICA) == 0 ||
+            tok.compare(CARACTER) == 0||
             tok.compare(ALFABETICO) == 0);
 }
 
@@ -1490,6 +1492,12 @@ bool Compilador::constante(void)
         else if(token.compare(ALFABETICO) == 0)
         {
             simb->setValor(lexico)->setConstante()->setTipo(T_CADENA);
+
+            tablaDeSimbolos->insertarSimbolo(simb);
+        }
+        else if(token.compare(CARACTER) == 0)
+        {
+            simb->setValor(lexico[1])->setConstante()->setTipo(T_CARACTER);
 
             tablaDeSimbolos->insertarSimbolo(simb);
         }
@@ -1549,6 +1557,12 @@ bool Compilador::constante(void)
             else if(token.compare(ALFABETICO) == 0)
             {
                 simb->setValor(lexico)->setConstante()->setTipo(T_CADENA);
+
+                tablaDeSimbolos->insertarSimbolo(simb);
+            }
+            else if(token.compare(CARACTER) == 0)
+            {
+                simb->setValor(lexico[1])->setConstante()->setTipo(T_CARACTER);
 
                 tablaDeSimbolos->insertarSimbolo(simb);
             }

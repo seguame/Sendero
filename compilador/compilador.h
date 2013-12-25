@@ -27,6 +27,7 @@ class Compilador
             if(t.compare(OCTAL) == 0) return T_ENTERO;
             if(t.compare(CONST_LOGICA) == 0) return T_BOOLEANO;
             if(t.compare(ALFABETICO) == 0) return T_CADENA;
+            if(t.compare(CARACTER) == 0) return T_CARACTER;
 
             return T_INVALIDO;
         }

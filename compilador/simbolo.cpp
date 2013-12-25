@@ -36,6 +36,7 @@ std::string Simbolo::getStringTipo(void) const
             _tipo == T_BOOLEANO ? "Logico" :
             _tipo == T_CADENA ? "Alfabetico" :
             _tipo == T_FUNCION ? "Funcion" :
+            _tipo == T_CARACTER ? "Caracter" :
             "Indefinido");
 }
 
@@ -125,6 +126,9 @@ std::string Simbolo::toString(void) const
             case T_CADENA:
                 tRetorno << "Alfabetico";
                 break;
+            case T_CARACTER:
+                tRetorno << "Caracter";
+                break;
             default:
                 tRetorno << "Void";
                 break;
@@ -149,6 +153,9 @@ std::string Simbolo::toString(void) const
                 break;
             case T_CADENA:
                 valor << (this->getValor<std::string>());
+                break;
+            case T_CARACTER:
+                valor << this->getValor<char>();
                 break;
             default:
                 valor << "NULO";
