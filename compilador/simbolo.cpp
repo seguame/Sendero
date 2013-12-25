@@ -5,7 +5,6 @@ Simbolo::Simbolo(Simbolo const& otro):
     _identificador(otro.getIdentificador()),
     _tipo(otro.getTipo()),
     _constante(otro.esConstante()),
-    _dimensionado(otro.esDimensionado()),
     _cantDimensiones(otro.getCantidadDimensiones()),
     _inicializado(otro.estaInicializado())
 {
@@ -56,23 +55,13 @@ Simbolo* Simbolo::setTipo(Tipo tipo)
     return this;
 }
 
-Simbolo* Simbolo::setEsDimensionado(void)
+Simbolo* Simbolo::setCantidadDimensiones(unsigned int cantidad)
 {
-    _dimensionado = true;
+    _cantDimensiones = cantidad;
     return this;
 }
 
-bool Simbolo::esDimensionado(void) const
-{
-    return _dimensionado;
-}
-
-void Simbolo::setCantidadDimensiones(int cantidad)
-{
-    _cantDimensiones = cantidad;
-}
-
-int Simbolo::getCantidadDimensiones(void) const
+unsigned int Simbolo::getCantidadDimensiones(void) const
 {
     return _cantDimensiones;
 }
@@ -167,6 +156,6 @@ std::string Simbolo::toString(void) const
         }
     }
 
-    return "ID: " + _identificador + " Tipo: " + tipo + " Const: " + (_constante ? "Si" : "No") + " Dimen: " + (_dimensionado ? "Si":"No") + " #: " + dimensiones.str() +
+    return "ID: " + _identificador + " Tipo: " + tipo + " Const: " + (_constante ? "Si" : "No") + " Dimen: " + dimensiones.str() +
             " Inicializado: " + (_inicializado ? "Si":"No") + " Valor: " + valor.str() + " Retorno: " + tRetorno.str() ;
 }

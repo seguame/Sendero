@@ -40,8 +40,7 @@ class Simbolo
         const std::string _identificador;
         Tipo _tipo;
         bool _constante;
-        bool _dimensionado;
-        int _cantDimensiones;
+        unsigned int _cantDimensiones;
         bool _inicializado;
         Tipo _retorno; //usado en funciones
 
@@ -53,7 +52,6 @@ class Simbolo
             _identificador(identificador),
             _tipo(T_INVALIDO),
             _constante(false),
-            _dimensionado(false),
             _cantDimensiones(0),
             _inicializado(false),
             _retorno(T_INVALIDO)
@@ -116,10 +114,8 @@ class Simbolo
         Tipo getTipo(void) const;
         Simbolo* setTipo(Tipo tipo);
         std::string getIdentificador() const;
-        Simbolo* setEsDimensionado(void);
-        bool esDimensionado(void) const;
-        void setCantidadDimensiones(int cantidad);
-        int getCantidadDimensiones(void) const;
+        Simbolo* setCantidadDimensiones(unsigned int cantidad);
+        unsigned int getCantidadDimensiones(void) const;
         Simbolo* setConstante(void);
         bool esConstante(void) const;
         std::string toString(void) const;
