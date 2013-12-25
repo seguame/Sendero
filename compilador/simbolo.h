@@ -42,7 +42,11 @@ class Simbolo
         bool _constante;
         unsigned int _cantDimensiones;
         bool _inicializado;
-        Tipo _retorno; //usado en funciones
+
+        //usados en funciones
+        Tipo _retorno;
+        unsigned int _cantArgumentos;
+        std::string _firma;
 
 
     public:
@@ -54,7 +58,9 @@ class Simbolo
             _constante(false),
             _cantDimensiones(0),
             _inicializado(false),
-            _retorno(T_INVALIDO)
+            _retorno(T_INVALIDO),
+            _cantArgumentos(0),
+            _firma("")
             {
             }
         Simbolo(Simbolo const& otro);
