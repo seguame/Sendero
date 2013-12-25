@@ -1571,17 +1571,22 @@ void Compilador::expr(bool terminoOpcional)
 {
     qDebug() << "expr";
 
+    bool primeraPasada = true;
     string actual;
 
     do
     {
         if(lexico.compare("||") == 0)
         {
+            if(primeraPasada)
+                escribirError("Se esperaba un termino antes del simbolo");
+
             actual = lexico;
             leerLexema();
         }
 
         opy(terminoOpcional);
+        primeraPasada = false;
 
     }while(lexico.compare("||") == 0);
 }
@@ -1590,15 +1595,21 @@ void Compilador::opy(bool terminoOpcional)
 {
     qDebug() << "opy";
     string actual;
+    bool primeraPasada = true;
+
     do
     {
         if(lexico.compare("&&") == 0)
         {
+            if(primeraPasada)
+                escribirError("Se esperaba un termino antes del simbolo");
+
             actual = lexico;
             leerLexema();
         }
 
         opno(terminoOpcional);
+        primeraPasada = false;
 
     }while(lexico.compare("&&") == 0);
 }
@@ -1619,20 +1630,27 @@ void Compilador::opno(bool terminoOpcional)
 
 void Compilador::oprel(bool terminoOpcional)
 {
-
     qDebug() << "oprel";
+
     string actual;
+    bool primeraPasada = true;
+
     do
     {
         if(token.compare(COMPARACION) == 0)
         {
             qDebug() << "Es comparacion";
+
+            if(primeraPasada)
+                escribirError("Se esperaba un termino antes del simbolo");
+
             actual = lexico;
             leerLexema();
             terminoOpcional = false;
         }
 
         suma(terminoOpcional);
+        primeraPasada = false;
 
     }while(token.compare(COMPARACION) == 0);
 }
@@ -1640,17 +1658,23 @@ void Compilador::oprel(bool terminoOpcional)
 void Compilador::suma(bool terminoOpcional)
 {
     qDebug() << "suma";
+
     string actual;
+    bool primeraPasada = true;
 
     do
     {
         if(lexico.compare("+") == 0 || lexico.compare("-") == 0)
         {
+            if(primeraPasada)
+                escribirError("Se esperaba un termino antes del simbolo");
+
             actual = lexico;
             leerLexema();
         }
 
         multi(terminoOpcional);
+        primeraPasada = false;
 
     }while(lexico.compare("+") == 0 || lexico.compare("-") == 0);
 }
@@ -1660,16 +1684,21 @@ void Compilador::multi(bool terminoOpcional)
     qDebug() << "multi";
 
     string actual;
+    bool primeraPasada = true;
 
     do
     {
         if(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0)
         {
+            if(primeraPasada)
+                escribirError("Se esperaba un termino antes del simbolo");
+
             actual = lexico;
             leerLexema();
         }
 
         expo(terminoOpcional);
+        primeraPasada = false;
 
     }while(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0);
 }
@@ -1679,16 +1708,21 @@ void Compilador::expo (bool terminoOpcional)
     qDebug() << "expo";
 
     string actual;
+    bool primeraPasada = true;
 
     do
     {
         if(lexico.compare("^") == 0)
         {
+            if(primeraPasada)
+                escribirError("Se esperaba un termino antes del simbolo");
+
             actual = lexico;
             leerLexema();
         }
 
         signo(terminoOpcional);
+        primeraPasada = false;
 
     }while(lexico.compare("^") == 0);
 }
