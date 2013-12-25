@@ -780,7 +780,6 @@ void Compilador::bloque ()
 
     leerLexema();
 
-    vars(true);
     estatutos();
 
     if(lexico.compare("}") != 0)
@@ -923,7 +922,12 @@ bool Compilador::comando (void)
 
     bool requiereSeparador = true;
 
-    if(token.compare(IDENTIFICADOR) == 0)
+    if(lexico.compare("var") == 0)
+    {
+        vars(true);
+        requiereSeparador = false;
+    }
+    else if(token.compare(IDENTIFICADOR) == 0)
     {
         qDebug() << "inicia con identificador";
 
