@@ -383,7 +383,7 @@ string Compilador::siguienteLexema(void)
                 break;
         }
 
-        error += " y llego: " + c;
+        error = error + " y llego: " + c;
 
         escribirError(error);
     }
