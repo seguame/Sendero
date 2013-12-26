@@ -957,15 +957,13 @@ bool Compilador::comando (void)
                 {
                     leerLexema();
 
-                    if(lexico.compare("(") == 0)
-                    {
-                        lFunc_1();
-                        leerLexema();
-                    }
-                    else
+                    if(lexico.compare("(") != 0)
                     {
                         escribirError("Se esperaba apertura de parentesis despues de la funcion " + temp->getIdentificador());
                     }
+
+                    lFunc_1();
+                    leerLexema();
                 }
                 else
                 {
@@ -1806,10 +1804,20 @@ void Compilador::termino (bool terminoOpcional)
         leerLexema();
         if(lexico.compare("(") == 0)
         {
+            if(temp != NULL && temp->getTipo() != T_FUNCION)
+            {
+                escribirError("Identificador \"" + temp->getIdentificador() + "\"no está definido como funcion, pero se usa como una");
+            }
+
             lFunc_2();
         }
         else
         {
+            if(temp != NULL && temp->getTipo() == T_FUNCION)
+            {
+                escribirError("Identificador \"" + temp->getIdentificador() + "\" es una funcion, pero es usada como variable");
+            }
+
             //verificar que cumpla con su especificacion de dimension
             dimension(temp, true);
         }
