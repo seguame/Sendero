@@ -233,7 +233,7 @@ void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)
 
     if(funcion != NULL)
     {
-        contextoFuncion = funcion->setTipo(T_FUNCION)->setConstante();
+        contextoFuncion = funcion->setConstante();
     }
 }
 
