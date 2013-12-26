@@ -1460,48 +1460,10 @@ bool Compilador::constante(void)
 
         leerLexema();
 
-        if(token.compare(REAL) == 0)
+        if(!almacenarTipoConstante(simb))
         {
-            double valor;
-
-            Conversor::cadena2Real(valor, lexico.c_str());
-            simb->setValor(valor)->setConstante()->setTipo(T_REAL);
-
-            tablaDeSimbolos->insertarSimbolo(simb);
-        }
-        else if(token.compare(ENTERO) == 0 || token.compare(HEXADECIMAL) == 0 ||token.compare(OCTAL) == 0)
-        {
-            long valor;
-
-            Conversor::cadena2Entero(valor, lexico.c_str());
-            simb->setValor(valor)->setConstante()->setTipo(T_ENTERO);
-
-            tablaDeSimbolos->insertarSimbolo(simb);
-        }
-        else if(token.compare(CONST_LOGICA) == 0)
-        {
-            bool valor;
-
-            Conversor::cadena2Booleano(valor, lexico.c_str());
-            simb->setValor(valor)->setConstante()->setTipo(T_BOOLEANO);
-
-            tablaDeSimbolos->insertarSimbolo(simb);
-        }
-        else if(token.compare(ALFABETICO) == 0)
-        {
-            simb->setValor(lexico)->setConstante()->setTipo(T_CADENA);
-
-            tablaDeSimbolos->insertarSimbolo(simb);
-        }
-        else if(token.compare(CARACTER) == 0)
-        {
-            simb->setValor(lexico[1])->setConstante()->setTipo(T_CARACTER);
-
-            tablaDeSimbolos->insertarSimbolo(simb);
-        }
-        else
             escribirError("Se esperaba un valor constante");
-
+        }
     }
     else if(lexico.compare("(") == 0)
     {
@@ -1524,48 +1486,10 @@ bool Compilador::constante(void)
 
             leerLexema();
 
-
-            if(token.compare(REAL) == 0)
+            if(!almacenarTipoConstante(simb))
             {
-                double valor;
-
-                Conversor::cadena2Real(valor, lexico.c_str());
-                simb->setValor(valor)->setConstante()->setTipo(T_REAL);
-
-                tablaDeSimbolos->insertarSimbolo(simb);
-            }
-            else if(token.compare(ENTERO) == 0 || token.compare(HEXADECIMAL) == 0 ||token.compare(OCTAL) == 0)
-            {
-                long valor;
-
-                Conversor::cadena2Entero(valor, lexico.c_str());
-                simb->setValor(valor)->setConstante()->setTipo(T_ENTERO);
-
-                tablaDeSimbolos->insertarSimbolo(simb);
-            }
-            else if(token.compare(CONST_LOGICA) == 0)
-            {
-                bool valor;
-
-                Conversor::cadena2Booleano(valor, lexico.c_str());
-                simb->setValor(valor)->setConstante()->setTipo(T_BOOLEANO);
-
-                tablaDeSimbolos->insertarSimbolo(simb);
-            }
-            else if(token.compare(ALFABETICO) == 0)
-            {
-                simb->setValor(lexico)->setConstante()->setTipo(T_CADENA);
-
-                tablaDeSimbolos->insertarSimbolo(simb);
-            }
-            else if(token.compare(CARACTER) == 0)
-            {
-                simb->setValor(lexico[1])->setConstante()->setTipo(T_CARACTER);
-
-                tablaDeSimbolos->insertarSimbolo(simb);
-            }
-            else
                 escribirError("Se esperaba un valor constante");
+            }
 
             leerLexema();
         }while(lexico.compare(",") == 0);
@@ -1763,6 +1687,8 @@ void Compilador::termino (bool terminoOpcional)
     qDebug() << "termino";
     if(constanteTipo(token))
     {
+        //Simbolo* almacenadoTemporal = new Simbolo("HOLDER");
+
         //Llegó un dato constante, determinar su tipo y apilarlo
         tablaDeSimbolos->apilarTipo(determinarTipo(token));
         leerLexema();
@@ -1779,8 +1705,16 @@ void Compilador::termino (bool terminoOpcional)
         {
             if(temp->getTipo() != T_FUNCION)
             {
-                //Llego una variable definia que no es funcion
+                //Llego una variable definida que no es funcion
                 //apilar su tipo de dato
+
+
+                //TODO: activar esto
+                /*if(!temp->estaInicializado())
+                {
+                    escribirError("La variable \"" + temp->getIdentificador() + "\" no esta inicializada");
+                }*/
+
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
             }
             else
@@ -1836,4 +1770,57 @@ void Compilador::termino (bool terminoOpcional)
     {
         escribirError("Se esperaba un término");
     }
+}
+
+bool Compilador::almacenarTipoConstante(Simbolo* simb)
+{
+    bool exito = true;
+
+    if(token.compare(REAL) == 0)
+    {
+        double valor;
+
+        Conversor::cadena2Real(valor, lexico.c_str());
+        simb->setValor(valor)->setConstante()->setTipo(T_REAL);
+
+        tablaDeSimbolos->insertarSimbolo(simb);
+    }
+    else if(token.compare(ENTERO) == 0 ||
+            token.compare(HEXADECIMAL) == 0 ||
+            token.compare(OCTAL) == 0)
+    {
+        long valor;
+
+        Conversor::cadena2Entero(valor, lexico.c_str());
+        simb->setValor(valor)->setConstante()->setTipo(T_ENTERO);
+
+        tablaDeSimbolos->insertarSimbolo(simb);
+    }
+    else if(token.compare(CONST_LOGICA) == 0)
+    {
+        bool valor;
+
+        Conversor::cadena2Booleano(valor, lexico.c_str());
+        simb->setValor(valor)->setConstante()->setTipo(T_BOOLEANO);
+
+        tablaDeSimbolos->insertarSimbolo(simb);
+    }
+    else if(token.compare(ALFABETICO) == 0)
+    {
+        simb->setValor(lexico)->setConstante()->setTipo(T_CADENA);
+
+        tablaDeSimbolos->insertarSimbolo(simb);
+    }
+    else if(token.compare(CARACTER) == 0)
+    {
+        simb->setValor(lexico[1])->setConstante()->setTipo(T_CARACTER);
+
+        tablaDeSimbolos->insertarSimbolo(simb);
+    }
+    else
+    {
+        exito = false;
+    }
+
+    return exito;
 }

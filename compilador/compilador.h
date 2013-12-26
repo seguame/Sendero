@@ -126,6 +126,8 @@ class Compilador
         //Semantico
         TablaSimbolos* tablaDeSimbolos;
 
+        bool almacenarTipoConstante(Simbolo* simb);
+
 };
 
 #endif // COMPILADOR_H
