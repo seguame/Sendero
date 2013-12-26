@@ -1785,6 +1785,22 @@ void Compilador::termino (bool terminoOpcional)
                 //apilar su tipo de dato
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
             }
+            else
+            {
+
+                Tipo retorno = temp->getTipoRetorno();
+
+                if(retorno != T_INVALIDO)
+                {
+                    //Apilar el tipo de retorno de la funcion
+                    tablaDeSimbolos->apilarTipo(temp->getTipoRetorno());
+                }
+                else
+                {
+                    escribirError("La funcion no retorna ningun valor");
+                }
+
+            }
         }
 
         leerLexema();
