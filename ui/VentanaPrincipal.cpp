@@ -341,11 +341,13 @@ void VentanaPrincipal::actualizarVistaErrores(QString ruta)
         modeloErrores->setData(modeloErrores->index(i, 2), tmp[2]);
         modeloErrores->setData(modeloErrores->index(i, 3), tmp[3]);
         modeloErrores->setData(modeloErrores->index(i, 4), tmp[4]);
-        vistaErrores->resizeColumnToContents(i);
         ++i;
     }
 
-
+    vistaErrores->resizeColumnToContents(0);
+    vistaErrores->resizeColumnToContents(1);
+    vistaErrores->resizeColumnToContents(2);
+    vistaErrores->resizeColumnToContents(3);
 
 }
 
