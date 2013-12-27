@@ -47,6 +47,16 @@ const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 
 };
 
+const Tipo Compilador::operacionesSuma[CANT_TIPOS][CANT_TIPOS] =
+{
+                //Entero    Real        Caracter    Cadena      Booleano
+    /*Entero*/  {T_ENTERO,  T_REAL,     T_ENTERO,   T_CADENA,   T_INVALIDO},
+    /*Real*/    {T_REAL,    T_REAL,     T_INVALIDO, T_CADENA,   T_INVALIDO},
+    /*Caracter*/{T_CARACTER,T_INVALIDO, T_CARACTER, T_CADENA,   T_INVALIDO},
+    /*Cadena*/  {T_CADENA,  T_CADENA,   T_CADENA,   T_CADENA,   T_INVALIDO},
+    /*Booleano*/{T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO}
+};
+
 const string Compilador::palabras_reservadas[PALABRAS_RESERVADAS] =
 {
     "interrumpe", "valor", "canal", "const", "continua", "defecto", "difer", "sino", "desde",
@@ -1680,6 +1690,7 @@ void Compilador::suma(bool terminoOpcional)
     qDebug() << "suma";
 
     string actual;
+    bool hayOperacion = false;
     bool primeraPasada = true;
 
     do
@@ -1690,11 +1701,33 @@ void Compilador::suma(bool terminoOpcional)
                 escribirError("Se esperaba un termino antes del simbolo");
 
             actual = lexico;
+            hayOperacion = true;
             leerLexema();
         }
 
         multi(terminoOpcional);
         primeraPasada = false;
+
+        if(hayOperacion)
+        {
+
+            hayOperacion = false;
+
+            Tipo NuevoIzquierdo = T_INVALIDO;
+            Tipo derecho = tablaDeSimbolos->desapilarTipo();
+            Tipo izquierdo = tablaDeSimbolos->desapilarTipo();
+
+            if(derecho != T_ENTERO && derecho != T_REAL && derecho != T_CARACTER && derecho != T_CADENA)
+                escribirError("El valor a la derecha del " + actual + " no es de tipo Entero, Real, Alfabetico o Caracter");
+
+            if(izquierdo != T_ENTERO && izquierdo != T_REAL && izquierdo != T_CARACTER && izquierdo != T_CADENA)
+                escribirError("El valor a la izquierda del " + actual + " no es de tipo Entero, Real, Alfabetico o Caracter");
+
+            NuevoIzquierdo = operacionesSuma[izquierdo][derecho];
+
+            //las comparaciones dan de valor izquierdo un booleano
+            tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
+        }
 
     }while(lexico.compare("+") == 0 || lexico.compare("-") == 0);
 }
