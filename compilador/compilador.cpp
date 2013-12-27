@@ -1725,19 +1725,25 @@ void Compilador::oprel(bool terminoOpcional)
 
         if(hayOperacion)
         {
-           hayOperacion = false;
+            hayOperacion = false;
 
-           Tipo derecho = tablaDeSimbolos->desapilarTipo();
-           Tipo izquierdo = tablaDeSimbolos->desapilarTipo();
+            Tipo derecho = tablaDeSimbolos->desapilarTipo();
+            Tipo izquierdo = tablaDeSimbolos->desapilarTipo();
 
-           if(derecho != T_ENTERO && derecho != T_REAL && derecho != T_CARACTER)
-               escribirError("El valor a la derecha del " + actual + " no es de tipo Entero, Real o Caracter");
+            //TODO: En operaciones del tipo == si se pueden admitir booleanos, validar eso
 
-           if(izquierdo != T_ENTERO && izquierdo != T_REAL && izquierdo != T_CARACTER)
-               escribirError("El valor a la izquierda del " + actual + " no es de tipo Entero, Real o Caracter");
+            if(derecho != T_ENTERO && derecho != T_REAL && derecho != T_CARACTER)
+            {
+                escribirError("El valor a la derecha del " + actual + " no es de tipo Entero, Real o Caracter");
+            }
 
-           //las comparaciones dan de valor izquierdo un booleano
-           tablaDeSimbolos->apilarTipo(T_BOOLEANO);
+            if(izquierdo != T_ENTERO && izquierdo != T_REAL && izquierdo != T_CARACTER)
+            {
+                escribirError("El valor a la izquierda del " + actual + " no es de tipo Entero, Real o Caracter");
+            }
+
+            //las comparaciones dan de valor izquierdo un booleano
+            tablaDeSimbolos->apilarTipo(T_BOOLEANO);
         }
 
 

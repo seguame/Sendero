@@ -211,10 +211,14 @@ Simbolo* TablaSimbolos::desapilarValor(void)
     {
         qDebug() << "Desapilando valor de una pila vacia";
     }
+    else
+    {
+        Simbolo* s = pilaValores->top();
+        pilaValores->pop();
+        return s;
+    }
 
-    Simbolo* s = pilaValores->top();
-    pilaValores->pop();
-    return s;
+    return NULL;
 }
 
 void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
@@ -238,10 +242,14 @@ Tipo TablaSimbolos::desapilarTipo(void)
     {
         qDebug() << "Desapilando tipo de una pila vacia";
     }
+    else
+    {
+        Tipo t = pilaTipos->top();
+        pilaTipos->pop();
+        return t;
+    }
 
-    Tipo t = pilaTipos->top();
-    pilaTipos->pop();
-    return t;
+    return T_INVALIDO;
 }
 
 void TablaSimbolos::noEsEvaluable(void)
