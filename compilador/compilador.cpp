@@ -1519,6 +1519,7 @@ void Compilador::expr(bool terminoOpcional)
 {
     qDebug() << "expr";
 
+    bool hayOperacion = false;
     bool primeraPasada = true;
     string actual;
 
@@ -1530,11 +1531,29 @@ void Compilador::expr(bool terminoOpcional)
                 escribirError("Se esperaba un termino antes del simbolo");
 
             actual = lexico;
+            hayOperacion = true;
             leerLexema();
         }
 
         opy(terminoOpcional);
         primeraPasada = false;
+
+
+        if(hayOperacion)
+        {
+           hayOperacion = false;
+
+           Tipo derecho = tablaDeSimbolos->desapilarTipo();
+           Tipo izquierdo = tablaDeSimbolos->desapilarTipo();
+
+           if(derecho != T_BOOLEANO)
+               escribirError("El valor a la derecha del || no es de tipo Logico");
+
+           if(izquierdo != T_BOOLEANO)
+               escribirError("El valor a la izquierda del || no es de tipo Logico");
+
+           tablaDeSimbolos->apilarTipo(T_BOOLEANO);
+        }
 
     }while(lexico.compare("||") == 0);
 }
@@ -1542,7 +1561,9 @@ void Compilador::expr(bool terminoOpcional)
 void Compilador::opy(bool terminoOpcional)
 {
     qDebug() << "opy";
+
     string actual;
+    bool hayOperacion = false;
     bool primeraPasada = true;
 
     do
@@ -1553,11 +1574,28 @@ void Compilador::opy(bool terminoOpcional)
                 escribirError("Se esperaba un termino antes del simbolo");
 
             actual = lexico;
+            hayOperacion = true;
             leerLexema();
         }
 
         opno(terminoOpcional);
         primeraPasada = false;
+
+        if(hayOperacion)
+        {
+           hayOperacion = false;
+
+           Tipo derecho = tablaDeSimbolos->desapilarTipo();
+           Tipo izquierdo = tablaDeSimbolos->desapilarTipo();
+
+           if(derecho != T_BOOLEANO)
+               escribirError("El valor a la derecha del && no es de tipo Logico");
+
+           if(izquierdo != T_BOOLEANO)
+               escribirError("El valor a la izquierda del && no es de tipo Logico");
+
+           tablaDeSimbolos->apilarTipo(T_BOOLEANO);
+        }
 
     }while(lexico.compare("&&") == 0);
 }
