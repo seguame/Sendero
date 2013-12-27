@@ -47,7 +47,7 @@ public:
     void entrarContextoFuncion(Simbolo* funcion);
     void setFirmaFuncion(const string& s);
     void setTipoRetornoFuncion(Tipo t);
-    Tipo getTipoRetornoFuncion(void) const;
+    Tipo getTipoRetornoFuncion(void);
     void salirContextoFuncion(void);
 
 
@@ -62,6 +62,7 @@ private:
     stack<Simbolo*> *pilaValores;
 
     Simbolo* contextoFuncion;
+    bool retornoValidado;
 };
 
 #endif // TABLASIMBOLOS_H

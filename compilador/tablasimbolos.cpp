@@ -300,6 +300,7 @@ void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)
      //Un scope propio para las variables de la firma de funcion
     nuevoScope();
 
+    retornoValidado = false;
     if(funcion != NULL)
     {
         contextoFuncion = funcion->setConstante();
@@ -322,8 +323,10 @@ void TablaSimbolos::setTipoRetornoFuncion(Tipo t)
     }
 }
 
-Tipo TablaSimbolos::getTipoRetornoFuncion(void) const
+Tipo TablaSimbolos::getTipoRetornoFuncion(void)
 {
+    retornoValidado = true;
+
     if(contextoFuncion != NULL)
     {
         return contextoFuncion->getTipoRetorno();
@@ -336,5 +339,13 @@ void TablaSimbolos::salirContextoFuncion(void)
 {
     //aparte del scope propio de la funcion, tambien se eliminan las de la firma de funcion
     borrarScope();
+
+    if(!retornoValidado && contextoFuncion->getTipoRetorno() != T_INVALIDO)
+    {
+        refCompilador->escribirError("En funcion " + contextoFuncion->getIdentificador() + " no se dio ningun valor de retorno");
+    }
+
     contextoFuncion = NULL;
+
+
 }
