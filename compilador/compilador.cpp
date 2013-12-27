@@ -123,7 +123,7 @@ Compilador::Compilador(string rutaArchivo) :
     existeFuncionPrincipal = false;
 
     fmtDefinido = false;
-    conDefinido = true;
+    conDefinido = false;
 
     separarNombreArchivo(_rutaCompletaArchivo);
     tablaDeSimbolos = new TablaSimbolos(this);
@@ -637,11 +637,11 @@ bool Compilador::importar(void)
                 valido = true;
             }
 
-            if(lexico.compare("fmt") == 0)
+            if(lexico.compare("\"fmt\"") == 0)
             {
                 fmtDefinido = true;
             }
-            if(lexico.compare("con") == 0)
+            if(lexico.compare("\"con\"") == 0)
             {
                 conDefinido = true;
             }
@@ -660,6 +660,17 @@ bool Compilador::importar(void)
     else if(token.compare(ALFABETICO) != 0)
     {
         escribirError("Se esperaba constantes alfabetica");
+    }
+    else
+    {
+        if(lexico.compare("\"fmt\"") == 0)
+        {
+            fmtDefinido = true;
+        }
+        if(lexico.compare("\"con\"") == 0)
+        {
+            conDefinido = true;
+        }
     }
 
     return true;
