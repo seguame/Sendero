@@ -8,6 +8,8 @@ TablaSimbolos::TablaSimbolos(Compilador* c):
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
     refCompilador = c;
+
+    prepararPilas();
 }
 
 TablaSimbolos::~TablaSimbolos()
