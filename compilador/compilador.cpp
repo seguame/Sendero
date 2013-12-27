@@ -1603,6 +1603,7 @@ void Compilador::opy(bool terminoOpcional)
 void Compilador::opno(bool terminoOpcional)
 {
     qDebug() << "opno";
+    bool hayOperacion = false;
     string actual;
 
     if(lexico.compare("!") == 0)
@@ -1612,6 +1613,18 @@ void Compilador::opno(bool terminoOpcional)
     }
 
     oprel(terminoOpcional);
+
+    if(hayOperacion)
+    {
+       hayOperacion = false;
+
+       Tipo derecho = tablaDeSimbolos->desapilarTipo();
+
+       if(derecho != T_BOOLEANO)
+           escribirError("El valor a la derecha del ! no es de tipo Logico");
+
+       tablaDeSimbolos->apilarTipo(T_BOOLEANO);
+    }
 }
 
 void Compilador::oprel(bool terminoOpcional)
