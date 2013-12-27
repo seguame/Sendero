@@ -1230,6 +1230,12 @@ bool Compilador::si(void)
     leerLexema();
     expr(false);
 
+    //Validar que lo obtenido sea de tipo logico
+    if(tablaDeSimbolos->desapilarTipo() != T_BOOLEANO)
+    {
+        escribirError("La expresion dada al \"si\" no es de tipo logica");
+    }
+
     bloque();
 
     leerLexema();
