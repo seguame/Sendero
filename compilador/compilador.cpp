@@ -1609,6 +1609,7 @@ void Compilador::opno(bool terminoOpcional)
     if(lexico.compare("!") == 0)
     {
         actual = lexico;
+        hayOperacion = true;
         leerLexema();
     }
 
@@ -1650,6 +1651,7 @@ void Compilador::oprel(bool terminoOpcional)
 
         suma(terminoOpcional);
         primeraPasada = false;
+
 
     }while(token.compare(COMPARACION) == 0);
 }
