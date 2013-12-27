@@ -122,6 +122,9 @@ Compilador::Compilador(string rutaArchivo) :
     finDeArchivo = false;
     existeFuncionPrincipal = false;
 
+    fmtDefinido = false;
+    conDefinido = true;
+
     separarNombreArchivo(_rutaCompletaArchivo);
     tablaDeSimbolos = new TablaSimbolos(this);
 }
@@ -633,6 +636,15 @@ bool Compilador::importar(void)
             {
                 valido = true;
             }
+
+            if(lexico.compare("fmt") == 0)
+            {
+                fmtDefinido = true;
+            }
+            if(lexico.compare("con") == 0)
+            {
+                conDefinido = true;
+            }
         }while(token.compare(ALFABETICO) == 0);
 
         if(!valido)
@@ -981,10 +993,18 @@ bool Compilador::comando (void)
 
         if(lexico.compare("con") == 0)
         {
+            if(!conDefinido)
+            {
+                escribirError("paquete \"con\" no fue importado");
+            }
             lee();
         }
         else if(lexico.compare("fmt") == 0)
         {
+            if(!fmtDefinido)
+            {
+                escribirError("paquete \"fmt\" no fue importado");
+            }
             imprime();
         }
         else

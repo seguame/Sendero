@@ -59,6 +59,9 @@ class Compilador
         unsigned int _lineaActual;
         unsigned int _columnaActual;
 
+        bool fmtDefinido;
+        bool conDefinido;
+
 
         ofstream salidaInformacion;
 
