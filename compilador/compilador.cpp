@@ -1112,6 +1112,13 @@ void Compilador::asigna (void)
         {
             escribirError(lexico + " no esta definido");
         }
+        else
+        {
+            if(temp->esConstante())
+            {
+                escribirError("Las constantes no pueden modificarse");
+            }
+        }
     }
 
     leerLexema();
