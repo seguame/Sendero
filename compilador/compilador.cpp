@@ -1520,6 +1520,9 @@ bool Compilador::imprime(void)
     {
         leerLexema();
         expr(false);
+
+        tablaDeSimbolos->desapilarTipo(); //de momento no interesa saber que tipo de extrajo
+
     }while(lexico.compare(",") == 0);
 
     if(lexico.compare(")") != 0)
