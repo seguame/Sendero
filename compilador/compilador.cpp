@@ -737,7 +737,10 @@ bool Compilador::pars(void)
     leerLexema();
 
     if(lexico.compare(")") == 0)
+    {
+        tablaDeSimbolos->setFirmaFuncion("6"); //6 es el tipo Void
         return false; //funcion sin parametros, valido, se retorna que no habia
+    }
 
     // la funcion tiene parametros
 
@@ -1006,7 +1009,14 @@ bool Compilador::comando (void)
                         escribirError("Se esperaba apertura de parentesis despues de la funcion " + temp->getIdentificador());
                     }
 
-                    lFunc_1();
+                    string paramsObtenidos = lFunc_1();
+                    string paramsEsperados = temp->getFirmaFuncion();
+
+                    if(paramsEsperados.compare(paramsObtenidos) != 0)
+                    {
+                        escribirError("Error de parametros, la funcion espera " + obtenerStringFirma(paramsEsperados) +
+                                      " y se está enviando " + obtenerStringFirma(paramsObtenidos));
+                    }
                     leerLexema();
                 }
                 else
@@ -1192,11 +1202,11 @@ void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
 
 }
 
-bool Compilador::lFunc_1(void)
+string Compilador::lFunc_1(void)
 {
     qDebug() << "lFunc_1";
 
-    vparam();
+    string params = vparam();
 
 
     if(lexico.compare(")") != 0)
@@ -1204,7 +1214,7 @@ bool Compilador::lFunc_1(void)
         escribirError("Se esperaban parametros o cierre de parentesis de funcion");
     }
 
-    return true;
+    return params;
 }
 
 void Compilador::lFunc_2(void)
@@ -1217,8 +1227,9 @@ void Compilador::lFunc_2(void)
     leerLexema();
 }
 
-void Compilador::vparam(void)
+string Compilador::vparam(void)
 {
+    stringstream paramObtenidos;
     bool opcional = true;
     do
     {
@@ -1230,7 +1241,11 @@ void Compilador::vparam(void)
         leerLexema();
         expr(opcional);
 
+        paramObtenidos << tablaDeSimbolos->desapilarTipo();
+
     }while(lexico.compare(",") == 0);
+
+    return paramObtenidos.str();
 }
 
 bool Compilador::si(void)
@@ -2119,4 +2134,6 @@ string Compilador::obtenerStringFirma(const string& firma)
 
         if(i != longitud -1) flujo << "-";
     }
+
+    return flujo.str();
 }
