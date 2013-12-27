@@ -50,10 +50,10 @@ const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 const Tipo Compilador::operacionesSuma[CANT_TIPOS][CANT_TIPOS] =
 {
                 //Entero    Real        Caracter    Cadena      Booleano
-    /*Entero*/  {T_ENTERO,  T_REAL,     T_ENTERO,   T_CADENA,   T_INVALIDO},
-    /*Real*/    {T_REAL,    T_REAL,     T_INVALIDO, T_CADENA,   T_INVALIDO},
-    /*Caracter*/{T_CARACTER,T_INVALIDO, T_CARACTER, T_CADENA,   T_INVALIDO},
-    /*Cadena*/  {T_CADENA,  T_CADENA,   T_CADENA,   T_CADENA,   T_INVALIDO},
+    /*Entero*/  {T_ENTERO,  T_REAL,     T_ENTERO,   T_INVALIDO, T_INVALIDO},
+    /*Real*/    {T_REAL,    T_REAL,     T_INVALIDO, T_INVALIDO, T_INVALIDO},
+    /*Caracter*/{T_INVALIDO,T_INVALIDO, T_CARACTER, T_CADENA,   T_INVALIDO},
+    /*Cadena*/  {T_INVALIDO,T_INVALIDO, T_CADENA,   T_CADENA,   T_INVALIDO},
     /*Booleano*/{T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO}
 };
 
@@ -1081,11 +1081,6 @@ void Compilador::asigna (void)
         {
             escribirError(lexico + " no esta definido");
         }
-        else
-        {
-            //Obteniendo el tipo de la variable destino
-            tablaDeSimbolos->apilarTipo(temp->getTipo());
-        }
     }
 
     leerLexema();
@@ -1104,8 +1099,7 @@ void Compilador::asigna (void)
     expr(false);
 
     //revisar que lo obtenido al final de la expresion sea del tipo
-    //de dato al que se le va a asignar
-
+    //de dato al que se le va a asignar, como tambien se apilo desapilarlo
     if(temp != NULL && operacionAsignacion[temp->getTipo()][tablaDeSimbolos->desapilarTipo()])
     {
         temp->setInicializado();
@@ -1217,20 +1211,24 @@ string Compilador::lFunc_1(void)
     return params;
 }
 
-void Compilador::lFunc_2(void)
+string Compilador::lFunc_2(void)
 {
-    vparam();
+    qDebug() << "lFunc_2";
+    string params = vparam();
 
     if(lexico.compare(")") != 0)
         escribirError("Se esperaba ) para cerrar la expresion");
 
     leerLexema();
+
+    return params;
 }
 
 string Compilador::vparam(void)
 {
     stringstream paramObtenidos;
     bool opcional = true;
+
     do
     {
         if(lexico.compare(",") == 0)
@@ -1973,6 +1971,8 @@ void Compilador::termino (bool terminoOpcional)
         tablaDeSimbolos->apilarTipo(almacenadoTemporal->getTipo());
 
         leerLexema();
+
+        return;
     }
     else if(token.compare(IDENTIFICADOR) == 0)
     {
@@ -2014,13 +2014,14 @@ void Compilador::termino (bool terminoOpcional)
                 if(retorno != T_INVALIDO)
                 {
                     tablaDeSimbolos->apilarValor(temp);
-                    //Apilar el tipo de retorno de la funcion
-                    tablaDeSimbolos->apilarTipo(retorno);
                 }
                 else
                 {
-                    escribirError("La funcion no retorna ningun valor");
+                    escribirError("La funcion no retorna valor");
                 }
+
+                //Apilar el tipo de retorno de la funcion
+                tablaDeSimbolos->apilarTipo(retorno);
 
             }
         }
@@ -2033,7 +2034,16 @@ void Compilador::termino (bool terminoOpcional)
                 escribirError("Identificador \"" + temp->getIdentificador() + "\"no está definido como funcion, pero se usa como una");
             }
 
-            lFunc_2();
+            string paramsObtenidos = lFunc_2();
+            string paramsEsperados = (temp != NULL) ? temp->getFirmaFuncion() : "";
+
+            if(paramsEsperados.compare(paramsObtenidos) != 0)
+            {
+                escribirError("Error de parametros, la funcion espera " + obtenerStringFirma(paramsEsperados) +
+                              " y se está enviando " + obtenerStringFirma(paramsObtenidos));
+            }
+
+            return;
         }
         else
         {
@@ -2044,6 +2054,8 @@ void Compilador::termino (bool terminoOpcional)
 
             //verificar que cumpla con su especificacion de dimension
             dimension(temp, true);
+
+            return;
         }
     }
     else if(lexico.compare("(") == 0)
@@ -2055,11 +2067,17 @@ void Compilador::termino (bool terminoOpcional)
             escribirError("Se esperaba ) para cerrar la expresion");
 
         leerLexema();
+
+        return;
     }
     else if(!terminoOpcional)
     {
         escribirError("Se esperaba un término");
+        return;
     }
+
+
+    tablaDeSimbolos->apilarTipo(T_INVALIDO); //dummy, si no hay terminos, se apila un invalido
 }
 
 bool Compilador::obtenerTipoValorConstante(Simbolo* simb)

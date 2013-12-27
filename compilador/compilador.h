@@ -114,7 +114,7 @@ class Compilador
         void termino (bool esOpcional);
         bool constanteTipo(string tok);
         string lFunc_1(void);
-        void lFunc_2(void);
+        string lFunc_2(void);
         string vparam(void);
         bool si(void);
         bool desde(void);
