@@ -1429,6 +1429,10 @@ bool Compilador::lee(void)
         {
             escribirError(lexico + " no esta definido");
         }
+        else
+        {
+            temp->setInicializado();
+        }
     }
 
     leerLexema();
