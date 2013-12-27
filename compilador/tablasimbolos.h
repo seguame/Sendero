@@ -37,7 +37,7 @@ public:
     Simbolo* apilarSimbolo(string identificador, bool estaInicializado);
     void apilarValor(Simbolo* s);
     Simbolo* desapilarValor(void);
-    void almacenarPilaSimbolos(Tipo tipo);
+    string almacenarPilaSimbolos(Tipo tipo);
     void apilarTipo(Tipo tipo);
     Tipo desapilarTipo(void);
     void noEsEvaluable(void); //marca en caso de que se esté en asignacion, que no todos los valores son constantes
@@ -45,6 +45,7 @@ public:
     void purgarPilas(void);
 
     void entrarContextoFuncion(Simbolo* funcion);
+    void setFirmaFuncion(const string& s);
     void setTipoRetornoFuncion(Tipo t);
     Tipo getTipoRetornoFuncion(void) const;
     void salirContextoFuncion(void);

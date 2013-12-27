@@ -733,6 +733,7 @@ void Compilador::params(void)
 
 bool Compilador::pars(void)
 {
+    string firmaFuncion = "";
     leerLexema();
 
     if(lexico.compare(")") == 0)
@@ -787,12 +788,15 @@ bool Compilador::pars(void)
         else
         {
             //lexico contiene el tipo de dato a ser apilado
-            tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico));
+            firmaFuncion = firmaFuncion + tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico));
         }
 
         leerLexema();
 
     }while(lexico.compare(",") == 0);
+
+    //almacenar la firma de la funcion
+    tablaDeSimbolos->setFirmaFuncion(firmaFuncion);
 
     //por si quedo algun elemento volando
     tablaDeSimbolos->purgarPilas();

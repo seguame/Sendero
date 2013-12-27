@@ -8,6 +8,8 @@
 #include <sstream>
 #include "enumerators.h"
 
+using namespace std;
+
 #include <QDebug>
 
 class Simbolo
@@ -37,7 +39,7 @@ class Simbolo
         };
 
         base* _ptr;
-        const std::string _identificador;
+        const string _identificador;
         Tipo _tipo;
         bool _constante;
         unsigned int _cantDimensiones;
@@ -52,7 +54,7 @@ class Simbolo
 
     public:
         //template <typename T> Simbolo(std::string const& identificador, T const& valor);
-        Simbolo(std::string const& identificador):
+        Simbolo(string const& identificador):
             _ptr(NULL),
             _identificador(identificador),
             _tipo(T_INVALIDO),
@@ -92,7 +94,7 @@ class Simbolo
 
                 if(_ptr != NULL)
                 {
-                    if(strcmp(typeid(valor).name(), (typeid(std::string*).name())) == 0)
+                    if(strcmp(typeid(valor).name(), (typeid(string*).name())) == 0)
                     {
                         qDebug() << "Cambio de cadena";
                         delete _ptr;
@@ -118,21 +120,23 @@ class Simbolo
             }
             return this;
         }
-        std::string getStringTipo(void) const;
+        string getStringTipo(void) const;
         Tipo getTipo(void) const;
         Simbolo* setTipo(Tipo tipo);
-        std::string getIdentificador() const;
+        string getIdentificador() const;
         Simbolo* setCantidadDimensiones(unsigned int cantidad);
         unsigned int getCantidadDimensiones(void) const;
         Simbolo* setConstante(void);
         bool esConstante(void) const;
-        std::string toString(void) const;
+        string toString(void) const;
         Simbolo* setInicializado(void);
         bool estaInicializado(void) const;
         Simbolo* setTipoRetorno(Tipo t);
         Tipo getTipoRetorno(void) const;
         Simbolo* setTemporal(void);
         bool esTemporal(void) const;
+        Simbolo* setFirmaFuncion(const string& s);
+        string getFirmaFuncion(void) const;
 };
 
 #endif // SIMBOLO_H

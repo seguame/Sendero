@@ -221,14 +221,18 @@ Simbolo* TablaSimbolos::desapilarValor(void)
     return NULL;
 }
 
-void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
+string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
 {
+    stringstream regresable;
     qDebug() << "Almacenando contenido de la pila";
     while(!pilaSimbolos->empty())
     {
         this->insertarSimbolo(pilaSimbolos->top()->setTipo(tipo));
         pilaSimbolos->pop();
+        regresable << tipo;
     }
+
+    return regresable.str();
 }
 
 void TablaSimbolos::apilarTipo(Tipo tipo)
@@ -299,6 +303,14 @@ void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)
     if(funcion != NULL)
     {
         contextoFuncion = funcion->setConstante();
+    }
+}
+
+void TablaSimbolos::setFirmaFuncion(const string& s)
+{
+    if(contextoFuncion != NULL)
+    {
+        contextoFuncion->setFirmaFuncion(s);
     }
 }
 

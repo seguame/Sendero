@@ -111,6 +111,17 @@ bool Simbolo::esTemporal(void) const
     return _temporal;
 }
 
+Simbolo* Simbolo::setFirmaFuncion(const string& s)
+{
+    _firma = s;
+    return this;
+}
+
+string Simbolo::getFirmaFuncion(void) const
+{
+    return _firma;
+}
+
 std::string Simbolo::toString(void) const
 {
     std::stringstream dimensiones;
@@ -175,5 +186,5 @@ std::string Simbolo::toString(void) const
     }
 
     return "ID: " + _identificador + " Tipo: " + tipo + " Const: " + (_constante ? "Si" : "No") + " Temp: " + (_temporal? "Si":"No") +" Dimen: " + dimensiones.str() +
-            " Inicializado: " + (_inicializado ? "Si":"No") + " Valor: " + valor.str() + " Retorno: " + tRetorno.str() ;
+            " Inicializado: " + (_inicializado ? "Si":"No") + " Valor: " + valor.str() + " Retorno: " + tRetorno.str() + " Firma: " + _firma;
 }
