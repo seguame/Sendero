@@ -62,7 +62,17 @@ const Tipo Compilador::operacionMulti[CANT_TIPOS][CANT_TIPOS] =
                 //Entero    Real        Caracter    Cadena      Booleano
     /*Entero*/  {T_ENTERO,  T_REAL,     T_INVALIDO, T_INVALIDO, T_INVALIDO},
     /*Real*/    {T_REAL,    T_REAL,     T_INVALIDO, T_INVALIDO, T_INVALIDO},
-    /*Caracter*/{T_INVALIDO,T_INVALIDO, T_CARACTER, T_CADENA,   T_INVALIDO},
+    /*Caracter*/{T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO},
+    /*Cadena*/  {T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO},
+    /*Booleano*/{T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO}
+};
+
+const Tipo Compilador::operacionPotencia[CANT_TIPOS][CANT_TIPOS] =
+{
+                //Entero    Real        Caracter    Cadena      Booleano
+    /*Entero*/  {T_REAL,    T_REAL,     T_INVALIDO, T_INVALIDO, T_INVALIDO},
+    /*Real*/    {T_REAL,    T_REAL,     T_INVALIDO, T_INVALIDO, T_INVALIDO},
+    /*Caracter*/{T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO},
     /*Cadena*/  {T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO},
     /*Booleano*/{T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO}
 };
@@ -1811,6 +1821,7 @@ void Compilador::expo (bool terminoOpcional)
     qDebug() << "expo";
 
     string actual;
+    bool hayOperacion = false;
     bool primeraPasada = true;
 
     do
@@ -1821,11 +1832,32 @@ void Compilador::expo (bool terminoOpcional)
                 escribirError("Se esperaba un termino antes del simbolo");
 
             actual = lexico;
+            hayOperacion = true;
             leerLexema();
         }
 
         signo(terminoOpcional);
         primeraPasada = false;
+
+        if(hayOperacion)
+        {
+            hayOperacion = false;
+
+            Tipo NuevoIzquierdo = T_INVALIDO;
+            Tipo derecho = tablaDeSimbolos->desapilarTipo();
+            Tipo izquierdo = tablaDeSimbolos->desapilarTipo();
+
+            if(derecho != T_ENTERO && derecho != T_REAL)
+                escribirError("El valor a la derecha del " + actual + " no es de tipo Entero o Real");
+
+            if(izquierdo != T_ENTERO && izquierdo != T_REAL)
+                escribirError("El valor a la izquierda del " + actual + " no es de tipo Entero o Real");
+
+
+            //Obtener el tipo de valor izquierdo y apilarlo
+            NuevoIzquierdo = operacionPotencia[derecho][izquierdo];
+            tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
+        }
 
     }while(lexico.compare("^") == 0);
 }
