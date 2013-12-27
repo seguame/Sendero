@@ -1633,6 +1633,7 @@ void Compilador::oprel(bool terminoOpcional)
     qDebug() << "oprel";
 
     string actual;
+    bool hayOperacion = false;
     bool primeraPasada = true;
 
     do
@@ -1645,12 +1646,30 @@ void Compilador::oprel(bool terminoOpcional)
                 escribirError("Se esperaba un termino antes del simbolo");
 
             actual = lexico;
+            hayOperacion = true;
             leerLexema();
             terminoOpcional = false;
         }
 
         suma(terminoOpcional);
         primeraPasada = false;
+
+        if(hayOperacion)
+        {
+           hayOperacion = false;
+
+           Tipo derecho = tablaDeSimbolos->desapilarTipo();
+           Tipo izquierdo = tablaDeSimbolos->desapilarTipo();
+
+           if(derecho != T_ENTERO && derecho != T_REAL && derecho != T_CARACTER)
+               escribirError("El valor a la derecha del " + actual + " no es de tipo Entero, Real o Caracter");
+
+           if(izquierdo != T_ENTERO && izquierdo != T_REAL && izquierdo != T_CARACTER)
+               escribirError("El valor a la izquierda del " + actual + " no es de tipo Entero, Real o Caracter");
+
+           //las comparaciones dan de valor izquierdo un booleano
+           tablaDeSimbolos->apilarTipo(T_BOOLEANO);
+        }
 
 
     }while(token.compare(COMPARACION) == 0);
