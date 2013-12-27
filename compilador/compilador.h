@@ -65,6 +65,7 @@ class Compilador
         static const Estado matriz_transiciones[ESTADOS][ENTRADAS];
         static const string palabras_reservadas[PALABRAS_RESERVADAS];
         static const Tipo operacionesSuma[CANT_TIPOS][CANT_TIPOS];
+        static const bool operacionAsignacion[CANT_TIPOS][CANT_TIPOS];
         const string IDENTIFICADOR;
         const string ENTERO;
         const string HEXADECIMAL;

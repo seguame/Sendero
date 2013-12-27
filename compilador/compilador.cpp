@@ -57,6 +57,16 @@ const Tipo Compilador::operacionesSuma[CANT_TIPOS][CANT_TIPOS] =
     /*Booleano*/{T_INVALIDO,T_INVALIDO, T_INVALIDO, T_INVALIDO, T_INVALIDO}
 };
 
+const bool Compilador::operacionAsignacion[CANT_TIPOS][CANT_TIPOS] =
+{
+                //Entero    Real        Caracter    Cadena      Booleano
+    /*Entero*/  {true,      false,      false,      false,      false},
+    /*Real*/    {true,      true,       false,      false,      false},
+    /*Caracter*/{false,     false,      true,       false,      false},
+    /*Cadena*/  {false,     false,      false,      true,       false},
+    /*Booleano*/{false,     false,      false,      false,      true}
+};
+
 const string Compilador::palabras_reservadas[PALABRAS_RESERVADAS] =
 {
     "interrumpe", "valor", "canal", "const", "continua", "defecto", "difer", "sino", "desde",
@@ -1059,8 +1069,17 @@ void Compilador::asigna (void)
     //no es opcional el termino
     expr(false);
 
-    //revisar todo lo obtenido a lo largo de la expresion y validar
-    tablaDeSimbolos->checarValidezDeOperaciones();
+    //revisar que lo obtenido al final de la expresion sea del tipo
+    //de dato al que se le va a asignar
+
+    if(temp != NULL && operacionAsignacion[temp->getTipo()][tablaDeSimbolos->desapilarTipo()])
+    {
+        temp->setInicializado();
+    }
+    else
+    {
+        escribirError("Asignacion de tipos invalida");
+    }
 }
 
 void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
@@ -1710,7 +1729,6 @@ void Compilador::suma(bool terminoOpcional)
 
         if(hayOperacion)
         {
-
             hayOperacion = false;
 
             Tipo NuevoIzquierdo = T_INVALIDO;
@@ -1723,9 +1741,9 @@ void Compilador::suma(bool terminoOpcional)
             if(izquierdo != T_ENTERO && izquierdo != T_REAL && izquierdo != T_CARACTER && izquierdo != T_CADENA)
                 escribirError("El valor a la izquierda del " + actual + " no es de tipo Entero, Real, Alfabetico o Caracter");
 
-            NuevoIzquierdo = operacionesSuma[izquierdo][derecho];
 
-            //las comparaciones dan de valor izquierdo un booleano
+            //Obtener el tipo de valor izquierdo y apilarlo
+            NuevoIzquierdo = operacionesSuma[derecho][izquierdo];
             tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
         }
 
@@ -1839,11 +1857,10 @@ void Compilador::termino (bool terminoOpcional)
                 //apilar su tipo de dato
 
 
-                //TODO: activar esto
-                /*if(!temp->estaInicializado())
+                if(!temp->estaInicializado())
                 {
                     escribirError("La variable \"" + temp->getIdentificador() + "\" no esta inicializada");
-                }*/
+                }
 
                 tablaDeSimbolos->apilarValor(temp);
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
