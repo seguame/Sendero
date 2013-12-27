@@ -187,6 +187,20 @@ Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializad
     return s;
 }
 
+void TablaSimbolos::apilarSimbolo(Simbolo* s)
+{
+    if(s == NULL)
+    {
+        qDebug() << "Intentando apilar un simbolo nulificado";
+    }
+
+    s->setInicializado();
+
+    pilaSimbolos->push(s);
+
+
+}
+
 void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
 {
     qDebug() << "Almacenando contenido de la pila";

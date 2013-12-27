@@ -126,7 +126,7 @@ class Compilador
         //Semantico
         TablaSimbolos* tablaDeSimbolos;
 
-        bool almacenarTipoConstante(Simbolo* simb);
+        bool obtenerTipoValorConstante(Simbolo* simb);
 
 };
 
