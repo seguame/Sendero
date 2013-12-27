@@ -1867,14 +1867,29 @@ void Compilador::signo (bool terminoOpcional)
     qDebug() << "signo";
 
     string actual;
+    bool hayOperacion = false;
 
     if(lexico.compare("-") == 0)
     {
         actual = lexico;
+        hayOperacion = true;
         leerLexema();
     }
 
     termino(terminoOpcional);
+
+    if(hayOperacion)
+    {
+       hayOperacion = false;
+
+       Tipo derecho = tablaDeSimbolos->desapilarTipo();
+
+       if(derecho != T_ENTERO && derecho != T_REAL)
+           escribirError("El valor a la derecha del - no es de tipo Entero o Real");
+
+       //su tipo no cambia, se reapila
+       tablaDeSimbolos->apilarTipo(derecho);
+    }
 }
 
 void Compilador::termino (bool terminoOpcional)
