@@ -203,6 +203,18 @@ void TablaSimbolos::apilarValor(Simbolo* s)
     pilaValores->push(s);
 }
 
+Simbolo* TablaSimbolos::desapilarValor(void)
+{
+    if(pilaValores->empty())
+    {
+        qDebug() << "Desapilando valor de una pila vacia";
+    }
+
+    Simbolo* s = pilaValores->top();
+    pilaValores->pop();
+    return s;
+}
+
 void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
 {
     qDebug() << "Almacenando contenido de la pila";
@@ -216,6 +228,18 @@ void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
 void TablaSimbolos::apilarTipo(Tipo tipo)
 {
     pilaTipos->push(tipo);
+}
+
+Tipo TablaSimbolos::desapilarTipo(void)
+{
+    if(pilaTipos->empty())
+    {
+        qDebug() << "Desapilando tipo de una pila vacia";
+    }
+
+    Tipo t = pilaTipos->top();
+    pilaTipos->pop();
+    return t;
 }
 
 void TablaSimbolos::noEsEvaluable(void)

@@ -36,8 +36,10 @@ public:
     void prepararPilas(void);
     Simbolo* apilarSimbolo(string identificador, bool estaInicializado);
     void apilarValor(Simbolo* s);
+    Simbolo* desapilarValor(void);
     void almacenarPilaSimbolos(Tipo tipo);
     void apilarTipo(Tipo tipo);
+    Tipo desapilarTipo(void);
     void noEsEvaluable(void); //marca en caso de que se esté en asignacion, que no todos los valores son constantes
     void checarValidezDeOperaciones(void);
     void purgarPilas(void);
