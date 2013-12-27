@@ -310,6 +310,16 @@ void TablaSimbolos::setTipoRetornoFuncion(Tipo t)
     }
 }
 
+Tipo TablaSimbolos::getTipoRetornoFuncion(void) const
+{
+    if(contextoFuncion != NULL)
+    {
+        return contextoFuncion->getTipoRetorno();
+    }
+
+    return T_INVALIDO;
+}
+
 void TablaSimbolos::salirContextoFuncion(void)
 {
     //aparte del scope propio de la funcion, tambien se eliminan las de la firma de funcion

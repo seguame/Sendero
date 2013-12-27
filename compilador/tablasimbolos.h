@@ -46,6 +46,7 @@ public:
 
     void entrarContextoFuncion(Simbolo* funcion);
     void setTipoRetornoFuncion(Tipo t);
+    Tipo getTipoRetornoFuncion(void) const;
     void salirContextoFuncion(void);
 
 

@@ -1409,6 +1409,14 @@ bool Compilador::regresa (void)
     leerLexema();
     expr(true);
 
+    Tipo retornoFuncion = tablaDeSimbolos->getTipoRetornoFuncion();
+    Tipo retornado = tablaDeSimbolos->desapilarTipo();
+
+    if(retornado != retornoFuncion)
+    {
+        escribirError("Conflicto en tipos en valor de retorno");
+    }
+
     return true;
 }
 
