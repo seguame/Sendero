@@ -339,6 +339,9 @@ void VentanaPrincipal::actualizarVistaErrores(QString ruta)
         modeloErrores->setData(modeloErrores->index(i, 1), tmp[1]);
         modeloErrores->setData(modeloErrores->index(i, 2), tmp[2]);
         modeloErrores->setData(modeloErrores->index(i, 3), tmp[3]);
+
+        tmp[4] = tmp[4].trimmed();
+
         modeloErrores->setData(modeloErrores->index(i, 4), tmp[4]);
         ++i;
     }
