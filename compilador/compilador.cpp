@@ -137,10 +137,9 @@ Compilador::~Compilador()
 
 void Compilador::realizarMagia(void)
 {
+    ReportadorErrores::ObtenerInstancia()->SetRuta(_rutaAlArchivo+"/"+_nombreArchivo);
+
     salidaInformacion.open((_rutaAlArchivo+"/"+_nombreArchivo+".lexemas").c_str());
-
-    ReportadorErrores::Inicializar(_rutaAlArchivo+"/"+_nombreArchivo);
-
     compilable.open(_rutaCompletaArchivo.c_str());
 
     if(!compilable.is_open())
@@ -162,7 +161,6 @@ void Compilador::realizarMagia(void)
 
     compilable.close();
     salidaInformacion.close();
-    ReportadorErrores::Terminar();
 }
 
 
