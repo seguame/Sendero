@@ -288,7 +288,7 @@ void TablaSimbolos::purgarPilas(void)
     {
         if(pilaValores->top()->esTemporal())
         {
-            delete pilaValores->top();
+            //delete pilaValores->top();  FIXME FUGA DE MEMORIA! Se esta liberando memoria ya liberada
         }
         pilaValores->pop();
     }
