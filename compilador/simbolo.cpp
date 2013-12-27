@@ -100,6 +100,17 @@ Tipo Simbolo::getTipoRetorno(void) const
     return _retorno;
 }
 
+Simbolo* Simbolo::setTemporal(void)
+{
+    _temporal = true;
+    return this;
+}
+
+bool Simbolo::esTemporal(void) const
+{
+    return _temporal;
+}
+
 std::string Simbolo::toString(void) const
 {
     std::stringstream dimensiones;
@@ -163,6 +174,6 @@ std::string Simbolo::toString(void) const
         }
     }
 
-    return "ID: " + _identificador + " Tipo: " + tipo + " Const: " + (_constante ? "Si" : "No") + " Dimen: " + dimensiones.str() +
+    return "ID: " + _identificador + " Tipo: " + tipo + " Const: " + (_constante ? "Si" : "No") + " Temp: " + (_temporal? "Si":"No") +" Dimen: " + dimensiones.str() +
             " Inicializado: " + (_inicializado ? "Si":"No") + " Valor: " + valor.str() + " Retorno: " + tRetorno.str() ;
 }

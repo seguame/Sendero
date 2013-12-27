@@ -42,6 +42,7 @@ class Simbolo
         bool _constante;
         unsigned int _cantDimensiones;
         bool _inicializado;
+        bool _temporal;
 
         //usados en funciones
         Tipo _retorno;
@@ -58,6 +59,7 @@ class Simbolo
             _constante(false),
             _cantDimensiones(0),
             _inicializado(false),
+            _temporal(false),
             _retorno(T_INVALIDO),
             _cantArgumentos(0),
             _firma("")
@@ -129,6 +131,8 @@ class Simbolo
         bool estaInicializado(void) const;
         Simbolo* setTipoRetorno(Tipo t);
         Tipo getTipoRetorno(void) const;
+        Simbolo* setTemporal(void);
+        bool esTemporal(void) const;
 };
 
 #endif // SIMBOLO_H

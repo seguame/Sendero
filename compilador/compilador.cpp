@@ -1698,19 +1698,29 @@ void Compilador::termino (bool terminoOpcional)
         //Llegó un dato constante, determinar su tipo, valor y apilarlos
 
         Simbolo* almacenadoTemporal = new Simbolo("HOLDER");
+        almacenadoTemporal->setTemporal();
 
         if(!obtenerTipoValorConstante(almacenadoTemporal))
         {
             escribirError("Tu compu no sirve #posMeQuejo");
         }
 
-        tablaDeSimbolos->apilarSimbolo(almacenadoTemporal);
+        tablaDeSimbolos->apilarValor(almacenadoTemporal);
         tablaDeSimbolos->apilarTipo(almacenadoTemporal->getTipo());
+
         leerLexema();
     }
     else if(token.compare(IDENTIFICADOR) == 0)
     {
         Simbolo* temp = tablaDeSimbolos->buscarSimbolo(lexico);
+
+
+        //Como se estan usando datos variables, la expresion no
+        //puede ser evaluada en tiempo de compilacion
+        tablaDeSimbolos->noEsEvaluable();
+
+        //Se apilan los simbolos asociados
+        //para mantener coherencia entre las pilas de Valor y de Tipo
 
         if(temp == NULL)
         {
@@ -1730,6 +1740,7 @@ void Compilador::termino (bool terminoOpcional)
                     escribirError("La variable \"" + temp->getIdentificador() + "\" no esta inicializada");
                 }*/
 
+                tablaDeSimbolos->apilarValor(temp);
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
             }
             else
@@ -1739,8 +1750,9 @@ void Compilador::termino (bool terminoOpcional)
 
                 if(retorno != T_INVALIDO)
                 {
+                    tablaDeSimbolos->apilarValor(temp);
                     //Apilar el tipo de retorno de la funcion
-                    tablaDeSimbolos->apilarTipo(temp->getTipoRetorno());
+                    tablaDeSimbolos->apilarTipo(retorno);
                 }
                 else
                 {

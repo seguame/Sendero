@@ -2,7 +2,8 @@
 
 TablaSimbolos::TablaSimbolos(Compilador* c):
     pilaSimbolos(NULL),
-    pilaTipos(NULL)
+    pilaTipos(NULL),
+    pilaValores(NULL)
 {
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
@@ -168,6 +169,11 @@ void TablaSimbolos::prepararPilas(void)
         pilaTipos = new stack<Tipo>();
     }
 
+    if(pilaValores == NULL)
+    {
+        pilaValores = new stack<Simbolo*>();
+    }
+
     purgarPilas();
 }
 
@@ -187,18 +193,14 @@ Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializad
     return s;
 }
 
-void TablaSimbolos::apilarSimbolo(Simbolo* s)
+void TablaSimbolos::apilarValor(Simbolo* s)
 {
     if(s == NULL)
     {
         qDebug() << "Intentando apilar un simbolo nulificado";
     }
 
-    s->setInicializado();
-
-    pilaSimbolos->push(s);
-
-
+    pilaValores->push(s);
 }
 
 void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
@@ -214,6 +216,11 @@ void TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
 void TablaSimbolos::apilarTipo(Tipo tipo)
 {
     pilaTipos->push(tipo);
+}
+
+void TablaSimbolos::noEsEvaluable(void)
+{
+    //TODO;
 }
 
 void TablaSimbolos::checarValidezDeOperaciones(void)
@@ -238,6 +245,16 @@ void TablaSimbolos::purgarPilas(void)
     {
         pilaTipos->pop();
     }
+
+    while(!pilaValores->empty())
+    {
+        if(pilaValores->top()->esTemporal())
+        {
+            delete pilaValores->top();
+        }
+        pilaValores->pop();
+    }
+
 }
 
 void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)

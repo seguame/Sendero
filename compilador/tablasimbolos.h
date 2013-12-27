@@ -35,7 +35,7 @@ public:
 
     void prepararPilas(void);
     Simbolo* apilarSimbolo(string identificador, bool estaInicializado);
-    void apilarSimbolo(Simbolo* s);
+    void apilarValor(Simbolo* s);
     void almacenarPilaSimbolos(Tipo tipo);
     void apilarTipo(Tipo tipo);
     void noEsEvaluable(void); //marca en caso de que se esté en asignacion, que no todos los valores son constantes
@@ -55,6 +55,7 @@ private:
     vector< map <string, Simbolo*>* > *simbolos;
     stack<Simbolo*> *pilaSimbolos;
     stack<Tipo> *pilaTipos;
+    stack<Simbolo*> *pilaValores;
 
     Simbolo* contextoFuncion;
 };
