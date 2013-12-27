@@ -1142,6 +1142,12 @@ void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
         leerLexema();
         expr(false);
 
+        //Validar que lo obtenido sea de tipo logico
+        if(tablaDeSimbolos->desapilarTipo() != T_ENTERO)
+        {
+            escribirError("Conflicto en tipos en  dimension (solo admite entero)");
+        }
+
         if(lexico.compare("]") != 0)
         {
             escribirError("Se esperaba cierre de corchetes");
