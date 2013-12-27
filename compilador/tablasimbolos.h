@@ -59,7 +59,7 @@ private:
     vector< map <string, Simbolo*>* > *simbolos;
     stack<Simbolo*> *pilaSimbolos;
     stack<Tipo> *pilaTipos;
-    stack<Simbolo*> *pilaValores;
+    //stack<Simbolo*> *pilaValores;
 
     Simbolo* contextoFuncion;
     bool retornoValidado;

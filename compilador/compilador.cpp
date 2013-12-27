@@ -2003,7 +2003,7 @@ void Compilador::termino (bool terminoOpcional)
             escribirError("Tu compu no sirve #posMeQuejo");
         }
 
-        tablaDeSimbolos->apilarValor(almacenadoTemporal);
+        //tablaDeSimbolos->apilarValor(almacenadoTemporal);
         tablaDeSimbolos->apilarTipo(almacenadoTemporal->getTipo());
 
         leerLexema();
@@ -2017,7 +2017,8 @@ void Compilador::termino (bool terminoOpcional)
 
         //Como se estan usando datos variables, la expresion no
         //puede ser evaluada en tiempo de compilacion
-        tablaDeSimbolos->noEsEvaluable();
+        //Abandonado este aproach
+        //tablaDeSimbolos->noEsEvaluable();
 
         //Se apilan los simbolos asociados
         //para mantener coherencia entre las pilas de Valor y de Tipo
@@ -2039,7 +2040,7 @@ void Compilador::termino (bool terminoOpcional)
                     escribirError("La variable \"" + temp->getIdentificador() + "\" no esta inicializada");
                 }
 
-                tablaDeSimbolos->apilarValor(temp);
+                //tablaDeSimbolos->apilarValor(temp);
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
             }
             else
@@ -2049,7 +2050,7 @@ void Compilador::termino (bool terminoOpcional)
 
                 if(retorno != T_INVALIDO)
                 {
-                    tablaDeSimbolos->apilarValor(temp);
+                    //tablaDeSimbolos->apilarValor(temp);
                 }
                 else
                 {

@@ -2,8 +2,8 @@
 
 TablaSimbolos::TablaSimbolos(Compilador* c):
     pilaSimbolos(NULL),
-    pilaTipos(NULL),
-    pilaValores(NULL)
+    pilaTipos(NULL)//,
+    //pilaValores(NULL)
 {
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
@@ -171,10 +171,10 @@ void TablaSimbolos::prepararPilas(void)
         pilaTipos = new stack<Tipo>();
     }
 
-    if(pilaValores == NULL)
+    /*if(pilaValores == NULL)
     {
         pilaValores = new stack<Simbolo*>();
-    }
+    }*/
 
     purgarPilas();
 }
@@ -195,7 +195,7 @@ Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializad
     return s;
 }
 
-void TablaSimbolos::apilarValor(Simbolo* s)
+/*void TablaSimbolos::apilarValor(Simbolo* s)
 {
     if(s == NULL)
     {
@@ -203,9 +203,9 @@ void TablaSimbolos::apilarValor(Simbolo* s)
     }
 
     pilaValores->push(s);
-}
+}*/
 
-Simbolo* TablaSimbolos::desapilarValor(void)
+/*Simbolo* TablaSimbolos::desapilarValor(void)
 {
     if(pilaValores->empty())
     {
@@ -219,7 +219,7 @@ Simbolo* TablaSimbolos::desapilarValor(void)
     }
 
     return NULL;
-}
+}*/
 
 string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
 {
@@ -256,19 +256,19 @@ Tipo TablaSimbolos::desapilarTipo(void)
     return T_INVALIDO;
 }
 
-void TablaSimbolos::noEsEvaluable(void)
+/*void TablaSimbolos::noEsEvaluable(void)
 {
     //TODO;
-}
+}*/
 
-void TablaSimbolos::checarValidezDeOperaciones(void)
+/*void TablaSimbolos::checarValidezDeOperaciones(void)
 {
     while(!pilaTipos->empty())
     {
         qDebug() << pilaTipos->top();
         pilaTipos->pop();
     }
-}
+}*/
 
 void TablaSimbolos::purgarPilas(void)
 {
@@ -284,14 +284,14 @@ void TablaSimbolos::purgarPilas(void)
         pilaTipos->pop();
     }
 
-    while(!pilaValores->empty())
+    /*while(!pilaValores->empty())
     {
         if(pilaValores->top()->esTemporal())
         {
             //delete pilaValores->top();  FIXME FUGA DE MEMORIA! Se esta liberando memoria ya liberada
         }
         pilaValores->pop();
-    }
+    }*/
 
 }
 
