@@ -1277,6 +1277,7 @@ bool Compilador::desde(void)
     leerLexema();
     expr(true);
 
+
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba delimitador de zona de condicion");
 
@@ -1318,9 +1319,18 @@ bool Compilador::caso(void)
     }
     else
     {
-        if(tablaDeSimbolos->buscarSimbolo(lexico) == NULL)
+        Simbolo* temp = tablaDeSimbolos->buscarSimbolo(lexico);
+
+        if(temp == NULL)
         {
             escribirError(lexico + " no esta definido");
+        }
+        else
+        {
+            if(temp->getTipo() != T_ENTERO)
+            {
+                escribirError("Para la variable de \"caso\" solo se admiten tipos enteros y se da un " + temp->getStringTipo());
+            }
         }
     }
 
