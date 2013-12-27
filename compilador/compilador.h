@@ -131,6 +131,7 @@ class Compilador
         TablaSimbolos* tablaDeSimbolos;
 
         bool obtenerTipoValorConstante(Simbolo* simb);
+        string obtenerStringFirma(const string& firma);
 
 };
 

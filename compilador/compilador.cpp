@@ -2087,3 +2087,36 @@ bool Compilador::obtenerTipoValorConstante(Simbolo* simb)
 
     return exitoParsing;
 }
+
+string Compilador::obtenerStringFirma(const string& firma)
+{
+    stringstream flujo;
+    int longitud = firma.length();
+
+    for(int i = 0; i < longitud; ++i)
+    {
+        switch(firma[i])
+        {
+        case '0':
+            flujo << "Entero";
+            break;
+        case '1':
+            flujo << "Real";
+            break;
+        case '2':
+            flujo << "Caracter";
+            break;
+        case '3':
+            flujo << "Alfabetico";
+            break;
+        case '4':
+            flujo << "Logico";
+            break;
+        default:
+            flujo << "Void";
+            break;
+        }
+
+        if(i != longitud -1) flujo << "-";
+    }
+}
