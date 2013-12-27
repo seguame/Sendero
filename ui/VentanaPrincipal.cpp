@@ -4,6 +4,7 @@
 #include "EditorCodigo/editor_codigo.h"
 #include "EditorCodigo/resaltador_sintaxis.h"
 #include "compilador/compilador.h"
+#include "compilador/utils/reportadorerrores.h"
 
 VentanaPrincipal::VentanaPrincipal()
 {
@@ -118,6 +119,8 @@ void VentanaPrincipal::compilar()
 {
     if(preguntarSiGuardar())
     {
+        ReportadorErrores::Inicializar();
+
         string strArchivo = archivoActual.toUtf8().constData();
 
         Compilador compilador(strArchivo);
@@ -128,6 +131,17 @@ void VentanaPrincipal::compilar()
 
         actualizarVistas();
 
+        if(ReportadorErrores::ObtenerInstancia()->getCantidadErrores() == 0)
+        {
+            qDebug() << "Se generara bytecode";
+            //Escribir el bytecode
+        }
+        else
+        {
+            qDebug() << "No se generara bytecode";
+        }
+
+        ReportadorErrores::Terminar();
     }
 }
 
