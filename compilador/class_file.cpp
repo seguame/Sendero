@@ -5,8 +5,12 @@ ClassFile::ClassFile():
 {
     cuerpo = (CuerpoClass*)malloc(sizeof(CuerpoClass));
 
-    cuerpo->magia           = 0xCAFEBABE;
+    cuerpo->magic_number    = 0xCAFEBABE;
     cuerpo->minor_version   = 0x0000;
     cuerpo->major_version   = 0x0033;
+
+    cuerpo->access_flags    = ACC_PUBLIC | ACC_SUPER | ACC_FINAL;
+    cuerpo->super_class     = 0x0000;
+    cuerpo->interfaces      = 0x0000;
 }
 

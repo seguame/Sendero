@@ -111,7 +111,7 @@ typedef struct
     u2 name_and_type_index;
 }CONSTANT_InvokeDynamic_info;
 
-typedef union
+typedef struct
 {
     u1   tag;
     CONSTANT_Class_info                 CC;
@@ -131,7 +131,12 @@ typedef union
 }cp_info;
 
 
-
+typedef struct
+{
+    u2 attribute_name_index;
+    u4 attribute_length;  // Fijado en 2 para este atributo
+    u2 constantvalue_index;
+}ConstantValue_attribute;
 
 
 typedef struct
