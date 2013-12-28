@@ -49,4 +49,5 @@ OTHER_FILES += \
     imagenes/new.png \
     imagenes/cut.png \
     imagenes/copy.png \
-    imagenes/compile.png
+    imagenes/compile.png \
+    compilador/codop.csv
