@@ -3,6 +3,7 @@
 #include "compilador.h"
 #include "utils/conversor.h"
 #include "utils/reportadorerrores.h"
+#include "manejador_class.h"
 
 const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 {
@@ -166,7 +167,15 @@ void Compilador::realizarMagia(void)
 
 void Compilador::hacerAnalisisSintactico(void)
 {
+    //Escribir cabecera del intermedario de bytecode
+    ManejadorClass::ObtenerInstancia()->escribirCabecera(_nombreArchivo);
+
     programa();
+
+    ManejadorClass::ObtenerInstancia()->escribirArchivoParaEnsamblar(_rutaAlArchivo+"/"+_nombreArchivo);
+
+
+    ManejadorClass::Ensamblar(_rutaAlArchivo, _nombreArchivo);
 }
 
 void Compilador::saltarLineasEnBlanco(void)
