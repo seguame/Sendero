@@ -18,6 +18,9 @@ public:
     void escribirCabeceraMetodo(Simbolo* funcion);
     void escribirFinMetodo(Simbolo* funcion);
 
+    void aniadirImpresionLNPantalla(const string& texto);
+    void aniadirImpresionPantalla(const string& texto);
+
     void aniadirInstruccion(const string& operacion,const string& parametro);
     void escribirArchivoParaEnsamblar(const string& ruta);
 
