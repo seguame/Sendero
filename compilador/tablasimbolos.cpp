@@ -351,13 +351,22 @@ void TablaSimbolos::salirContextoFuncion(void)
     //aparte del scope propio de la funcion, tambien se eliminan las de la firma de funcion
     borrarScope();
 
-    if(!retornoValidado && contextoFuncion->getTipoRetorno() != T_INVALIDO)
+    if(contextoFuncion != NULL)
     {
-        refCompilador->escribirError("En funcion " + contextoFuncion->getIdentificador() + " no se dio ningun valor de retorno");
+
+        if(!retornoValidado && contextoFuncion->getTipoRetorno() != T_INVALIDO)
+        {
+            refCompilador->escribirError("En funcion " + contextoFuncion->getIdentificador() + " no se dio ningun valor de retorno");
+        }
+
+        //Escribir el fin del metodo en el intermediario
+        ManejadorClass::ObtenerInstancia()->escribirFinMetodo(contextoFuncion);
+
+        contextoFuncion = NULL;
+    }
+    else
+    {
+        qDebug() << "Saliendo de un contexto de funcion nulo";
     }
 
-    contextoFuncion = NULL;
-
-    //Escribir el fin del metodo en el intermediario
-    ManejadorClass::ObtenerInstancia()->aniadirInstruccion(".end", "method");
 }
