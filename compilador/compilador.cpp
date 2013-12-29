@@ -1572,6 +1572,11 @@ bool Compilador::imprime(void)
         Tipo tActual = tablaDeSimbolos->desapilarTipo();
         stringstream imprimible;
 
+        if(tActual != T_CADENA)
+        {
+            imprimible << "\"";
+        }
+
         switch(tActual)
         {
             case T_ENTERO:
@@ -1581,7 +1586,15 @@ bool Compilador::imprime(void)
                 imprimible << sActual->getValor<double>();
                 break;
             case T_BOOLEANO:
-                imprimible << sActual->getValor<bool>();
+
+                if(sActual->getValor<bool>())
+                {
+                    imprimible << "Verdadero";
+                }
+                else
+                {
+                    imprimible << "Falso";
+                }
                 break;
             case T_CADENA:
                 imprimible << (sActual->getValor<string>());
@@ -1592,6 +1605,11 @@ bool Compilador::imprime(void)
             default:
                 imprimible << "NULO";
                 break;
+        }
+
+        if(tActual != T_CADENA)
+        {
+            imprimible << "\"";
         }
 
         ManejadorClass::ObtenerInstancia()->aniadirImpresionPantalla(imprimible.str());
