@@ -1616,7 +1616,7 @@ bool Compilador::imprime(void)
             }
         }
 
-        ManejadorClass::ObtenerInstancia()->aniadirImpresionPantalla(imprimible.str());
+        ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(imprimible.str());
 
         if(sActual->esTemporal()) delete sActual;
 
@@ -1624,7 +1624,7 @@ bool Compilador::imprime(void)
 
     if(conSalto)
     {
-        ManejadorClass::ObtenerInstancia()->aniadirImpresionLNPantalla("\"\"");
+        ManejadorClass::ObtenerInstancia()->escribirImpresionLNPantalla("\"\"");
     }
 
     if(lexico.compare(")") != 0)
