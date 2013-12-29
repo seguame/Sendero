@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "EditorCodigo/editor_codigo.h"
+#include "externo/qconsolewidget.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -81,6 +82,9 @@ class VentanaPrincipal : public QMainWindow
         QTreeView *vistaInformativa;
         QAbstractItemModel *modeloErrores;
         QAbstractItemModel *modeloInformativa;
+
+
+        QConsoleWidget* consola;
 };
 
 #endif //__VENTANA_PRINCIPAL_H__
