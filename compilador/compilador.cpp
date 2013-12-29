@@ -733,15 +733,14 @@ bool Compilador::funcion(void)
         tablaDeSimbolos->setTipoRetornoFuncion(tipoRetorno);
 
         leerLexema();
-        bloque();
-    }
-    else
-    {
-        bloque();
     }
 
     //Escribir la firma del metodo en el intermediario de bytecode
     ManejadorClass::ObtenerInstancia()->escribirCabeceraMetodo(func);
+
+    bloque();
+
+
 
     tablaDeSimbolos->salirContextoFuncion();
 
@@ -1538,6 +1537,7 @@ bool Compilador::lee(void)
 bool Compilador::imprime(void)
 {
     qDebug() << "imprime";
+    bool conSalto = false;
 
     leerLexema();
 
@@ -1551,6 +1551,7 @@ bool Compilador::imprime(void)
     }
     else if(lexico.compare("Imprimenl") == 0)
     {
+        conSalto = true;
     }
     else
     {
@@ -1567,9 +1568,42 @@ bool Compilador::imprime(void)
         leerLexema();
         expr(false);
 
-        tablaDeSimbolos->desapilarTipo(); //de momento no interesa saber que tipo de extrajo
+        Simbolo* sActual = tablaDeSimbolos->desapilarValor();
+        Tipo tActual = tablaDeSimbolos->desapilarTipo();
+        stringstream imprimible;
+
+        switch(tActual)
+        {
+            case T_ENTERO:
+                imprimible << sActual->getValor<long>();
+                break;
+            case T_REAL:
+                imprimible << sActual->getValor<double>();
+                break;
+            case T_BOOLEANO:
+                imprimible << sActual->getValor<bool>();
+                break;
+            case T_CADENA:
+                imprimible << (sActual->getValor<string>());
+                break;
+            case T_CARACTER:
+                imprimible << sActual->getValor<char>();
+                break;
+            default:
+                imprimible << "NULO";
+                break;
+        }
+
+        ManejadorClass::ObtenerInstancia()->aniadirImpresionPantalla(imprimible.str());
+
+        if(sActual->esTemporal()) delete sActual;
 
     }while(lexico.compare(",") == 0);
+
+    if(conSalto)
+    {
+        ManejadorClass::ObtenerInstancia()->aniadirImpresionLNPantalla("\"\"");
+    }
 
     if(lexico.compare(")") != 0)
         escribirError("Se esperaba cierre de parentesis");
@@ -2015,7 +2049,7 @@ void Compilador::termino (bool terminoOpcional)
             escribirError("Tu compu no sirve #posMeQuejo");
         }
 
-        //tablaDeSimbolos->apilarValor(almacenadoTemporal);
+        tablaDeSimbolos->apilarValor(almacenadoTemporal);
         tablaDeSimbolos->apilarTipo(almacenadoTemporal->getTipo());
 
         leerLexema();
@@ -2052,7 +2086,7 @@ void Compilador::termino (bool terminoOpcional)
                     escribirError("La variable \"" + temp->getIdentificador() + "\" no esta inicializada");
                 }
 
-                //tablaDeSimbolos->apilarValor(temp);
+                tablaDeSimbolos->apilarValor(temp);
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
             }
             else
@@ -2062,7 +2096,7 @@ void Compilador::termino (bool terminoOpcional)
 
                 if(retorno != T_INVALIDO)
                 {
-                    //tablaDeSimbolos->apilarValor(temp);
+                    tablaDeSimbolos->apilarValor(temp);
                 }
                 else
                 {
