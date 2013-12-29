@@ -4,8 +4,8 @@
 TablaSimbolos::TablaSimbolos(Compilador* c):
     pilaSimbolos(NULL),
     pilaTipos(NULL),
-    contextoFuncion(NULL)//,
-    //pilaValores(NULL)
+    contextoFuncion(NULL),
+    pilaValores(NULL)
 {
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
@@ -174,10 +174,10 @@ void TablaSimbolos::prepararPilas(void)
         pilaTipos = new stack<Tipo>();
     }
 
-    /*if(pilaValores == NULL)
+    if(pilaValores == NULL)
     {
         pilaValores = new stack<Simbolo*>();
-    }*/
+    }
 
     purgarPilas();
 }
@@ -198,7 +198,7 @@ Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializad
     return s;
 }
 
-/*void TablaSimbolos::apilarValor(Simbolo* s)
+void TablaSimbolos::apilarValor(Simbolo* s)
 {
     if(s == NULL)
     {
@@ -206,9 +206,9 @@ Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializad
     }
 
     pilaValores->push(s);
-}*/
+}
 
-/*Simbolo* TablaSimbolos::desapilarValor(void)
+Simbolo* TablaSimbolos::desapilarValor(void)
 {
     if(pilaValores->empty())
     {
@@ -222,7 +222,7 @@ Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializad
     }
 
     return NULL;
-}*/
+}
 
 string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
 {
@@ -287,19 +287,20 @@ void TablaSimbolos::purgarPilas(void)
         pilaTipos->pop();
     }
 
-    /*while(!pilaValores->empty())
+    while(!pilaValores->empty())
     {
-        if(pilaValores->top()->esTemporal())
+        /*if(pilaValores->top()->getIdentificador().compare("HOLDER") == 0)
         {
-            //delete pilaValores->top();  FIXME FUGA DE MEMORIA! Se esta liberando memoria ya liberada
-        }
+            delete pilaValores->top();  //FIXME FUGA DE MEMORIA! Se esta liberando memoria ya liberada
+        }*/
         pilaValores->pop();
-    }*/
+    }
 
 }
 
 void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)
 {
+    qDebug() << "Entrando en contexto funcion";
     //Un scope propio para las variables de la firma de funcion
     nuevoScope();
 
@@ -348,6 +349,7 @@ Tipo TablaSimbolos::getTipoRetornoFuncion(void)
 
 void TablaSimbolos::salirContextoFuncion(void)
 {
+    qDebug() << "saliendo scope de funcion";
     //aparte del scope propio de la funcion, tambien se eliminan las de la firma de funcion
     borrarScope();
 
