@@ -82,8 +82,8 @@ void ManejadorClass::escribirCabeceraMetodo(const string& nombre, const string& 
     firmaCompleta = obtenerDescriptorFirma(firma, retorno);
 
     aniadirInstruccion(metodo.str(), firmaCompleta);
-    aniadirInstruccion(".limit stack", "10");
-    aniadirInstruccion(".limit locals", "10");
+    aniadirInstruccion(".limit stack", "40");
+    aniadirInstruccion(".limit locals", "40");
 }
 
 void ManejadorClass::escribirFinMetodo(Simbolo* funcion)
@@ -203,7 +203,7 @@ string ManejadorClass::obtenerDescriptorFirma(const string& firma, Tipo retorno)
             break;
         }
 
-        flujo << ";";
+        if(firma[i] == '3' || firma[i] == '9') flujo << ";";
     }
 
     flujo << ')';
