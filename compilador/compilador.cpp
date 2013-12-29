@@ -168,7 +168,7 @@ void Compilador::realizarMagia(void)
 void Compilador::hacerAnalisisSintactico(void)
 {
     //Escribir cabecera del intermedario de bytecode
-    ManejadorClass::ObtenerInstancia()->escribirCabecera(_nombreArchivo);
+    ManejadorClass::ObtenerInstancia()->escribirCabeceraClase(_nombreArchivo);
 
     programa();
 
@@ -718,8 +718,8 @@ bool Compilador::funcion(void)
 
     tablaDeSimbolos->entrarContextoFuncion(func);
 
-
     params();
+
 
     leerLexema();
 
@@ -739,6 +739,9 @@ bool Compilador::funcion(void)
     {
         bloque();
     }
+
+    //Escribir la firma del metodo en el intermediario de bytecode
+    ManejadorClass::ObtenerInstancia()->escribirCabeceraMetodo(func);
 
     tablaDeSimbolos->salirContextoFuncion();
 
