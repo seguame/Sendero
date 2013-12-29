@@ -46,7 +46,7 @@ void ManejadorClass::escribirCabeceraClase(const string& nombre)
 void ManejadorClass::escribirMain(void)
 {
     string metodo  = "main";
-    string firma   = "3";
+    string firma   = "9";
 
     escribirCabeceraMetodo(metodo, firma, T_INVALIDO);
 }
@@ -82,6 +82,18 @@ void ManejadorClass::escribirCabeceraMetodo(const string& nombre, const string& 
     firmaCompleta = obtenerDescriptorFirma(firma, retorno);
 
     aniadirInstruccion(metodo.str(), firmaCompleta);
+    aniadirInstruccion(".limit stack", "10");
+    aniadirInstruccion(".limit locals", "10");
+}
+
+void ManejadorClass::escribirFinMetodo(Simbolo* funcion)
+{
+    string retorno;
+
+    retorno = obtenerTipoRetorno(funcion->getTipoRetorno());
+
+    aniadirInstruccion(retorno, "");
+    aniadirInstruccion(".end", "method");
 }
 
 void ManejadorClass::aniadirInstruccion(const string& operacion,const string& parametro)
@@ -127,16 +139,18 @@ int ManejadorClass::Ensamblar(const string& ruta, const string& archivo)
     comando2 << "mv ";
     comando2 << "\"/home/seguame/Documentos/Taller Compiladores/EditorSendero/compilador/Krakatau/";
     comando2 << archivo;
-    comando2 << ".class\" ";
+    comando2 << ".class\" \"";
     comando2 << ruta;
     comando2 << "/";
     comando2 << archivo;
     comando2 << ".class\"";
 
+    qDebug() << comando2.str().c_str();
+
     system(comando2.str().c_str());
 
 
-    return system(("java " + archivo + ".class").c_str());
+    return system(("java " + archivo).c_str());
 }
 
 string ManejadorClass::obtenerDescriptorFirma(const string& firma, Tipo retorno)
@@ -167,6 +181,9 @@ string ManejadorClass::obtenerDescriptorFirma(const string& firma, Tipo retorno)
             break;
         case '6':
             flujo << 'V';
+            break;
+        case '9': //especial
+            flujo << "[Ljava/lang/String";
             break;
         default:
             flujo << "ERROR_SIMBOLO_NO_ADMITIDO";
@@ -205,4 +222,18 @@ string ManejadorClass::obtenerDescriptorFirma(const string& firma, Tipo retorno)
 
 
     return flujo.str();
+}
+
+string ManejadorClass::obtenerTipoRetorno(Tipo retorno)
+{
+    switch(retorno)
+    {
+    case T_CARACTER:
+    case T_ENTERO:
+        return "    ireturn";
+    case T_REAL:
+        return "    dreturn";
+    default:
+        return "    return";
+    }
 }

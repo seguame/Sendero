@@ -16,6 +16,7 @@ class ManejadorClass
 public:
     void escribirCabeceraClase(const string& nombre);
     void escribirCabeceraMetodo(Simbolo* funcion);
+    void escribirFinMetodo(Simbolo* funcion);
 
     void aniadirInstruccion(const string& operacion,const string& parametro);
     void escribirArchivoParaEnsamblar(const string& ruta);
@@ -32,6 +33,7 @@ private:
     void escribirMain(void);
 
     string obtenerDescriptorFirma(const string& firma, Tipo retorno);
+    string obtenerTipoRetorno(Tipo retorno);
 
     static ManejadorClass* instancia;
 
