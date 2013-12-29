@@ -24,7 +24,9 @@ SOURCES += main.cpp \
     compilador/utils/reportadorerrores.cpp \
     compilador/utils/ReporteadorException.cpp \
     compilador/class_file.cpp \
-    compilador/manejador_class.cpp
+    compilador/manejador_class.cpp \
+    ui/externo/redirect.cpp \
+    ui/externo/qconsolewidget.cpp
 
 HEADERS  += \
     ui/VentanaPrincipal.h \
@@ -39,7 +41,9 @@ HEADERS  += \
     compilador/utils/reportadorerrores.h \
     compilador/utils/ReporteadorException.h \
     compilador/class_file.h \
-    compilador/manejador_class.h
+    compilador/manejador_class.h \
+    ui/externo/redirect.h \
+    ui/externo/qconsolewidget.h
 
 RESOURCES += \
     Imagenes.qrc
