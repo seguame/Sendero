@@ -1,8 +1,10 @@
 #include "tablasimbolos.h"
+#include "manejador_class.h"
 
 TablaSimbolos::TablaSimbolos(Compilador* c):
     pilaSimbolos(NULL),
-    pilaTipos(NULL)//,
+    pilaTipos(NULL),
+    contextoFuncion(NULL)//,
     //pilaValores(NULL)
 {
     qDebug() << "Creando tabla de simbolos";
@@ -151,6 +153,7 @@ bool TablaSimbolos::existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* tem
             refCompilador->escribirError(error);
         }
 
+
         return true;
     }
 
@@ -297,7 +300,7 @@ void TablaSimbolos::purgarPilas(void)
 
 void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)
 {
-     //Un scope propio para las variables de la firma de funcion
+    //Un scope propio para las variables de la firma de funcion
     nuevoScope();
 
     retornoValidado = false;
@@ -313,6 +316,10 @@ void TablaSimbolos::setFirmaFuncion(const string& s)
     {
         contextoFuncion->setFirmaFuncion(s);
     }
+    else
+    {
+        qDebug() << "Firma: No se ah puesto en contexto de funcion";
+    }
 }
 
 void TablaSimbolos::setTipoRetornoFuncion(Tipo t)
@@ -320,6 +327,10 @@ void TablaSimbolos::setTipoRetornoFuncion(Tipo t)
     if(contextoFuncion != NULL)
     {
         contextoFuncion->setTipoRetorno(t);
+    }
+    else
+    {
+        qDebug() << "Retorno: No se ah puesto en contexto de funcion";
     }
 }
 
@@ -347,5 +358,6 @@ void TablaSimbolos::salirContextoFuncion(void)
 
     contextoFuncion = NULL;
 
-
+    //Escribir el fin del metodo en el intermediario
+    ManejadorClass::ObtenerInstancia()->aniadirInstruccion(".end", "method");
 }
