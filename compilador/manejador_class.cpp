@@ -31,7 +31,7 @@ void ManejadorClass::Terminar(void)
 }
 
 
-void ManejadorClass::escribirCabecera(const string& nombre)
+void ManejadorClass::escribirCabeceraClase(const string& nombre)
 {
     string operando = ".class public";
     string operador = nombre;
@@ -41,6 +41,47 @@ void ManejadorClass::escribirCabecera(const string& nombre)
     operando = ".super";
     operador = "java/lang/Object";
     aniadirInstruccion(operando, operador);
+}
+
+void ManejadorClass::escribirMain(void)
+{
+    string metodo  = "main";
+    string firma   = "3";
+
+    escribirCabeceraMetodo(metodo, firma, T_INVALIDO);
+}
+
+void ManejadorClass::escribirCabeceraMetodo(Simbolo* funcion)
+{
+    if(funcion->getTipo() == T_FUNCION)
+    {
+        if(funcion->getIdentificador().compare("principal") == 0)
+        {
+            escribirMain();
+        }
+        else
+        {
+            escribirCabeceraMetodo(funcion->getIdentificador(), funcion->getFirmaFuncion(), funcion->getTipoRetorno());
+        }
+    }
+    else
+    {
+        qDebug() << "Intentando escribir cabecera de metodo con un simbolo que no es funcion";
+    }
+}
+
+void ManejadorClass::escribirCabeceraMetodo(const string& nombre, const string& firma, Tipo retorno)
+{
+    stringstream metodo;
+    string firmaCompleta;
+
+    metodo << ".method public static ";
+    metodo << nombre;
+    metodo << " :";
+
+    firmaCompleta = obtenerDescriptorFirma(firma, retorno);
+
+    aniadirInstruccion(metodo.str(), firmaCompleta);
 }
 
 void ManejadorClass::aniadirInstruccion(const string& operacion,const string& parametro)
@@ -83,7 +124,7 @@ int ManejadorClass::Ensamblar(const string& ruta, const string& archivo)
 
     system(comando.str().c_str());
 
-    comando2 << "cp ";
+    comando2 << "mv ";
     comando2 << "\"/home/seguame/Documentos/Taller Compiladores/EditorSendero/compilador/Krakatau/";
     comando2 << archivo;
     comando2 << ".class\" ";
@@ -95,5 +136,73 @@ int ManejadorClass::Ensamblar(const string& ruta, const string& archivo)
     system(comando2.str().c_str());
 
 
-    return system("xterm");
+    return system(("java " + archivo + ".class").c_str());
+}
+
+string ManejadorClass::obtenerDescriptorFirma(const string& firma, Tipo retorno)
+{
+    stringstream flujo;
+    int longitud = firma.length();
+
+    flujo << '(';
+
+    for(int i = 0; i < longitud; ++i)
+    {
+        switch(firma[i])
+        {
+        case '0':
+            flujo << 'I';
+            break;
+        case '1':
+            flujo << 'D';
+            break;
+        case '2':
+            flujo << 'C';
+            break;
+        case '3':
+            flujo << "Ljava/lang/String";
+            break;
+        case '4':
+            flujo << 'Z';
+            break;
+        case '6':
+            flujo << 'V';
+            break;
+        default:
+            flujo << "ERROR_SIMBOLO_NO_ADMITIDO";
+            break;
+        }
+
+        flujo << ";";
+    }
+
+    flujo << ')';
+
+    switch(retorno)
+    {
+    case T_ENTERO:
+        flujo << 'I';
+        break;
+    case T_REAL:
+        flujo << 'D';
+        break;
+    case T_CARACTER:
+        flujo << 'C';
+        break;
+    case T_CADENA:
+        flujo << "Ljava/lang/String";
+        break;
+    case T_BOOLEANO:
+        flujo << 'Z';
+        break;
+    case T_INVALIDO:
+        flujo << 'V';
+        break;
+    default:
+        flujo << "ERROR_SIMBOLO_NO_ADMITIDO";
+        break;
+    }
+
+
+    return flujo.str();
 }

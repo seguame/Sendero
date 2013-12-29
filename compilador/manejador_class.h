@@ -5,6 +5,8 @@
 #include <sstream>
 #include <vector>
 
+#include "simbolo.h"
+
 #include <QDebug>
 
 using namespace std;
@@ -12,7 +14,9 @@ using namespace std;
 class ManejadorClass
 {
 public:
-    void escribirCabecera(const string& nombre);
+    void escribirCabeceraClase(const string& nombre);
+    void escribirCabeceraMetodo(Simbolo* funcion);
+
     void aniadirInstruccion(const string& operacion,const string& parametro);
     void escribirArchivoParaEnsamblar(const string& ruta);
 
@@ -23,11 +27,16 @@ public:
 
 private:
     ManejadorClass();
-    ofstream archivo;
-    vector< pair<string, string> > instrucciones;
 
+    void escribirCabeceraMetodo(const string& nombre, const string& firma, Tipo retorno);
+    void escribirMain(void);
+
+    string obtenerDescriptorFirma(const string& firma, Tipo retorno);
 
     static ManejadorClass* instancia;
+
+    ofstream archivo;
+    vector< pair<string, string> > instrucciones;
 };
 
 #endif // MANEJADOR_CLASS_H
