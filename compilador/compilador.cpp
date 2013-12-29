@@ -1572,44 +1572,48 @@ bool Compilador::imprime(void)
         Tipo tActual = tablaDeSimbolos->desapilarTipo();
         stringstream imprimible;
 
-        if(tActual != T_CADENA)
+        if(sActual->esTemporal())
         {
-            imprimible << "\"";
-        }
 
-        switch(tActual)
-        {
-            case T_ENTERO:
-                imprimible << sActual->getValor<long>();
-                break;
-            case T_REAL:
-                imprimible << sActual->getValor<double>();
-                break;
-            case T_BOOLEANO:
+            if(tActual != T_CADENA)
+            {
+                imprimible << "\"";
+            }
 
-                if(sActual->getValor<bool>())
-                {
-                    imprimible << "Verdadero";
-                }
-                else
-                {
-                    imprimible << "Falso";
-                }
-                break;
-            case T_CADENA:
-                imprimible << (sActual->getValor<string>());
-                break;
-            case T_CARACTER:
-                imprimible << sActual->getValor<char>();
-                break;
-            default:
-                imprimible << "NULO";
-                break;
-        }
+            switch(tActual)
+            {
+                case T_ENTERO:
+                    imprimible << sActual->getValor<long>();
+                    break;
+                case T_REAL:
+                    imprimible << sActual->getValor<double>();
+                    break;
+                case T_BOOLEANO:
 
-        if(tActual != T_CADENA)
-        {
-            imprimible << "\"";
+                    if(sActual->getValor<bool>())
+                    {
+                        imprimible << "Verdadero";
+                    }
+                    else
+                    {
+                        imprimible << "Falso";
+                    }
+                    break;
+                case T_CADENA:
+                    imprimible << (sActual->getValor<string>());
+                    break;
+                case T_CARACTER:
+                    imprimible << sActual->getValor<char>();
+                    break;
+                default:
+                    imprimible << "NULO";
+                    break;
+            }
+
+            if(tActual != T_CADENA)
+            {
+                imprimible << "\"";
+            }
         }
 
         ManejadorClass::ObtenerInstancia()->aniadirImpresionPantalla(imprimible.str());
