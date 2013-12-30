@@ -269,7 +269,6 @@ string ManejadorClass::obtenerDescriptorFirma(const string& firma, Tipo retorno)
     for(int i = 0; i < longitud; ++i)
     {
         flujo << obtenerTipo(firma[i]);
-        if(firma[i] == '3' || firma[i] == '9') flujo << ";";
     }
 
     flujo << ')';
