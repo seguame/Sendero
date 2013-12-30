@@ -133,6 +133,42 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto)
     aniadirInstruccion("    invokevirtual", "java/io/PrintStream print (Ljava/lang/Object;)V");
 }
 
+void ManejadorClass::escribirDeclararVariableGlobal(Simbolo* simbolo)
+{
+
+}
+
+void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
+{
+    stringstream operando;
+    operando << simbolo->getIdentificador();
+    operando << " " << obtenerTipo(simbolo->getTipo());
+    operando << " = ";
+    switch(simbolo->getTipo())
+    {
+        case T_ENTERO:
+            operando << simbolo->getValor<long>();
+            break;
+        case T_REAL:
+            operando << simbolo->getValor<double>();
+            break;
+        case T_BOOLEANO:
+            operando << simbolo->getValor<bool>();
+            break;
+        case T_CADENA:
+            operando << (simbolo->getValor<string>());
+            break;
+        case T_CARACTER:
+            operando << simbolo->getValor<char>();
+            break;
+        default:
+            operando << "ERROR VALOR CONSTANTE";
+            break;
+    }
+
+
+    aniadirInstruccion(".field static public", operando.str());
+}
 
 void ManejadorClass::escribirEnteroConstante(long i)
 {
@@ -232,64 +268,13 @@ string ManejadorClass::obtenerDescriptorFirma(const string& firma, Tipo retorno)
 
     for(int i = 0; i < longitud; ++i)
     {
-        switch(firma[i])
-        {
-        case '0':
-            flujo << 'I';
-            break;
-        case '1':
-            flujo << 'D';
-            break;
-        case '2':
-            flujo << 'C';
-            break;
-        case '3':
-            flujo << "Ljava/lang/String";
-            break;
-        case '4':
-            flujo << 'Z';
-            break;
-        case '6':
-            flujo << 'V';
-            break;
-        case '9': //especial
-            flujo << "[Ljava/lang/String";
-            break;
-        default:
-            flujo << "ERROR_SIMBOLO_NO_ADMITIDO";
-            break;
-        }
-
+        flujo << obtenerTipo(firma[i]);
         if(firma[i] == '3' || firma[i] == '9') flujo << ";";
     }
 
     flujo << ')';
 
-    switch(retorno)
-    {
-    case T_ENTERO:
-        flujo << 'I';
-        break;
-    case T_REAL:
-        flujo << 'D';
-        break;
-    case T_CARACTER:
-        flujo << 'C';
-        break;
-    case T_CADENA:
-        flujo << "Ljava/lang/String";
-        break;
-    case T_BOOLEANO:
-        flujo << 'Z';
-        break;
-    case T_INVALIDO:
-        flujo << 'V';
-        break;
-    default:
-        flujo << "ERROR_SIMBOLO_NO_ADMITIDO";
-        break;
-    }
-
+    flujo << obtenerTipo(retorno);
 
     return flujo.str();
 }
@@ -305,5 +290,34 @@ string ManejadorClass::obtenerTipoRetorno(Tipo retorno)
         return "    dreturn";
     default:
         return "    return";
+    }
+}
+
+string ManejadorClass::obtenerTipo(char t)
+{
+    switch(t)
+    {
+    case '0': return "I";
+    case '1': return "D";
+    case '2': return "C";
+    case '3': return "Ljava/lang/String;";
+    case '4': return "Z";
+    case '6': return "V";
+    case '9': return "[Ljava/lang/String;";
+    default:  return "ERROR_SIMBOLO_NO_ADMITIDO";
+    }
+}
+
+string ManejadorClass::obtenerTipo(Tipo t)
+{
+    switch(t)
+    {
+    case T_ENTERO: return "I";
+    case T_REAL: return "D";
+    case T_CARACTER: return "C";
+    case T_CADENA: return "Ljava/lang/String;";
+    case T_BOOLEANO: return "Z";
+    case T_INVALIDO: return "V";
+    default: return "ERROR_SIMBOLO_NO_ADMITIDO";
     }
 }

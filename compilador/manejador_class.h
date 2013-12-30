@@ -21,6 +21,8 @@ public:
     void escribirImpresionLNPantalla(const string& texto);
     void escribirImpresionPantalla(const string& texto);
 
+    void escribirDeclararVariableGlobal(Simbolo* simbolo);
+    void escribirDeclararConstante(Simbolo* simbolo);
     void escribirEnteroConstante(long i);
 
     void aniadirInstruccion(const string& operacion,const string& parametro);
@@ -40,6 +42,9 @@ private:
 
     string obtenerDescriptorFirma(const string& firma, Tipo retorno);
     string obtenerTipoRetorno(Tipo retorno);
+
+    string obtenerTipo(char t);
+    string obtenerTipo(Tipo t);
 
     static ManejadorClass* instancia;
 
