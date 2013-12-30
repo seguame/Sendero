@@ -135,7 +135,17 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto)
 
 void ManejadorClass::escribirDeclararVariableGlobal(Simbolo* simbolo)
 {
+    stringstream operando;
+    operando << simbolo->getIdentificador() << " ";
 
+    for(int i = 0; i < simbolo->getCantidadDimensiones(); ++i)
+    {
+        operando << "[";
+    }
+
+    operando << obtenerTipo(simbolo->getTipo());
+
+    aniadirInstruccion(".field static public", operando.str());
 }
 
 void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
