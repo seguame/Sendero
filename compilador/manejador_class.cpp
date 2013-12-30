@@ -33,14 +33,17 @@ void ManejadorClass::Terminar(void)
 
 void ManejadorClass::escribirCabeceraClase(const string& nombre)
 {
-    string operando = ".class public";
-    string operador = nombre;
+    aniadirInstruccion(".class public", nombre);
+    aniadirInstruccion(".super", "java/lang/Object");
 
-    aniadirInstruccion(operando, operador);
-
-    operando = ".super";
-    operador = "java/lang/Object";
-    aniadirInstruccion(operando, operador);
+    //Se añade un constructor default vacio
+    aniadirInstruccion(".method public <init> :", "()V");
+    aniadirInstruccion("    .limit stack", "1");
+    aniadirInstruccion("    .limit locals", "1");
+    aniadirInstruccion("    aload_0", "");
+    aniadirInstruccion("    invokespecial", "java/lang/Object <init> ()V");
+    aniadirInstruccion("    return", "");
+    aniadirInstruccion(".end", "method");
 }
 
 void ManejadorClass::escribirMain(void)
