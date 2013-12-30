@@ -101,7 +101,7 @@ class Compilador
         bool pars();
         bool tipo(string lex);
         void bloque();
-        bool vars (bool darAvanceAlFinal);
+        bool vars (bool darAvanceAlFinal, bool global);
         void estatutos(void);
         bool comando(void);
         void asigna(void);

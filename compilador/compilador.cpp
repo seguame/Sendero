@@ -609,7 +609,7 @@ void Compilador::programa(void)
         if(!importar() &&
            !funcion() &&
            !constante() &&
-           !vars(false) &&
+           !vars(false, true) &&
            !finDeArchivo)
         {
             escribirError("Se esperaba definicion de constantes, importaciones, o funciones");
@@ -823,7 +823,7 @@ bool Compilador::pars(void)
         else
         {
             //lexico contiene el tipo de dato a ser apilado
-            firmaFuncion = firmaFuncion + tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico));
+            firmaFuncion = firmaFuncion + tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico), false);
         }
 
         leerLexema();
@@ -869,7 +869,7 @@ void Compilador::bloque ()
     tablaDeSimbolos->borrarScope();
 }
 
-bool Compilador::vars (bool darAvanceAlFinal)
+bool Compilador::vars (bool darAvanceAlFinal, bool global)
 {
     Simbolo* temp = NULL;
 
@@ -898,7 +898,7 @@ bool Compilador::vars (bool darAvanceAlFinal)
         else
         {
             //el lexico contiene el tipo de variable a almacenar
-            tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico));
+            tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico), global);
         }
     }
     else if(lexico.compare("(") == 0)
@@ -950,7 +950,7 @@ bool Compilador::vars (bool darAvanceAlFinal)
             else
             {
                 //lexico contiene el tipo de dato a ser apilado
-                tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico));
+                tablaDeSimbolos->almacenarPilaSimbolos(determinarTipo(lexico), global);
             }
 
             leerLexema();
@@ -1004,7 +1004,7 @@ bool Compilador::comando (void)
 
     if(lexico.compare("var") == 0)
     {
-        vars(true);
+        vars(true, false);
         requiereSeparador = false;
     }
     else if(token.compare(IDENTIFICADOR) == 0)
