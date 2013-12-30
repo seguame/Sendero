@@ -224,13 +224,19 @@ Simbolo* TablaSimbolos::desapilarValor(void)
     return NULL;
 }
 
-string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo)
+string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo, bool esGlobal)
 {
     stringstream regresable;
     qDebug() << "Almacenando contenido de la pila";
     while(!pilaSimbolos->empty())
     {
-        this->insertarSimbolo(pilaSimbolos->top()->setTipo(tipo));
+        if(this->insertarSimbolo(pilaSimbolos->top()->setTipo(tipo)))
+        {
+            if(esGlobal)
+            {
+                ManejadorClass::ObtenerInstancia()->escribirDeclararVariableGlobal(pilaSimbolos->top());
+            }
+        }
         pilaSimbolos->pop();
         regresable << tipo;
     }

@@ -3,6 +3,7 @@
 
 #include <stack>
 #include <vector>
+#include <map>
 #include <string>
 #include <sstream>
 #include <map>  //cambiar a unordered_map para eficiencia una vez se determine
@@ -37,7 +38,7 @@ public:
     Simbolo* apilarSimbolo(string identificador, bool estaInicializado);
     void apilarValor(Simbolo* s);
     Simbolo* desapilarValor(void);
-    string almacenarPilaSimbolos(Tipo tipo);
+    string almacenarPilaSimbolos(Tipo tipo, bool esGlobal);
     void apilarTipo(Tipo tipo);
     Tipo desapilarTipo(void);
     void noEsEvaluable(void); //marca en caso de que se esté en asignacion, que no todos los valores son constantes
@@ -62,6 +63,7 @@ private:
     stack<Simbolo*> *pilaValores;
 
     Simbolo* contextoFuncion;
+    map<int, string> tablaVariables;
     bool retornoValidado;
 };
 
