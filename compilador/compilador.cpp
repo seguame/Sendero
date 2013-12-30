@@ -1241,11 +1241,20 @@ void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
             if(simb != NULL && !verificarDimensiones)
             {
                 Simbolo* simbTam = tablaDeSimbolos->desapilarValor();
-                int valor = simbTam->getValor<int>();
-                simb->addTamanioDimension(valor);
 
-                if(simbTam->getIdentificador().compare("HOLDER") == 0)
-                    delete simbTam;
+                if(!simbTam->esConstante() && simbTam->getIdentificador().compare("HOLDER") != 0)
+                {
+                    escribirError("Las dimensiones deben definirse con valores constantes");
+                }
+                else
+                {
+
+                    int valor = simbTam->getValor<int>();
+                    simb->addTamanioDimension(valor);
+
+                    if(simbTam->getIdentificador().compare("HOLDER") == 0)
+                        delete simbTam;
+                }
             }
         }
 
