@@ -62,63 +62,67 @@ void ManejadorClass::escribirConstructorEstatico(void)
     aniadirInstruccion("    invokespecial", "java/util/Scanner <init> (Ljava/io/InputStream;)V");
     aniadirInstruccion("    putstatic", nombreClase + " lector Ljava/util/Scanner;");
 
-    //se inicializan los arrays
-    while(!dimensionadas.empty())
+    //se inicializan los arrays y se ignoran globales sin dimension o constantes
+    for(vector< Simbolo* >::size_type i = 0; i != globales.size(); ++i)
+    //while(!globales.empty())
     {
-        Simbolo* temp = dimensionadas.back();
-        unsigned int cantDimen = temp->getCantidadDimensiones();
-        string operacion;
-        stringstream operando;
-        stringstream firmaDimensional;
-        stringstream nombreCompleto;
 
+        Simbolo* temp = globales.at(i);
 
-        if(cantDimen == 0) qDebug() << "array statico sin dimension, verificar";
-
-        for(unsigned int i = 0; i < cantDimen; ++i)
+        if(temp->getCantidadDimensiones() > 0)
         {
-            //apilar las dimensiones
-            escribirEnteroConstante(temp->getTamanioDimension(i));
-        }
+            unsigned int cantDimen = temp->getCantidadDimensiones();
+            string operacion;
+            stringstream operando;
+            stringstream firmaDimensional;
+            stringstream nombreCompleto;
 
-        if(cantDimen == 1)
-        {
-            if(temp->getTipo() == T_CADENA) operacion = "    anewarray";
-            else operacion = "    newarray";
 
-            switch(temp->getTipo())
-            {
-                case T_ENTERO: operando << "int"; break;
-                case T_REAL: operando << "double"; break;
-                case T_CARACTER: operando << "char"; break;
-                case T_BOOLEANO: operando << "boolean"; break;
-                case T_CADENA: operando << "java/lang/String"; break;
-                default: operando << "ERROR TIPO"; break;
-            }
-
-            firmaDimensional << "[" << obtenerTipo(temp->getTipo());
-        }
-        else
-        {
-            operacion = "    multianewarray";
+            if(cantDimen == 0) qDebug() << "array statico sin dimension, verificar";
 
             for(unsigned int i = 0; i < cantDimen; ++i)
             {
-                firmaDimensional << "[";
+                //apilar las dimensiones
+                escribirEnteroConstante(temp->getTamanioDimension(i));
             }
 
-            firmaDimensional << obtenerTipo(temp->getTipo());
+            if(cantDimen == 1)
+            {
+                if(temp->getTipo() == T_CADENA) operacion = "    anewarray";
+                else operacion = "    newarray";
 
-            operando << firmaDimensional.str() << " " << cantDimen;
+                switch(temp->getTipo())
+                {
+                    case T_ENTERO: operando << "int"; break;
+                    case T_REAL: operando << "double"; break;
+                    case T_CARACTER: operando << "char"; break;
+                    case T_BOOLEANO: operando << "boolean"; break;
+                    case T_CADENA: operando << "java/lang/String"; break;
+                    default: operando << "ERROR TIPO"; break;
+                }
+
+                firmaDimensional << "[" << obtenerTipo(temp->getTipo());
+            }
+            else
+            {
+                operacion = "    multianewarray";
+
+                for(unsigned int i = 0; i < cantDimen; ++i)
+                {
+                    firmaDimensional << "[";
+                }
+
+                firmaDimensional << obtenerTipo(temp->getTipo());
+
+                operando << firmaDimensional.str() << " " << cantDimen;
+            }
+
+            aniadirInstruccion(operacion, operando.str());
+
+            nombreCompleto << nombreClase << " " << temp->getIdentificador() << " " << firmaDimensional.str();
+
+            aniadirInstruccion("    putstatic", nombreCompleto.str());
         }
-
-        aniadirInstruccion(operacion, operando.str());
-
-        nombreCompleto << nombreClase << " " << temp->getIdentificador() << " " << firmaDimensional.str();
-
-        aniadirInstruccion("    putstatic", nombreCompleto.str());
-
-        dimensionadas.pop_back();
     }
 
 
@@ -207,10 +211,7 @@ void ManejadorClass::escribirDeclararVariableGlobal(Simbolo* simbolo)
 
     cantDimensiones = simbolo->getCantidadDimensiones();
 
-    if(cantDimensiones != 0)
-    {
-        dimensionadas.push_back(simbolo);
-    }
+    globales.push_back(simbolo);
 
     for(unsigned int i = 0; i < cantDimensiones; ++i)
     {
@@ -250,7 +251,7 @@ void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
             break;
     }
 
-
+    globales.push_back(simbolo);
     aniadirInstruccion(".field static public", operando.str());
 }
 
