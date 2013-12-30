@@ -1,14 +1,14 @@
 #include "conversor.h"
 
 
-STR2X_ERROR Conversor::cadena2Entero(long &l, char const *s, int base)
+STR2X_ERROR Conversor::cadena2Entero(int &l, char const *s, int base)
 {
     char *fin;
     long  L;
     errno = 0;
     L = strtol(s, &fin, base);
 
-    l = L;
+    l = (int)L;
 
     if ((errno == ERANGE && L == LONG_MAX))
     {

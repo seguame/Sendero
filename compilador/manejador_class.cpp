@@ -231,7 +231,7 @@ void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
     switch(simbolo->getTipo())
     {
         case T_ENTERO:
-            operando << simbolo->getValor<long>();
+            operando << simbolo->getValor<int>();
             break;
         case T_REAL:
             operando << simbolo->getValor<double>();

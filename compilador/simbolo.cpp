@@ -185,7 +185,7 @@ std::string Simbolo::toString(void) const
         switch(_tipo)
         {
             case T_ENTERO:
-                valor << this->getValor<long>();
+                valor << this->getValor<int>();
                 break;
             case T_REAL:
                 valor << this->getValor<double>();

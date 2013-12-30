@@ -1237,11 +1237,11 @@ void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
         }
         else
         {
-            qDebug() << "Tamanio|POS dimension";
-            if(simb != NULL)
+            //cuando se verifica dimension no se especifica tamanio de simbolo, solo cuando se esta en expr
+            if(simb != NULL && !verificarDimensiones)
             {
                 Simbolo* simbTam = tablaDeSimbolos->desapilarValor();
-                long valor = simbTam->getValor<long>();
+                int valor = simbTam->getValor<int>();
                 simb->addTamanioDimension(valor);
 
                 if(simbTam->getIdentificador().compare("HOLDER") == 0)
@@ -1629,7 +1629,7 @@ bool Compilador::imprime(void)
             switch(tActual)
             {
                 case T_ENTERO:
-                    imprimible << sActual->getValor<long>();
+                    imprimible << sActual->getValor<int>();
                     break;
                 case T_REAL:
                     imprimible << sActual->getValor<double>();
@@ -2251,7 +2251,7 @@ bool Compilador::obtenerTipoValorConstante(Simbolo* simb)
             token.compare(HEXADECIMAL) == 0 ||
             token.compare(OCTAL) == 0)
     {
-        long valor;
+        int valor;
 
         Conversor::cadena2Entero(valor, lexico.c_str());
         simb->setValor(valor)->setConstante()->setTipo(T_ENTERO);

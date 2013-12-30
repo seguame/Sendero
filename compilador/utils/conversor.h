@@ -13,7 +13,7 @@ class Conversor
 {
 public:
     static STR2X_ERROR cadena2Real(double &d, char const *s);
-    static STR2X_ERROR cadena2Entero(long &i, char const *s, int base = 0);
+    static STR2X_ERROR cadena2Entero(int &i, char const *s, int base = 0);
     static STR2X_ERROR cadena2Booleano(bool &b, char const *s);
 };
 
