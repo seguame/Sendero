@@ -1104,6 +1104,8 @@ bool Compilador::comando (void)
 void Compilador::asigna (void)
 {
     Simbolo* temp = NULL;
+    Tipo buscado = T_INVALIDO;
+    Tipo obtenido = T_INVALIDO;
 
     //Limpieza de la pila de tipos, apilaremos el tipo de la variable
     //destino para comparar al final que sea algo valido
@@ -1127,6 +1129,8 @@ void Compilador::asigna (void)
             {
                 escribirError("Las constantes no pueden modificarse");
             }
+
+            buscado = temp->getTipo();
         }
     }
 
@@ -1147,9 +1151,33 @@ void Compilador::asigna (void)
 
     //revisar que lo obtenido al final de la expresion sea del tipo
     //de dato al que se le va a asignar, como tambien se apilo desapilarlo
-    if(temp != NULL && operacionAsignacion[temp->getTipo()][tablaDeSimbolos->desapilarTipo()])
+    obtenido = tablaDeSimbolos->desapilarTipo();
+
+    if(temp != NULL && operacionAsignacion[buscado][obtenido])
     {
+        /*Simbolo* varTemp = tablaDeSimbolos->desapilarValor();
+
+        if(varTemp == NULL)
+        {
+            qDebug() << "Intentado asignar, pero no hay valor en pila";
+        }
+        else if(varTemp->getIdentificador().compare("HOLDER") == 0)
+        {
+            switch(obtenido)
+            {
+            case T_ENTERO:
+                ManejadorClass::ObtenerInstancia()->escribirEnteroConstante(varTemp->getValor<long>());
+                break;
+            }
+        }
+        else
+        {
+            //
+        }*/
+
         temp->setInicializado();
+
+
     }
     else
     {
@@ -1670,6 +1698,8 @@ bool Compilador::constante(void)
         if(obtenerTipoValorConstante(simb))
         {
             tablaDeSimbolos->insertarSimbolo(simb);
+
+            ManejadorClass::ObtenerInstancia()->escribirDeclararConstante(simb);
         }
         else
         {
@@ -1700,6 +1730,8 @@ bool Compilador::constante(void)
             if(obtenerTipoValorConstante(simb))
             {
                 tablaDeSimbolos->insertarSimbolo(simb);
+
+                ManejadorClass::ObtenerInstancia()->escribirDeclararConstante(simb);
             }
             else
             {
