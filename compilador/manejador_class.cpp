@@ -54,17 +54,75 @@ void ManejadorClass::escribirConstructorEstatico(void)
     aniadirInstruccion(".method static <clinit> :", "()V");
 
     //se añade el constructor estatico para instancia el Scanner
-    aniadirInstruccion("    .limit stack", "3");
+    aniadirInstruccion("    .limit stack", "10");
     aniadirInstruccion("    .limit locals", "0");
     aniadirInstruccion("    new", "java/util/Scanner");
     aniadirInstruccion("    dup", "");
     aniadirInstruccion("    getstatic", "java/lang/System in Ljava/io/InputStream;");
     aniadirInstruccion("    invokespecial", "java/util/Scanner <init> (Ljava/io/InputStream;)V");
     aniadirInstruccion("    putstatic", nombreClase + " lector Ljava/util/Scanner;");
-    aniadirInstruccion("    return", "");
 
     //se inicializan los arrays
+    while(!dimensionadas.empty())
+    {
+        Simbolo* temp = dimensionadas.back();
+        unsigned int cantDimen = temp->getCantidadDimensiones();
+        string operacion;
+        stringstream operando;
+        stringstream firmaDimensional;
+        stringstream nombreCompleto;
 
+
+        if(cantDimen == 0) qDebug() << "array statico sin dimension, verificar";
+
+        for(unsigned int i = 0; i < cantDimen; ++i)
+        {
+            //apilar las dimensiones
+            escribirEnteroConstante(temp->getTamanioDimension(i));
+        }
+
+        if(cantDimen == 1)
+        {
+            if(temp->getTipo() == T_CADENA) operacion = "    anewarray";
+            else operacion = "    newarray";
+
+            switch(temp->getTipo())
+            {
+                case T_ENTERO: operando << "int"; break;
+                case T_REAL: operando << "double"; break;
+                case T_CARACTER: operando << "char"; break;
+                case T_BOOLEANO: operando << "boolean"; break;
+                case T_CADENA: operando << "java/lang/String"; break;
+                default: operando << "ERROR TIPO"; break;
+            }
+
+            firmaDimensional << "[" << obtenerTipo(temp->getTipo());
+        }
+        else
+        {
+            operacion = "    multianewarray";
+
+            for(unsigned int i = 0; i < cantDimen; ++i)
+            {
+                firmaDimensional << "[";
+            }
+
+            firmaDimensional << obtenerTipo(temp->getTipo());
+
+            operando << firmaDimensional.str() << " " << cantDimen;
+        }
+
+        aniadirInstruccion(operacion, operando.str());
+
+        nombreCompleto << nombreClase << " " << temp->getIdentificador() << " " << firmaDimensional.str();
+
+        aniadirInstruccion("    putstatic", nombreCompleto.str());
+
+        dimensionadas.pop_back();
+    }
+
+
+    aniadirInstruccion("    return", "");
     aniadirInstruccion(".end", "method");
 }
 
@@ -143,9 +201,18 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto)
 void ManejadorClass::escribirDeclararVariableGlobal(Simbolo* simbolo)
 {
     stringstream operando;
+    unsigned int cantDimensiones;
+
     operando << simbolo->getIdentificador() << " ";
 
-    for(int i = 0; i < simbolo->getCantidadDimensiones(); ++i)
+    cantDimensiones = simbolo->getCantidadDimensiones();
+
+    if(cantDimensiones != 0)
+    {
+        dimensionadas.push_back(simbolo);
+    }
+
+    for(unsigned int i = 0; i < cantDimensiones; ++i)
     {
         operando << "[";
     }

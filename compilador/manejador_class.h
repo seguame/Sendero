@@ -54,6 +54,7 @@ private:
     ofstream archivo;
     string nombreClase;
     vector< pair<string, string> > instrucciones;
+    vector< Simbolo* > dimensionadas;
 };
 
 #endif // MANEJADOR_CLASS_H
