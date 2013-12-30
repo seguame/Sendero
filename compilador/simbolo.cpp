@@ -14,6 +14,7 @@ Simbolo::~Simbolo()
 {
     qDebug() << "borrando " << _identificador.c_str();
     delete this->_ptr;
+    delete _tamDimension;
 }
 
 
@@ -120,6 +121,25 @@ Simbolo* Simbolo::setFirmaFuncion(const string& s)
 string Simbolo::getFirmaFuncion(void) const
 {
     return _firma;
+}
+
+Simbolo* Simbolo::addTamanioDimension(int tam)
+{
+    _tamDimension->push_back(tam);
+    return this;
+}
+
+int Simbolo::getTamanioDimension(int pos) const
+{
+    if((unsigned int)pos < _tamDimension->size())
+    {
+        return _tamDimension->at(pos);
+    }
+    else
+    {
+        qDebug() << "Intentando obtener valor en una dimension de variable inexistente";
+        return 0;
+    }
 }
 
 std::string Simbolo::toString(void) const

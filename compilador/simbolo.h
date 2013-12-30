@@ -43,6 +43,7 @@ class Simbolo
         Tipo _tipo;
         bool _constante;
         unsigned int _cantDimensiones;
+        vector<int>* _tamDimension;
         bool _inicializado;
         bool _temporal;
 
@@ -60,12 +61,14 @@ class Simbolo
             _tipo(T_INVALIDO),
             _constante(false),
             _cantDimensiones(0),
+            _tamDimension(NULL),
             _inicializado(false),
             _temporal(false),
             _retorno(T_INVALIDO),
             _cantArgumentos(0),
             _firma("")
             {
+                _tamDimension = new vector<int>();
             }
         Simbolo(Simbolo const& otro);
         Simbolo& operator= (Simbolo const& otro);
@@ -137,6 +140,8 @@ class Simbolo
         bool esTemporal(void) const;
         Simbolo* setFirmaFuncion(const string& s);
         string getFirmaFuncion(void) const;
+        Simbolo* addTamanioDimension(int tam);
+        int getTamanioDimension(int pos) const;
 };
 
 #endif // SIMBOLO_H
