@@ -83,7 +83,7 @@ void ManejadorClass::escribirCabeceraMetodo(const string& nombre, const string& 
 
     aniadirInstruccion(metodo.str(), firmaCompleta);
     aniadirInstruccion(".limit stack", "40");
-    aniadirInstruccion(".limit locals", "40");
+    aniadirInstruccion(".limit locals", "100");
 }
 
 void ManejadorClass::escribirFinMetodo(Simbolo* funcion)
@@ -113,6 +113,45 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto)
     aniadirInstruccion("    getstatic", "java/lang/System out Ljava/io/PrintStream;");
     aniadirInstruccion("    ldc", texto);
     aniadirInstruccion("    invokevirtual", "java/io/PrintStream print (Ljava/lang/Object;)V");
+}
+
+
+void ManejadorClass::escribirEnteroConstante(long i)
+{
+    if(i == -1)
+        aniadirInstruccion("    iconst_m1", "");
+    else
+    {
+        stringstream operador;
+        stringstream operando;
+
+        operador << "   ";
+        operando << "";
+
+        if(i >= 0 && i <= 5)
+        {
+            operador << "iconst_";
+            operador << i;
+        }
+        else if(i >= -128 && i <= 127)
+        {
+            operador << "bipush";
+            operando << i;
+        }
+        else if(i >= -32768 && i <= 32767)
+        {
+            operador << "sipush";
+            operando << i;
+        }
+        else
+        {
+            operador << "ERRORENTERO";
+            qDebug() << "Valor entero muy grande, no implementado";
+        }
+
+        aniadirInstruccion(operador.str(), operando.str());
+    }
+
 }
 
 void ManejadorClass::escribirArchivoParaEnsamblar(const string& ruta)

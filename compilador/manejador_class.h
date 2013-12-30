@@ -21,7 +21,10 @@ public:
     void escribirImpresionLNPantalla(const string& texto);
     void escribirImpresionPantalla(const string& texto);
 
+    void escribirEnteroConstante(long i);
+
     void aniadirInstruccion(const string& operacion,const string& parametro);
+
     void escribirArchivoParaEnsamblar(const string& ruta);
 
     static void Inicializar(void);
