@@ -168,10 +168,12 @@ void Compilador::realizarMagia(void)
 void Compilador::hacerAnalisisSintactico(void)
 {
     //Escribir cabecera del intermedario de bytecode
-    ManejadorClass::ObtenerInstancia()->escribirCabeceraClase(_nombreArchivo);
+    ManejadorClass::ObtenerInstancia()->setNombreClase(_nombreArchivo);
+    ManejadorClass::ObtenerInstancia()->escribirCabeceraClase();
 
     programa();
 
+    ManejadorClass::ObtenerInstancia()->escribirConstructorEstatico();
     ManejadorClass::ObtenerInstancia()->escribirArchivoParaEnsamblar(_rutaAlArchivo+"/"+_nombreArchivo);
 
 
@@ -616,6 +618,7 @@ void Compilador::programa(void)
         }
 
     }while(!finDeArchivo);
+
 
     tablaDeSimbolos->borrarScope();
 
