@@ -14,8 +14,9 @@ using namespace std;
 class ManejadorClass
 {
 public:
-    void escribirCabeceraClase(const string& nombre);
+    void escribirCabeceraClase(void);
     void escribirCabeceraMetodo(Simbolo* funcion);
+    void escribirConstructorEstatico(void);
     void escribirFinMetodo(Simbolo* funcion);
 
     void escribirImpresionLNPantalla(const string& texto);
@@ -28,6 +29,8 @@ public:
     void aniadirInstruccion(const string& operacion,const string& parametro);
 
     void escribirArchivoParaEnsamblar(const string& ruta);
+
+    void setNombreClase(const string& nombre);
 
     static void Inicializar(void);
     static ManejadorClass* ObtenerInstancia(void);
@@ -49,6 +52,7 @@ private:
     static ManejadorClass* instancia;
 
     ofstream archivo;
+    string nombreClase;
     vector< pair<string, string> > instrucciones;
 };
 

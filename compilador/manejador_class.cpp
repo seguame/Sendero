@@ -31,9 +31,9 @@ void ManejadorClass::Terminar(void)
 }
 
 
-void ManejadorClass::escribirCabeceraClase(const string& nombre)
+void ManejadorClass::escribirCabeceraClase(void)
 {
-    aniadirInstruccion(".class public", nombre);
+    aniadirInstruccion(".class public", nombreClase);
     aniadirInstruccion(".super", "java/lang/Object");
 
     //se añade una instancia estatica del Scanner de java
@@ -47,17 +47,24 @@ void ManejadorClass::escribirCabeceraClase(const string& nombre)
     aniadirInstruccion("    invokespecial", "java/lang/Object <init> ()V");
     aniadirInstruccion("    return", "");
     aniadirInstruccion(".end", "method");
+}
+
+void ManejadorClass::escribirConstructorEstatico(void)
+{
+    aniadirInstruccion(".method static <clinit> :", "()V");
 
     //se añade el constructor estatico para instancia el Scanner
-    aniadirInstruccion(".method static <clinit> :", "()V");
     aniadirInstruccion("    .limit stack", "3");
     aniadirInstruccion("    .limit locals", "0");
     aniadirInstruccion("    new", "java/util/Scanner");
     aniadirInstruccion("    dup", "");
     aniadirInstruccion("    getstatic", "java/lang/System in Ljava/io/InputStream;");
     aniadirInstruccion("    invokespecial", "java/util/Scanner <init> (Ljava/io/InputStream;)V");
-    aniadirInstruccion("    putstatic", nombre + " lector Ljava/util/Scanner;");
+    aniadirInstruccion("    putstatic", nombreClase + " lector Ljava/util/Scanner;");
     aniadirInstruccion("    return", "");
+
+    //se inicializan los arrays
+
     aniadirInstruccion(".end", "method");
 }
 
@@ -269,6 +276,11 @@ int ManejadorClass::Ensamblar(const string& ruta, const string& archivo)
     return system(("java " + archivo).c_str());
 }
 
+void ManejadorClass::setNombreClase(const string& nombre)
+{
+    nombreClase = nombre;
+}
+
 string ManejadorClass::obtenerDescriptorFirma(const string& firma, Tipo retorno)
 {
     stringstream flujo;
@@ -311,7 +323,7 @@ string ManejadorClass::obtenerTipo(char t)
     case '2': return "C";
     case '3': return "Ljava/lang/String;";
     case '4': return "Z";
-    case '6': return "V";
+    case '6': return ""; //no se especifica para parametros
     case '9': return "[Ljava/lang/String;";
     default:  return "ERROR_SIMBOLO_NO_ADMITIDO";
     }
