@@ -173,7 +173,7 @@ void Compilador::hacerAnalisisSintactico(void)
 
     programa();
 
-    ManejadorClass::ObtenerInstancia()->escribirConstructorEstatico();
+
     ManejadorClass::ObtenerInstancia()->escribirArchivoParaEnsamblar(_rutaAlArchivo+"/"+_nombreArchivo);
 
 
@@ -619,6 +619,8 @@ void Compilador::programa(void)
 
     }while(!finDeArchivo);
 
+    //Antes de que se borre el scope global, guardar las dimensionadas globales
+    ManejadorClass::ObtenerInstancia()->escribirConstructorEstatico();
 
     tablaDeSimbolos->borrarScope();
 
@@ -1232,6 +1234,19 @@ void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
         if(tablaDeSimbolos->desapilarTipo() != T_ENTERO)
         {
             escribirError("Conflicto en tipos en  dimension (solo admite entero)");
+        }
+        else
+        {
+            qDebug() << "Tamanio|POS dimension";
+            if(simb != NULL)
+            {
+                Simbolo* simbTam = tablaDeSimbolos->desapilarValor();
+                long valor = simbTam->getValor<long>();
+                simb->addTamanioDimension(valor);
+
+                if(simbTam->getIdentificador().compare("HOLDER") == 0)
+                    delete simbTam;
+            }
         }
 
         if(lexico.compare("]") != 0)
