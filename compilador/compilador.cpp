@@ -2098,15 +2098,17 @@ void Compilador::signo (bool terminoOpcional)
 
     string actual;
     bool hayOperacion = false;
+    bool invertirValor = false;
 
     if(lexico.compare("-") == 0)
     {
         actual = lexico;
         hayOperacion = true;
+        invertirValor = true;
         leerLexema();
     }
 
-    termino(terminoOpcional);
+    termino(terminoOpcional, invertirValor);
 
     if(hayOperacion)
     {
@@ -2122,7 +2124,7 @@ void Compilador::signo (bool terminoOpcional)
     }
 }
 
-void Compilador::termino (bool terminoOpcional)
+void Compilador::termino (bool terminoOpcional, bool invertirValor)
 {
     qDebug() << "termino";
     if(constanteTipo(token))
@@ -2136,6 +2138,22 @@ void Compilador::termino (bool terminoOpcional)
         {
             escribirError("Tu compu no sirve #posMeQuejo");
         }
+        else if(invertirValor)
+        {
+            switch(almacenadoTemporal->getTipo())
+            {
+            case T_ENTERO:
+                almacenadoTemporal->setValor( -1 * (almacenadoTemporal->getValor<int>() ));
+                break;
+            case T_REAL:
+                almacenadoTemporal->setValor(-1 * (almacenadoTemporal->getValor<double>() ));
+                break;
+            default:
+                escribirError("Aplicando valor inverso a tipo de dato no compatible");
+                break;
+            }
+        }
+
 
         tablaDeSimbolos->apilarValor(almacenadoTemporal);
 
@@ -2150,6 +2168,9 @@ void Compilador::termino (bool terminoOpcional)
     }
     else if(token.compare(IDENTIFICADOR) == 0)
     {
+        //TODO, invertir valores de las variables
+
+
         Simbolo* temp = tablaDeSimbolos->buscarSimbolo(lexico);
 
 

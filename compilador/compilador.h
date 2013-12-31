@@ -114,7 +114,7 @@ class Compilador
         void multi(bool esOpcional);
         void expo (bool esOpcional);
         void signo (bool esOpcional);
-        void termino (bool esOpcional);
+        void termino (bool esOpcional, bool invertirValor);
         bool constanteTipo(string tok);
         string lFunc_1(void);
         string lFunc_2(void);
