@@ -40,6 +40,7 @@ class Simbolo
 
         base* _ptr;
         const string _identificador;
+        string _alias;
         Tipo _tipo;
         bool _constante;
         unsigned int _cantDimensiones;
@@ -58,6 +59,7 @@ class Simbolo
         Simbolo(string const& identificador):
             _ptr(NULL),
             _identificador(identificador),
+            _alias(""),
             _tipo(T_INVALIDO),
             _constante(false),
             _cantDimensiones(0),
@@ -136,6 +138,8 @@ class Simbolo
         string getFirmaFuncion(void) const;
         Simbolo* addTamanioDimension(int tam);
         int getTamanioDimension(int pos) const;
+        Simbolo* setAlias(const string& alias);
+        string getAlias(void) const;
 };
 
 #endif // SIMBOLO_H

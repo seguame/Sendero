@@ -142,6 +142,17 @@ int Simbolo::getTamanioDimension(int pos) const
     }
 }
 
+Simbolo* Simbolo::setAlias(const string& alias)
+{
+    _alias = alias;
+    return this;
+}
+
+string Simbolo::getAlias(void) const
+{
+    return _alias;
+}
+
 std::string Simbolo::toString(void) const
 {
     std::stringstream dimensiones;
