@@ -255,7 +255,7 @@ void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
     aniadirInstruccion(".field static public", operando.str());
 }
 
-void ManejadorClass::escribirEnteroConstante(long i)
+void ManejadorClass::escribirEnteroConstante(int i)
 {
     if(i == -1)
         aniadirInstruccion("    iconst_m1", "");

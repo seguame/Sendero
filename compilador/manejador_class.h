@@ -24,7 +24,10 @@ public:
 
     void escribirDeclararVariableGlobal(Simbolo* simbolo);
     void escribirDeclararConstante(Simbolo* simbolo);
-    void escribirEnteroConstante(long i);
+
+
+
+    void escribirEnteroConstante(int i);
 
     void aniadirInstruccion(const string& operacion,const string& parametro);
 
