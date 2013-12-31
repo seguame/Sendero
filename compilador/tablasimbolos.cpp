@@ -111,6 +111,12 @@ void TablaSimbolos::borrarScope(void)
         nivel << simbolos->size();
         qDebug() << "Nivel " << nivel.str().c_str() << " " << par.second->toString().c_str();
 
+        if(simbolos->size() != 1)
+        {
+            //quitar de la tabla de locales
+            ManejadorClass::ObtenerInstancia()->deregistrarVariableLocal(par.second, simbolos->size());
+        }
+
         delete par.second;
         mapa->erase(it++);
     }
@@ -235,6 +241,12 @@ string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo, bool esGlobal)
             if(esGlobal)
             {
                 ManejadorClass::ObtenerInstancia()->escribirDeclararVariableGlobal(pilaSimbolos->top());
+            }
+            else
+            {
+                //Registrarla como variable en nivel distinto, no se hace verificacion de sobreescritura pues
+                //se valido por semantica que exista en ese nivel
+                ManejadorClass::ObtenerInstancia()->registrarVariableLocal(pilaSimbolos->top(), simbolos->size());
             }
         }
         pilaSimbolos->pop();
