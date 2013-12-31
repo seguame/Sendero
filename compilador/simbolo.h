@@ -81,45 +81,39 @@ class Simbolo
 
         template <typename T> Simbolo* setValor(T const& valor)
         {
-            if(!esConstante())
-            {
-                if(!_inicializado)
-                {
-                    _inicializado = true;
-                }
 
-                /*if(_ptr != NULL)
+            if(!_inicializado)
+            {
+                _inicializado = true;
+            }
+
+            /*if(_ptr != NULL)
+            {
+                delete _ptr;
+                _ptr = NULL;
+            }
+            _ptr = new dato<T>(valor);*/
+
+            if(_ptr != NULL)
+            {
+                if(strcmp(typeid(valor).name(), (typeid(string*).name())) == 0)
                 {
+                    qDebug() << "Cambio de cadena";
                     delete _ptr;
                     _ptr = NULL;
-                }
-                _ptr = new dato<T>(valor);*/
-
-                if(_ptr != NULL)
-                {
-                    if(strcmp(typeid(valor).name(), (typeid(string*).name())) == 0)
-                    {
-                        qDebug() << "Cambio de cadena";
-                        delete _ptr;
-                        _ptr = NULL;
-                        _ptr = new dato<T>(valor);
-                    }
-                    else
-                    {
-                        qDebug() << "reasignacion";
-                        dynamic_cast<dato<T>&>(*this->_ptr)._valor = valor;
-
-                    }
+                    _ptr = new dato<T>(valor);
                 }
                 else
                 {
-                    qDebug() << "Nuevo valor de tipo " << typeid(valor).name();
-                    _ptr = new dato<T>(valor);
+                    qDebug() << "reasignacion";
+                    dynamic_cast<dato<T>&>(*this->_ptr)._valor = valor;
+
                 }
             }
             else
             {
-                qDebug() << "No se debe cambiar un valor constante!!!";
+                qDebug() << "Nuevo valor de tipo " << typeid(valor).name();
+                _ptr = new dato<T>(valor);
             }
             return this;
         }
