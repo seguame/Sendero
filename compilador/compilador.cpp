@@ -707,7 +707,9 @@ bool Compilador::funcion(void)
         if(lexico.compare("principal") == 0)
         {
             if(!existeFuncionPrincipal)
+            {
                 existeFuncionPrincipal = true;
+            }
         }
 
         func = new Simbolo(lexico);
@@ -1625,7 +1627,7 @@ bool Compilador::imprime(void)
         escribirError("Se esperaba apertura de parentesis");
 
     ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
-
+    bool esConstante = false;
     do
     {
         leerLexema();
@@ -1637,11 +1639,7 @@ bool Compilador::imprime(void)
 
         if(sActual->esTemporal())
         {
-
-            if(tActual != T_CADENA)
-            {
-                imprimible << "\"";
-            }
+            esConstante = true;
 
             switch(tActual)
             {
@@ -1655,11 +1653,11 @@ bool Compilador::imprime(void)
 
                     if(sActual->getValor<bool>())
                     {
-                        imprimible << "Verdadero";
+                        imprimible << "\"Verdadero\"";
                     }
                     else
                     {
-                        imprimible << "Falso";
+                        imprimible << "\"Falso\"";
                     }
                     break;
                 case T_CADENA:
@@ -1669,19 +1667,16 @@ bool Compilador::imprime(void)
                     imprimible << sActual->getValor<char>();
                     break;
                 default:
-                    imprimible << "NULO";
+                    imprimible << "\"NULO\"";
                     break;
-            }
-
-            if(tActual != T_CADENA)
-            {
-                imprimible << "\"";
             }
         }
 
-        ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(imprimible.str());
+        ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(imprimible.str(), sActual, tActual, esConstante);
 
         if(sActual->esTemporal()) delete sActual;
+
+        ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
 
     }while(lexico.compare(",") == 0);
 
@@ -2210,8 +2205,6 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                 tablaDeSimbolos->apilarValor(temp);
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
 
-                //poner identificador para obtener su valor asociado
-                ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
             }
             else //pues quesque es funcion
             {
@@ -2262,6 +2255,9 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
 
             //verificar que cumpla con su especificacion de dimension
             dimension(temp, true);
+
+            //poner identificador para obtener su valor asociado
+            ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
 
             return;
         }
