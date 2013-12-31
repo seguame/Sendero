@@ -1621,6 +1621,8 @@ bool Compilador::imprime(void)
     if(lexico.compare("(") != 0)
         escribirError("Se esperaba apertura de parentesis");
 
+    ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
+
     do
     {
         leerLexema();
@@ -2205,7 +2207,7 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                 tablaDeSimbolos->apilarValor(temp);
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
             }
-            else
+            else //pues quesque es funcion
             {
 
                 Tipo retorno = temp->getTipoRetorno();
@@ -2221,7 +2223,6 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
 
                 //Apilar el tipo de retorno de la funcion
                 tablaDeSimbolos->apilarTipo(retorno);
-
             }
         }
 
@@ -2241,6 +2242,8 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                 escribirError("Error de parametros, la funcion espera " + obtenerStringFirma(paramsEsperados) +
                               " y se está enviando " + obtenerStringFirma(paramsObtenidos));
             }
+
+            ManejadorClass::ObtenerInstancia()->escribirLlamadaFuncion(temp);
 
             return;
         }
