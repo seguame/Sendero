@@ -63,7 +63,6 @@ private:
     stack<Simbolo*> *pilaValores;
 
     Simbolo* contextoFuncion;
-    map<int, string> tablaVariables;
     bool retornoValidado;
 };
 
