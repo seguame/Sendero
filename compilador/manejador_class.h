@@ -19,6 +19,7 @@ public:
     void escribirConstructorEstatico(void);
     void escribirFinMetodo(Simbolo* funcion);
 
+    void prepararImpresionPantalla(void);
     void escribirImpresionLNPantalla(const string& texto);
     void escribirImpresionPantalla(const string& texto);
 
