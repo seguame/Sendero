@@ -1062,6 +1062,9 @@ bool Compilador::comando (void)
                         escribirError("Error de parametros, la funcion espera " + obtenerStringFirma(paramsEsperados) +
                                       " y se está enviando " + obtenerStringFirma(paramsObtenidos));
                     }
+
+                    ManejadorClass::ObtenerInstancia()->escribirLlamadaFuncion(temp);
+
                     leerLexema();
                 }
                 else
