@@ -42,6 +42,7 @@ void ManejadorClass::registrarVariableLocal(Simbolo* simbolo, int profundidad)
 
         if(locales.find(id.str()) == locales.end())
         {
+            simbolo->setAlias(id.str());
             localidad = locales.size();
 
             pair<int, Simbolo*> variable = make_pair<int, Simbolo*>(localidad, simbolo);
@@ -57,13 +58,9 @@ void ManejadorClass::registrarVariableLocal(Simbolo* simbolo, int profundidad)
     }
 }
 
-void ManejadorClass::deregistrarVariableLocal(Simbolo* simbolo, int profundidad)
+void ManejadorClass::deregistrarVariableLocal(Simbolo* simbolo)
 {
-    stringstream id;
-
-    id << simbolo->getIdentificador() << simbolo->getStringTipo() << profundidad;
-
-    locales.erase(locales.find(id.str()));
+    locales.erase(locales.find(simbolo->getAlias()));
 }
 
 
