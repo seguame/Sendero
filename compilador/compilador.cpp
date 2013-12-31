@@ -1177,7 +1177,12 @@ void Compilador::asigna (void)
 
     if(temp != NULL && operacionAsignacion[buscado][obtenido])
     {
-
+        //variables unidimensionadas se ponen despues de toda la carga de la expr
+        //las dimensionadas, antes
+        if(temp->getCantidadDimensiones() == 0)
+        {
+            ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, true);
+        }
         /*Simbolo* varTemp = tablaDeSimbolos->desapilarValor();
 
         if(varTemp == NULL)
