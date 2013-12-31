@@ -22,6 +22,8 @@ public:
     void escribirImpresionLNPantalla(const string& texto);
     void escribirImpresionPantalla(const string& texto);
 
+    void registrarVariableLocal(Simbolo* simbolo, int profundidad);
+    void deregistrarVariableLocal(Simbolo* simbolo, int profundidad);
     void escribirDeclararVariableGlobal(Simbolo* simbolo);
     void escribirDeclararConstante(Simbolo* simbolo);
 
@@ -60,6 +62,7 @@ private:
     string nombreClase;
     vector< pair<string, string> > instrucciones;
     vector< Simbolo* > globales;
+    map <string, pair<int, Simbolo*> > locales;
 };
 
 #endif // MANEJADOR_CLASS_H

@@ -31,6 +31,30 @@ void ManejadorClass::Terminar(void)
 }
 
 
+void ManejadorClass::registrarVariableLocal(Simbolo* simbolo, int profundidad)
+{
+    stringstream id;
+    int localidad;
+
+    id << simbolo->getIdentificador() << profundidad;
+    localidad = locales.size();
+
+    pair<int, Simbolo*> variable = make_pair<int, Simbolo*>(localidad, simbolo);
+    pair<string, pair<int, Simbolo*> > insertable = make_pair(id.str(), variable);
+
+    locales.insert(insertable);
+}
+
+void ManejadorClass::deregistrarVariableLocal(Simbolo* simbolo, int profundidad)
+{
+    stringstream id;
+
+    id << simbolo->getIdentificador() << profundidad;
+
+    locales.erase(locales.find(id.str()));
+}
+
+
 void ManejadorClass::escribirCabeceraClase(void)
 {
     aniadirInstruccion(".class public", nombreClase);
