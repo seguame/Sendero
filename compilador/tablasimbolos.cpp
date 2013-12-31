@@ -247,6 +247,7 @@ string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo, bool esGlobal)
                 //Registrarla como variable en nivel distinto, no se hace verificacion de sobreescritura pues
                 //se valido por semantica que exista en ese nivel
                 ManejadorClass::ObtenerInstancia()->registrarVariableLocal(pilaSimbolos->top(), simbolos->size());
+                ManejadorClass::ObtenerInstancia()->escribirDeclararArray(pilaSimbolos->top(), false);
             }
         }
         pilaSimbolos->pop();
