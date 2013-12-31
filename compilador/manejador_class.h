@@ -27,7 +27,7 @@ public:
     void escribirDeclararVariableGlobal(Simbolo* simbolo);
     void escribirDeclararConstante(Simbolo* simbolo);
 
-
+    void escribirLlamadaFuncion(Simbolo* simbolo);
     void escribirValorConstante(Simbolo* simbolo);
     void escribirSuma(Tipo t);
     void escribirResta(Tipo t);

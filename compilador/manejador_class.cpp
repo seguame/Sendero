@@ -100,7 +100,6 @@ void ManejadorClass::escribirConstructorEstatico(void)
 
     //se inicializan los arrays y se ignoran globales sin dimension o constantes
     for(vector< Simbolo* >::size_type i = 0; i != globales.size(); ++i)
-    //while(!globales.empty())
     {
 
         Simbolo* temp = globales.at(i);
@@ -240,6 +239,7 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto)
 
 void ManejadorClass::escribirDeclararVariableGlobal(Simbolo* simbolo)
 {
+
     stringstream operando;
     unsigned int cantDimensiones;
 
@@ -247,7 +247,7 @@ void ManejadorClass::escribirDeclararVariableGlobal(Simbolo* simbolo)
 
     cantDimensiones = simbolo->getCantidadDimensiones();
 
-    globales.push_back(simbolo);
+
 
     for(unsigned int i = 0; i < cantDimensiones; ++i)
     {
@@ -257,6 +257,10 @@ void ManejadorClass::escribirDeclararVariableGlobal(Simbolo* simbolo)
     operando << obtenerTipo(simbolo->getTipo());
 
     aniadirInstruccion(".field static public", operando.str());
+
+
+    //añadir a nuestro compendio de llamables donde sea
+    globales.push_back(simbolo);
 }
 
 void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
@@ -320,6 +324,23 @@ void ManejadorClass::escribirResta(Tipo t)
     case T_ENTERO: aniadirInstruccion("    isub", ""); break;
     case T_REAL: aniadirInstruccion("    dsub", ""); break;
     default: qDebug() << "Resta de tipos no soportada " << t;
+    }
+}
+
+void ManejadorClass::escribirLlamadaFuncion(Simbolo* simbolo)
+{
+    if(simbolo->getTipo() != T_FUNCION)
+    {
+        qDebug() << "Intenta llamar una variable como funcion en el bytecode";
+    }
+    else
+    {
+        stringstream llamada;
+
+        llamada << nombreClase << " " << simbolo->getIdentificador() << " ";
+        llamada << obtenerDescriptorFirma(simbolo->getFirmaFuncion(), simbolo->getTipoRetorno());
+
+        aniadirInstruccion("    invokestatic", llamada.str());
     }
 }
 
