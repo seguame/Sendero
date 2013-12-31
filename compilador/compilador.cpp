@@ -1163,6 +1163,8 @@ void Compilador::asigna (void)
 
     if(temp != NULL && operacionAsignacion[buscado][obtenido])
     {
+        //se manda a llamar a la intruccion que almacena el valor obtenido dentro de expr
+        ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, true);
         /*Simbolo* varTemp = tablaDeSimbolos->desapilarValor();
 
         if(varTemp == NULL)
@@ -1184,6 +1186,7 @@ void Compilador::asigna (void)
         }*/
 
         temp->setInicializado();
+
 
 
     }
@@ -2206,6 +2209,9 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
 
                 tablaDeSimbolos->apilarValor(temp);
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
+
+                //poner identificador para obtener su valor asociado
+                ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
             }
             else //pues quesque es funcion
             {
