@@ -114,7 +114,7 @@ void TablaSimbolos::borrarScope(void)
         if(simbolos->size() != 1)
         {
             //quitar de la tabla de locales
-            ManejadorClass::ObtenerInstancia()->deregistrarVariableLocal(par.second, simbolos->size());
+            ManejadorClass::ObtenerInstancia()->deregistrarVariableLocal(par.second);
         }
 
         delete par.second;
