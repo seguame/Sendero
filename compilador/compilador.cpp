@@ -1988,6 +1988,13 @@ void Compilador::suma(bool terminoOpcional)
             //Obtener el tipo de valor izquierdo y apilarlo
             NuevoIzquierdo = operacionesSuma[derecho][izquierdo];
             tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
+
+
+
+            if(actual.compare("+") == 0)
+                ManejadorClass::ObtenerInstancia()->escribirSuma(NuevoIzquierdo);
+            else
+                ManejadorClass::ObtenerInstancia()->escribirResta(NuevoIzquierdo);
         }
 
     }while(lexico.compare("+") == 0 || lexico.compare("-") == 0);
@@ -2131,6 +2138,10 @@ void Compilador::termino (bool terminoOpcional)
         }
 
         tablaDeSimbolos->apilarValor(almacenadoTemporal);
+
+        //cargar valor en pila del jvm
+        ManejadorClass::ObtenerInstancia()->escribirValorConstante(almacenadoTemporal);
+
         tablaDeSimbolos->apilarTipo(almacenadoTemporal->getTipo());
 
         leerLexema();

@@ -26,7 +26,9 @@ public:
     void escribirDeclararConstante(Simbolo* simbolo);
 
 
-
+    void escribirValorConstante(Simbolo* simbolo);
+    void escribirSuma(Tipo t);
+    void escribirResta(Tipo t);
     void escribirEnteroConstante(int i);
 
     void aniadirInstruccion(const string& operacion,const string& parametro);

@@ -255,6 +255,38 @@ void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
     aniadirInstruccion(".field static public", operando.str());
 }
 
+
+void ManejadorClass::escribirValorConstante(Simbolo* simbolo)
+{
+    if(simbolo->getIdentificador().compare("HOLDER") != 0) qDebug() << "valor constante viene de una variable";
+
+    switch(simbolo->getTipo())
+    {
+    case T_ENTERO: escribirEnteroConstante(simbolo->getValor<int>()); break;
+    default: qDebug() << "Valor aun no soportado en pila";
+    }
+}
+
+void ManejadorClass::escribirSuma(Tipo t)
+{
+    switch(t)
+    {
+    case T_ENTERO: aniadirInstruccion("    iadd", ""); break;
+    case T_REAL: aniadirInstruccion("    dadd", ""); break;
+    default: qDebug() << "Suma de tipos no soportada " << t;
+    }
+}
+
+void ManejadorClass::escribirResta(Tipo t)
+{
+    switch(t)
+    {
+    case T_ENTERO: aniadirInstruccion("    isub", ""); break;
+    case T_REAL: aniadirInstruccion("    dsub", ""); break;
+    default: qDebug() << "Resta de tipos no soportada " << t;
+    }
+}
+
 void ManejadorClass::escribirEnteroConstante(int i)
 {
     if(i == -1)
