@@ -27,6 +27,7 @@ public:
     void deregistrarVariableLocal(Simbolo* simbolo);
     void escribirDeclararVariableGlobal(Simbolo* simbolo);
     void escribirDeclararConstante(Simbolo* simbolo);
+    void escribirDeclararArray(Simbolo* simbolo, bool global);
 
     void escribirLlamadaFuncion(Simbolo* simbolo);
     void escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar);

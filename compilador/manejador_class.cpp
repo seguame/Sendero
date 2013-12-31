@@ -98,68 +98,83 @@ void ManejadorClass::escribirConstructorEstatico(void)
     //se inicializan los arrays y se ignoran globales sin dimension o constantes
     for(vector< Simbolo* >::size_type i = 0; i != globales.size(); ++i)
     {
-
         Simbolo* temp = globales.at(i);
-
-        if(temp->getCantidadDimensiones() > 0)
-        {
-            unsigned int cantDimen = temp->getCantidadDimensiones();
-            string operacion;
-            stringstream operando;
-            stringstream firmaDimensional;
-            stringstream nombreCompleto;
-
-
-            if(cantDimen == 0) qDebug() << "array statico sin dimension, verificar";
-
-            for(unsigned int i = 0; i < cantDimen; ++i)
-            {
-                //apilar las dimensiones
-                escribirEnteroConstante(temp->getTamanioDimension(i));
-            }
-
-            if(cantDimen == 1)
-            {
-                if(temp->getTipo() == T_CADENA) operacion = "    anewarray";
-                else operacion = "    newarray";
-
-                switch(temp->getTipo())
-                {
-                    case T_ENTERO: operando << "int"; break;
-                    case T_REAL: operando << "double"; break;
-                    case T_CARACTER: operando << "char"; break;
-                    case T_BOOLEANO: operando << "boolean"; break;
-                    case T_CADENA: operando << "java/lang/String"; break;
-                    default: operando << "ERROR TIPO"; break;
-                }
-
-                firmaDimensional << "[" << obtenerTipo(temp->getTipo());
-            }
-            else
-            {
-                operacion = "    multianewarray";
-
-                for(unsigned int i = 0; i < cantDimen; ++i)
-                {
-                    firmaDimensional << "[";
-                }
-
-                firmaDimensional << obtenerTipo(temp->getTipo());
-
-                operando << firmaDimensional.str() << " " << cantDimen;
-            }
-
-            aniadirInstruccion(operacion, operando.str());
-
-            nombreCompleto << nombreClase << " " << temp->getIdentificador() << " " << firmaDimensional.str();
-
-            aniadirInstruccion("    putstatic", nombreCompleto.str());
-        }
+        escribirDeclararArray(temp, true);
     }
 
 
     aniadirInstruccion("    return", "");
     aniadirInstruccion(".end", "method");
+}
+
+void ManejadorClass::escribirDeclararArray(Simbolo* temp, bool global)
+{
+    if(temp->getCantidadDimensiones() > 0)
+    {
+        unsigned int cantDimen = temp->getCantidadDimensiones();
+        string operacion;
+        stringstream operando;
+        stringstream firmaDimensional;
+        stringstream nombreCompleto;
+
+        //ls locales ya fueron apilando sus valores
+        if(global)
+        {
+            for(unsigned int i = 0; i < cantDimen; ++i)
+            {
+                //apilar las dimensiones
+                escribirEnteroConstante(temp->getTamanioDimension(i));
+            }
+        }
+
+        if(cantDimen == 1)
+        {
+            if(temp->getTipo() == T_CADENA) operacion = "    anewarray";
+            else operacion = "    newarray";
+
+            switch(temp->getTipo())
+            {
+                case T_ENTERO: operando << "int"; break;
+                case T_REAL: operando << "double"; break;
+                case T_CARACTER: operando << "char"; break;
+                case T_BOOLEANO: operando << "boolean"; break;
+                case T_CADENA: operando << "java/lang/String"; break;
+                default: operando << "ERROR TIPO"; break;
+            }
+
+            firmaDimensional << "[" << obtenerTipo(temp->getTipo());
+        }
+        else
+        {
+            operacion = "    multianewarray";
+
+            for(unsigned int i = 0; i < cantDimen; ++i)
+            {
+                firmaDimensional << "[";
+            }
+
+            firmaDimensional << obtenerTipo(temp->getTipo());
+
+            operando << firmaDimensional.str() << " " << cantDimen;
+        }
+
+        aniadirInstruccion(operacion, operando.str());
+
+        nombreCompleto << nombreClase << " " << temp->getIdentificador() << " " << firmaDimensional.str();
+
+        if(global)
+        {
+            aniadirInstruccion("    putstatic", nombreCompleto.str());
+        }
+        else
+        {
+            string oper = "    astore";
+            stringstream pos;
+            pos << obtenerPosLocal(temp->getAlias());
+
+            aniadirInstruccion(oper, pos.str());
+        }
+    }
 }
 
 void ManejadorClass::escribirMain(void)
