@@ -1152,8 +1152,14 @@ void Compilador::asigna (void)
 
     leerLexema();
 
+    if(temp != NULL && temp->getCantidadDimensiones() > 0)
+    {
+        //se manda a llamar a la intruccion que cargue la referencia al array para almacenarle valor
+        ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+    }
+
     //Dimension verificará que la variable encontrada cumpla
-    //con lo especificado en ella
+    //con lo especificado en ella, tambien apilara las dimensiones segun se requiera
     dimension(temp, true);
 
     if(lexico.compare(":=") != 0)
@@ -1171,8 +1177,7 @@ void Compilador::asigna (void)
 
     if(temp != NULL && operacionAsignacion[buscado][obtenido])
     {
-        //se manda a llamar a la intruccion que almacena el valor obtenido dentro de expr
-        ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, true);
+
         /*Simbolo* varTemp = tablaDeSimbolos->desapilarValor();
 
         if(varTemp == NULL)
@@ -1251,23 +1256,33 @@ void Compilador::dimension (Simbolo* simb, bool verificarDimensiones)
         }
         else
         {
-            //cuando se verifica dimension no se especifica tamanio de simbolo, solo cuando se esta en expr
-            if(simb != NULL && !verificarDimensiones)
+            if(simb != NULL)
             {
-                Simbolo* simbTam = tablaDeSimbolos->desapilarValor();
-
-                if(!simbTam->esConstante() && simbTam->getIdentificador().compare("HOLDER") != 0)
+                //cuando se verifica dimension no se especifica tamanio de simbolo, solo cuando se esta en expr
+                if(!verificarDimensiones)
                 {
-                    escribirError("Las dimensiones deben definirse con valores constantes");
+                    Simbolo* simbTam = tablaDeSimbolos->desapilarValor();
+
+                    if(!simbTam->esConstante() && simbTam->getIdentificador().compare("HOLDER") != 0)
+                    {
+                        escribirError("Las dimensiones deben definirse con valores constantes");
+                    }
+                    else
+                    {
+
+                        int valor = simbTam->getValor<int>();
+                        simb->addTamanioDimension(valor);
+
+                        if(simbTam->getIdentificador().compare("HOLDER") == 0)
+                            delete simbTam;
+                    }
                 }
                 else
                 {
-
-                    int valor = simbTam->getValor<int>();
-                    simb->addTamanioDimension(valor);
-
-                    if(simbTam->getIdentificador().compare("HOLDER") == 0)
-                        delete simbTam;
+                    if(simb->getCantidadDimensiones()-1 > contDimension )
+                    {
+                        ManejadorClass::ObtenerInstancia()->aniadirInstruccion("    aaload","");
+                    }
                 }
             }
         }

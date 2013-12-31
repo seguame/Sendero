@@ -371,7 +371,7 @@ void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
     }
 
     globales.push_back(simbolo);
-    aniadirInstruccion(".field static public", operando.str());
+    aniadirInstruccion(".field static public final", operando.str());
 }
 
 
@@ -422,22 +422,35 @@ void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
     {
         int pos = obtenerPosLocal(simbolo->getAlias());
 
-        switch(simbolo->getTipo())
+        if(simbolo->getCantidadDimensiones() > 0)
         {
-        case T_ENTERO:
-        case T_BOOLEANO: //se almacenan con 1 o 0
-        case T_CARACTER: //internamente son enteros
-            escribirLlamadaVariableEntero(pos, almacenar);
-            break;
-        case T_CADENA:
-            escribirLlamadaVariableAlfabetico(pos, almacenar);
-            break;
-        case T_REAL:
-            escribirLlamadaVariableReal(pos, almacenar);
-            break;
-        default:
-            qDebug() << "Llamada a una variable no definida";
-            break;
+            stringstream posStr;
+            posStr << pos;
+
+            if(almacenar)
+                aniadirInstruccion("    astore", posStr.str());
+            else
+                aniadirInstruccion("    aload", posStr.str());
+        }
+        else
+        {
+            switch(simbolo->getTipo())
+            {
+            case T_ENTERO:
+            case T_BOOLEANO: //se almacenan con 1 o 0
+            case T_CARACTER: //internamente son enteros
+                escribirLlamadaVariableEntero(pos, almacenar);
+                break;
+            case T_CADENA:
+                escribirLlamadaVariableAlfabetico(pos, almacenar);
+                break;
+            case T_REAL:
+                escribirLlamadaVariableReal(pos, almacenar);
+                break;
+            default:
+                qDebug() << "Llamada a una variable no definida";
+                break;
+            }
         }
     }
     else
@@ -579,6 +592,12 @@ void ManejadorClass::escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar)
         operacion = "    getstatic";
 
     llamada << nombreClase << " " << simbolo->getIdentificador() << " ";
+
+    for(int i = 0; i < simbolo->getCantidadDimensiones(); ++i)
+    {
+        llamada << "[";
+    }
+
     llamada << obtenerTipo(simbolo->getTipo());
 
     aniadirInstruccion(operacion, llamada.str());
