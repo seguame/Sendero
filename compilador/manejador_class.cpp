@@ -36,20 +36,32 @@ void ManejadorClass::registrarVariableLocal(Simbolo* simbolo, int profundidad)
     stringstream id;
     int localidad;
 
-    id << simbolo->getIdentificador() << profundidad;
-    localidad = locales.size();
+    if(profundidad > 1)
+    {
+        id << simbolo->getIdentificador() << simbolo->getStringTipo() << profundidad;
 
-    pair<int, Simbolo*> variable = make_pair<int, Simbolo*>(localidad, simbolo);
-    pair<string, pair<int, Simbolo*> > insertable = make_pair(id.str(), variable);
+        if(locales.find(id.str()) == locales.end())
+        {
+            localidad = locales.size();
 
-    locales.insert(insertable);
+            pair<int, Simbolo*> variable = make_pair<int, Simbolo*>(localidad, simbolo);
+            pair<string, pair<int, Simbolo*> > insertable = make_pair(id.str(), variable);
+
+            locales.insert(insertable);
+        }
+        //else variable ya registrada de otro nivel y con mismo tipo, simplemente se usa su ref
+    }
+    else
+    {
+        qDebug() << "Variable global intentando ser registrada como local";
+    }
 }
 
 void ManejadorClass::deregistrarVariableLocal(Simbolo* simbolo, int profundidad)
 {
     stringstream id;
 
-    id << simbolo->getIdentificador() << profundidad;
+    id << simbolo->getIdentificador() << simbolo->getStringTipo() << profundidad;
 
     locales.erase(locales.find(id.str()));
 }
