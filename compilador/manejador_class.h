@@ -21,7 +21,7 @@ public:
 
     void prepararImpresionPantalla(void);
     void escribirImpresionLNPantalla(const string& texto);
-    void escribirImpresionPantalla(const string& texto);
+    void escribirImpresionPantalla(const string& texto, Simbolo* s, Tipo t, bool esConstante);
 
     void registrarVariableLocal(Simbolo* simbolo, int profundidad);
     void deregistrarVariableLocal(Simbolo* simbolo);
@@ -35,6 +35,7 @@ public:
     void escribirSuma(Tipo t);
     void escribirResta(Tipo t);
     void escribirEnteroConstante(int i);
+    void escribirRealConstante(double d);
 
     void aniadirInstruccion(const string& operacion,const string& parametro);
 

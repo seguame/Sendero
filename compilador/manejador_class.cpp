@@ -168,6 +168,10 @@ void ManejadorClass::escribirMain(void)
     string firma   = "9";
 
     escribirCabeceraMetodo(metodo, firma, T_INVALIDO);
+
+    Simbolo* dummy = new Simbolo("Args");
+    dummy->setTipo(T_CADENA)->setInicializado();
+    registrarVariableLocal(dummy, 2);
 }
 
 void ManejadorClass::escribirCabeceraMetodo(Simbolo* funcion)
@@ -201,8 +205,8 @@ void ManejadorClass::escribirCabeceraMetodo(const string& nombre, const string& 
     firmaCompleta = obtenerDescriptorFirma(firma, retorno);
 
     aniadirInstruccion(metodo.str(), firmaCompleta);
-    aniadirInstruccion(".limit stack", "40");
-    aniadirInstruccion(".limit locals", "100");
+    aniadirInstruccion("    .limit stack", "40");
+    aniadirInstruccion("    .limit locals", "100");
 }
 
 void ManejadorClass::escribirFinMetodo(Simbolo* funcion)
@@ -231,10 +235,70 @@ void ManejadorClass::escribirImpresionLNPantalla(const string& texto)
     aniadirInstruccion("    invokevirtual", "java/io/PrintStream println (Ljava/lang/Object;)V");
 }
 
-void ManejadorClass::escribirImpresionPantalla(const string& texto)
+void ManejadorClass::escribirImpresionPantalla(const string& texto, Simbolo* s, Tipo t, bool esConstante)
 {
-    aniadirInstruccion("    ldc", texto);
-    aniadirInstruccion("    invokevirtual", "java/io/PrintStream print (Ljava/lang/Object;)V");
+    if(esConstante)
+    {
+        switch(t)
+        {
+        case T_CADENA:
+        case T_INVALIDO:
+        case T_BOOLEANO:
+            aniadirInstruccion("    ldc", texto);
+            break;
+        case T_ENTERO:
+            escribirEnteroConstante(s->getValor<int>());
+            break;
+        case T_REAL:
+            escribirRealConstante(s->getValor<double>());
+            break;
+        default: break;
+        }
+    }
+
+    stringstream llamada;
+
+    llamada << "java/io/PrintStream print ";
+
+    switch(t)
+    {
+    case T_ENTERO:
+        llamada << "(I)V";
+        break;
+    case T_REAL:
+        llamada << "(D)V";
+        break;
+    case T_CARACTER:
+        llamada << "(C)V";
+        break;
+    case T_FUNCION:
+        switch(s->getTipoRetorno())
+        {
+        case T_ENTERO:
+            llamada << "(I)V";
+            break;
+        case T_REAL:
+            llamada << "(D)V";
+            break;
+        case T_CARACTER:
+            llamada << "(C)V";
+            break;
+        case T_CADENA:
+        case T_INVALIDO:
+        case T_BOOLEANO:
+            llamada << "(Ljava/lang/Object;)V";
+            break;
+        }
+        break;
+    case T_CADENA:
+    case T_INVALIDO:
+    case T_BOOLEANO:
+        llamada << "(Ljava/lang/Object;)V";
+        break;
+    }
+
+    aniadirInstruccion("    invokevirtual", llamada.str());
+
 }
 
 void ManejadorClass::escribirDeclararVariableGlobal(Simbolo* simbolo)
@@ -540,7 +604,17 @@ void ManejadorClass::escribirEnteroConstante(int i)
 
         aniadirInstruccion(operador.str(), operando.str());
     }
+}
 
+void ManejadorClass::escribirRealConstante(double d)
+{
+    stringstream operador;
+    stringstream operando;
+
+    operador << "    ldc2_w";
+    operando << d;
+
+    aniadirInstruccion(operador.str(), operando.str());
 }
 
 void ManejadorClass::escribirArchivoParaEnsamblar(const string& ruta)
