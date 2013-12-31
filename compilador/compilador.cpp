@@ -884,6 +884,9 @@ bool Compilador::vars (bool darAvanceAlFinal, bool global)
     if(lexico.compare("var") != 0)
         return false; //los caminos de la vida, no son lo que yo esperaba (8)
 
+    //evaluar despues las dimensiones globales, se encarga el bytecode
+    if(global) evaluarDespues = true;
+
     //preparando el apilamiento de variables para ser almacenadas
     //en la tabla de simbolos
     tablaDeSimbolos->prepararPilas();
@@ -979,6 +982,9 @@ bool Compilador::vars (bool darAvanceAlFinal, bool global)
 
     //por si quedo algun elemento volando
     tablaDeSimbolos->purgarPilas();
+
+    //fuera del ambito global, no importa
+    evaluarDespues = false;
 
     return true;
 }
@@ -2160,8 +2166,11 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
 
         tablaDeSimbolos->apilarValor(almacenadoTemporal);
 
-        //cargar valor en pila del jvm
-        ManejadorClass::ObtenerInstancia()->escribirValorConstante(almacenadoTemporal);
+        if(!evaluarDespues)
+        {
+            //cargar valor en pila del jvm
+            ManejadorClass::ObtenerInstancia()->escribirValorConstante(almacenadoTemporal);
+        }
 
         tablaDeSimbolos->apilarTipo(almacenadoTemporal->getTipo());
 
@@ -2253,11 +2262,15 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                 escribirError("Identificador \"" + temp->getIdentificador() + "\" es una funcion, pero es usada como variable");
             }
 
-            //verificar que cumpla con su especificacion de dimension
-            dimension(temp, true);
+            if(!evaluarDespues)
+            {
+                //verificar que cumpla con su especificacion de dimension
+                dimension(temp, true);
 
-            //poner identificador para obtener su valor asociado
-            ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+
+                //poner identificador para obtener su valor asociado
+                ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+            }
 
             return;
         }

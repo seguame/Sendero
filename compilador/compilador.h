@@ -62,6 +62,8 @@ class Compilador
         bool fmtDefinido;
         bool conDefinido;
 
+        bool evaluarDespues;
+
 
         ofstream salidaInformacion;
 
