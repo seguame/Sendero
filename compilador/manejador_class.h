@@ -29,6 +29,8 @@ public:
     void escribirDeclararConstante(Simbolo* simbolo);
 
     void escribirLlamadaFuncion(Simbolo* simbolo);
+    void escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar);
+    void escribirLlamadaVariable(Simbolo* simbolo, bool almacenar);
     void escribirValorConstante(Simbolo* simbolo);
     void escribirSuma(Tipo t);
     void escribirResta(Tipo t);
@@ -50,12 +52,17 @@ private:
 
     void escribirCabeceraMetodo(const string& nombre, const string& firma, Tipo retorno);
     void escribirMain(void);
+    void escribirLlamadaVariableEntero(int posStack, bool almacenar);
+    void escribirLlamadaVariableReal(int posStack, bool almacenar);
+    void escribirLlamadaVariableAlfabetico(int posStack, bool almacenar);
 
     string obtenerDescriptorFirma(const string& firma, Tipo retorno);
     string obtenerTipoRetorno(Tipo retorno);
 
     string obtenerTipo(char t);
     string obtenerTipo(Tipo t);
+
+    int obtenerPosLocal(const string& alias);
 
     static ManejadorClass* instancia;
 

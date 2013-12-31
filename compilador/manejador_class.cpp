@@ -327,6 +327,151 @@ void ManejadorClass::escribirResta(Tipo t)
     }
 }
 
+void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
+{
+    bool esGlobal = false;
+    for(vector< Simbolo* >::size_type i = 0; i < globales.size(); ++i)
+    {
+        if(simbolo->getIdentificador().compare(globales.at(i)->getIdentificador()) == 0)
+        {
+            esGlobal = true;
+            break;
+        }
+    }
+
+    if(!esGlobal)
+    {
+        int pos = obtenerPosLocal(simbolo->getAlias());
+
+        switch(simbolo->getTipo())
+        {
+        case T_ENTERO:
+        case T_BOOLEANO: //se almacenan con 1 o 0
+        case T_CARACTER: //internamente son enteros
+            escribirLlamadaVariableEntero(pos, almacenar);
+            break;
+        case T_CADENA:
+            escribirLlamadaVariableAlfabetico(pos, almacenar);
+            break;
+        case T_REAL:
+            escribirLlamadaVariableReal(pos, almacenar);
+            break;
+        default:
+            qDebug() << "Llamada a una variable no definida";
+            break;
+        }
+    }
+    else
+    {
+        escribirLlamadaVarGlobal(simbolo, almacenar);
+    }
+}
+
+void ManejadorClass::escribirLlamadaVariableEntero(int posStack, bool almacenar)
+{
+    stringstream operador;
+    stringstream operando;
+
+    if(almacenar)
+    {
+        if(posStack <= 3)
+        {
+            operador << "    istore_" << posStack;
+            operando << "";
+        }
+        else
+        {
+            operador << "    istore";
+            operando << posStack;
+        }
+    }
+    else //cargar
+    {
+        if(posStack <= 3)
+        {
+            operador << "    iload_" << posStack;
+            operando << "";
+        }
+        else
+        {
+            operador << "    iload";
+            operando << posStack;
+        }
+    }
+
+    aniadirInstruccion(operador.str(), operando.str());
+}
+
+void ManejadorClass::escribirLlamadaVariableReal(int posStack, bool almacenar)
+{
+    stringstream operador;
+    stringstream operando;
+
+    if(almacenar)
+    {
+        if(posStack <= 3)
+        {
+            operador << "    dstore_" << posStack;
+            operando << "";
+        }
+        else
+        {
+            operador << "    dstore";
+            operando << posStack;
+        }
+    }
+    else //cargar
+    {
+        if(posStack <= 3)
+        {
+            operador << "    dload_" << posStack;
+            operando << "";
+        }
+        else
+        {
+            operador << "    dload";
+            operando << posStack;
+        }
+    }
+
+    aniadirInstruccion(operador.str(), operando.str());
+}
+
+void ManejadorClass::escribirLlamadaVariableAlfabetico(int posStack, bool almacenar)
+{
+    stringstream operador;
+    stringstream operando;
+
+    if(almacenar)
+    {
+        if(posStack <= 3)
+        {
+            operador << "    astore_" << posStack;
+            operando << "";
+        }
+        else
+        {
+            operador << "    astore";
+            operando << posStack;
+        }
+    }
+    else //cargar
+    {
+        if(posStack <= 3)
+        {
+            operador << "    aload_" << posStack;
+            operando << "";
+        }
+        else
+        {
+            operador << "    aload";
+            operando << posStack;
+        }
+    }
+
+    aniadirInstruccion(operador.str(), operando.str());
+}
+
 void ManejadorClass::escribirLlamadaFuncion(Simbolo* simbolo)
 {
     if(simbolo->getTipo() != T_FUNCION)
@@ -342,6 +487,22 @@ void ManejadorClass::escribirLlamadaFuncion(Simbolo* simbolo)
 
         aniadirInstruccion("    invokestatic", llamada.str());
     }
+}
+
+void ManejadorClass::escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar)
+{
+    stringstream llamada;
+    string operacion;
+
+    if(almacenar)
+        operacion = "    putstatic";
+    else
+        operacion = "    getstatic";
+
+    llamada << nombreClase << " " << simbolo->getIdentificador() << " ";
+    llamada << obtenerTipo(simbolo->getTipo());
+
+    aniadirInstruccion(operacion, llamada.str());
 }
 
 void ManejadorClass::escribirEnteroConstante(int i)
@@ -498,4 +659,9 @@ string ManejadorClass::obtenerTipo(Tipo t)
     case T_INVALIDO: return "V";
     default: return "ERROR_SIMBOLO_NO_ADMITIDO";
     }
+}
+
+int ManejadorClass::obtenerPosLocal(const string& alias)
+{
+    return locales[alias].first;
 }
