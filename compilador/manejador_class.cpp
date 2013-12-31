@@ -409,19 +409,23 @@ void ManejadorClass::escribirResta(Tipo t)
 void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
 {
     bool esGlobal = false;
-    for(vector< Simbolo* >::size_type i = 0; i < globales.size(); ++i)
+
+    int pos = obtenerPosLocal(simbolo->getAlias());
+
+    if(pos == -1)
     {
-        if(simbolo->getIdentificador().compare(globales.at(i)->getIdentificador()) == 0)
+        for(vector< Simbolo* >::size_type i = 0; i < globales.size(); ++i)
         {
-            esGlobal = true;
-            break;
+            if(simbolo->getIdentificador().compare(globales.at(i)->getIdentificador()) == 0)
+            {
+                esGlobal = true;
+                break;
+            }
         }
     }
 
     if(!esGlobal)
     {
-        int pos = obtenerPosLocal(simbolo->getAlias());
-
         if(simbolo->getCantidadDimensiones() > 0)
         {
             stringstream posStr;
@@ -771,5 +775,8 @@ string ManejadorClass::obtenerTipo(Tipo t)
 
 int ManejadorClass::obtenerPosLocal(const string& alias)
 {
-    return locales[alias].first;
+    if(locales.find(alias) != locales.end())
+        return locales[alias].first;
+    else
+        return -1;
 }
