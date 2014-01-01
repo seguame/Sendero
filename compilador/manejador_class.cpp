@@ -744,10 +744,10 @@ int ManejadorClass::Ensamblar(const string& ruta, const string& archivo)
 
     qDebug() << comando2.str().c_str();
 
-    system(comando2.str().c_str());
+    return system(comando2.str().c_str());
 
 
-    return system(("java " + archivo).c_str());
+    //return system(("java " + archivo).c_str());
 }
 
 void ManejadorClass::setNombreClase(const string& nombre)
