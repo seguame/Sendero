@@ -239,6 +239,40 @@ void ManejadorClass::aniadirInstruccion(const string& operacion,const string& pa
     instrucciones.push_back(make_pair(operacion, parametro));
 }
 
+void ManejadorClass::escribirLeerDato(Simbolo* simbolo)
+{
+    string llamadaScanner = nombreClase + " lector Ljava/util/Scanner;";
+    aniadirInstruccion("    getstatic", llamadaScanner);
+
+    switch(simbolo->getTipo())
+    {
+    case T_ENTERO:
+        aniadirInstruccion("    invokevirtual", "java/util/Scanner nextInt ()I");
+        break;
+
+    case T_REAL:
+        aniadirInstruccion("    invokevirtual", "java/util/Scanner nextDouble ()D");
+        break;
+
+    case T_CADENA:
+        aniadirInstruccion("    invokevirtual", "java/util/Scanner nextLine ()Ljava/lang/String;");
+        break;
+
+    case T_CARACTER:
+        aniadirInstruccion("    invokevirtual", "java/util/Scanner next ()Ljava/lang/String;");
+        aniadirInstruccion("    invokevirtual", "java/lang/String trim ()Ljava/lang/String;");
+        aniadirInstruccion("    iconst_0", "");
+        aniadirInstruccion("    invokevirtual", "java/lang/String charAt (I)C");
+        break;
+
+    default:
+        //no se genera codigo de lectura para otra cosa
+        break;
+    }
+
+    escribirLlamadaVariable(simbolo, true);
+}
+
 void ManejadorClass::prepararImpresionPantalla(void)
 {
     aniadirInstruccion("    getstatic", "java/lang/System out Ljava/io/PrintStream;");
@@ -280,31 +314,38 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto, Simbolo* s, 
     case T_ENTERO:
         llamada << "(I)V";
         break;
+
     case T_REAL:
         llamada << "(D)V";
         break;
+
     case T_CARACTER:
         llamada << "(C)V";
         break;
+
     case T_FUNCION:
         switch(s->getTipoRetorno())
         {
-        case T_ENTERO:
-            llamada << "(I)V";
-            break;
-        case T_REAL:
-            llamada << "(D)V";
-            break;
-        case T_CARACTER:
-            llamada << "(C)V";
-            break;
-        case T_CADENA:
-        case T_INVALIDO:
-        case T_BOOLEANO:
-            llamada << "(Ljava/lang/Object;)V";
-            break;
+            case T_ENTERO:
+                llamada << "(I)V";
+                break;
+
+            case T_REAL:
+                llamada << "(D)V";
+                break;
+
+            case T_CARACTER:
+                llamada << "(C)V";
+                break;
+
+            case T_CADENA:
+            case T_INVALIDO: //"NULL"
+            case T_BOOLEANO: //"Verdadero" | "Falso"
+                llamada << "(Ljava/lang/Object;)V";
+                break;
         }
         break;
+
     case T_CADENA:
     case T_INVALIDO:
     case T_BOOLEANO:
@@ -381,8 +422,8 @@ void ManejadorClass::escribirValorConstante(Simbolo* simbolo)
 
     switch(simbolo->getTipo())
     {
-    case T_ENTERO: escribirEnteroConstante(simbolo->getValor<int>()); break;
-    default: qDebug() << "Valor aun no soportado en pila";
+        case T_ENTERO: escribirEnteroConstante(simbolo->getValor<int>()); break;
+        default: qDebug() << "Valor aun no soportado en pila";
     }
 }
 
@@ -390,9 +431,9 @@ void ManejadorClass::escribirSuma(Tipo t)
 {
     switch(t)
     {
-    case T_ENTERO: aniadirInstruccion("    iadd", ""); break;
-    case T_REAL: aniadirInstruccion("    dadd", ""); break;
-    default: qDebug() << "Suma de tipos no soportada " << t;
+        case T_ENTERO: aniadirInstruccion("    iadd", ""); break;
+        case T_REAL: aniadirInstruccion("    dadd", ""); break;
+        default: qDebug() << "Suma de tipos no soportada " << t;
     }
 }
 
@@ -400,9 +441,9 @@ void ManejadorClass::escribirResta(Tipo t)
 {
     switch(t)
     {
-    case T_ENTERO: aniadirInstruccion("    isub", ""); break;
-    case T_REAL: aniadirInstruccion("    dsub", ""); break;
-    default: qDebug() << "Resta de tipos no soportada " << t;
+        case T_ENTERO: aniadirInstruccion("    isub", ""); break;
+        case T_REAL: aniadirInstruccion("    dsub", ""); break;
+        default: qDebug() << "Resta de tipos no soportada " << t;
     }
 }
 
@@ -440,20 +481,23 @@ void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
         {
             switch(simbolo->getTipo())
             {
-            case T_ENTERO:
-            case T_BOOLEANO: //se almacenan con 1 o 0
-            case T_CARACTER: //internamente son enteros
-                escribirLlamadaVariableEntero(pos, almacenar);
-                break;
-            case T_CADENA:
-                escribirLlamadaVariableAlfabetico(pos, almacenar);
-                break;
-            case T_REAL:
-                escribirLlamadaVariableReal(pos, almacenar);
-                break;
-            default:
-                qDebug() << "Llamada a una variable no definida";
-                break;
+                case T_ENTERO:
+                case T_BOOLEANO: //se almacenan con 1 o 0
+                case T_CARACTER: //internamente son enteros
+                    escribirLlamadaVariableEntero(pos, almacenar);
+                    break;
+
+                case T_CADENA:
+                    escribirLlamadaVariableAlfabetico(pos, almacenar);
+                    break;
+
+                case T_REAL:
+                    escribirLlamadaVariableReal(pos, almacenar);
+                    break;
+
+                default:
+                    qDebug() << "Llamada a una variable no definida";
+                    break;
             }
         }
     }
@@ -734,13 +778,13 @@ string ManejadorClass::obtenerTipoRetorno(Tipo retorno)
 {
     switch(retorno)
     {
-    case T_CARACTER:
-    case T_ENTERO:
-        return "    ireturn";
-    case T_REAL:
-        return "    dreturn";
-    default:
-        return "    return";
+        case T_CARACTER:
+        case T_ENTERO:
+            return "    ireturn";
+        case T_REAL:
+            return "    dreturn";
+        default:
+            return "    return";
     }
 }
 
@@ -748,14 +792,14 @@ string ManejadorClass::obtenerTipo(char t)
 {
     switch(t)
     {
-    case '0': return "I";
-    case '1': return "D";
-    case '2': return "C";
-    case '3': return "Ljava/lang/String;";
-    case '4': return "Z";
-    case '6': return ""; //no se especifica para parametros
-    case '9': return "[Ljava/lang/String;";
-    default:  return "ERROR_SIMBOLO_NO_ADMITIDO";
+        case '0': return "I";
+        case '1': return "D";
+        case '2': return "C";
+        case '3': return "Ljava/lang/String;";
+        case '4': return "Z";
+        case '6': return ""; //no se especifica para parametros
+        case '9': return "[Ljava/lang/String;";
+        default:  return "ERROR_SIMBOLO_NO_ADMITIDO";
     }
 }
 
@@ -763,13 +807,13 @@ string ManejadorClass::obtenerTipo(Tipo t)
 {
     switch(t)
     {
-    case T_ENTERO: return "I";
-    case T_REAL: return "D";
-    case T_CARACTER: return "C";
-    case T_CADENA: return "Ljava/lang/String;";
-    case T_BOOLEANO: return "Z";
-    case T_INVALIDO: return "V";
-    default: return "ERROR_SIMBOLO_NO_ADMITIDO";
+        case T_ENTERO: return "I";
+        case T_REAL: return "D";
+        case T_CARACTER: return "C";
+        case T_CADENA: return "Ljava/lang/String;";
+        case T_BOOLEANO: return "Z";
+        case T_INVALIDO: return "V";
+        default: return "ERROR_SIMBOLO_NO_ADMITIDO";
     }
 }
 

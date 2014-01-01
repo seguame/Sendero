@@ -23,6 +23,8 @@ public:
     void escribirImpresionLNPantalla(const string& texto);
     void escribirImpresionPantalla(const string& texto, Simbolo* s, Tipo t, bool esConstante);
 
+    void escribirLeerDato(Simbolo* simbolo);
+
     void registrarVariableLocal(Simbolo* simbolo, int profundidad);
     void deregistrarVariableLocal(Simbolo* simbolo);
     void escribirDeclararVariableGlobal(Simbolo* simbolo);
