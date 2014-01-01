@@ -885,7 +885,8 @@ bool Compilador::vars (bool darAvanceAlFinal, bool global)
         return false; //los caminos de la vida, no son lo que yo esperaba (8)
 
     //evaluar despues las dimensiones globales, se encarga el bytecode
-    if(global) evaluarDespues = true;
+    if(global)
+        evaluarDespues = true;
 
     //preparando el apilamiento de variables para ser almacenadas
     //en la tabla de simbolos
@@ -1619,6 +1620,11 @@ bool Compilador::lee(void)
         escribirError("Se esperaba cierre de parentesis");
 
     leerLexema();
+
+    if(temp != NULL)
+    {
+        ManejadorClass::ObtenerInstancia()->escribirLeerDato(temp);
+    }
 
     return true;
 }
