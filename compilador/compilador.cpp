@@ -125,6 +125,7 @@ Compilador::Compilador(string rutaArchivo) :
 
     fmtDefinido = false;
     conDefinido = false;
+    evaluarDespues = false;
 
     separarNombreArchivo(_rutaCompletaArchivo);
     tablaDeSimbolos = new TablaSimbolos(this);
