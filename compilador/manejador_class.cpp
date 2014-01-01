@@ -246,28 +246,34 @@ void ManejadorClass::escribirLeerDato(Simbolo* simbolo)
 
     switch(simbolo->getTipo())
     {
-    case T_ENTERO:
-        aniadirInstruccion("    invokevirtual", "java/util/Scanner nextInt ()I");
-        break;
+        case T_ENTERO:
+            aniadirInstruccion("    invokevirtual", "java/util/Scanner nextInt ()I");
+            aniadirInstruccion("    getstatic", llamadaScanner);
+            aniadirInstruccion("    invokevirtual", "java/util/Scanner nextLine ()Ljava/lang/String;"); //ignorar
+            aniadirInstruccion("    pop", "");                                                          //saltos de linea
+            break;
 
-    case T_REAL:
-        aniadirInstruccion("    invokevirtual", "java/util/Scanner nextDouble ()D");
-        break;
+        case T_REAL:
+            aniadirInstruccion("    invokevirtual", "java/util/Scanner nextDouble ()D");
+            aniadirInstruccion("    getstatic", llamadaScanner);
+            aniadirInstruccion("    invokevirtual", "java/util/Scanner nextLine ()Ljava/lang/String;"); //ignorar
+            aniadirInstruccion("    pop", "");                                                          //saltos de linea
+            break;
 
-    case T_CADENA:
-        aniadirInstruccion("    invokevirtual", "java/util/Scanner nextLine ()Ljava/lang/String;");
-        break;
+        case T_CADENA:
+            aniadirInstruccion("    invokevirtual", "java/util/Scanner nextLine ()Ljava/lang/String;");
+            break;
 
-    case T_CARACTER:
-        aniadirInstruccion("    invokevirtual", "java/util/Scanner next ()Ljava/lang/String;");
-        aniadirInstruccion("    invokevirtual", "java/lang/String trim ()Ljava/lang/String;");
-        aniadirInstruccion("    iconst_0", "");
-        aniadirInstruccion("    invokevirtual", "java/lang/String charAt (I)C");
-        break;
+        case T_CARACTER:
+            aniadirInstruccion("    invokevirtual", "java/util/Scanner next ()Ljava/lang/String;");
+            aniadirInstruccion("    invokevirtual", "java/lang/String trim ()Ljava/lang/String;");
+            aniadirInstruccion("    iconst_0", "");
+            aniadirInstruccion("    invokevirtual", "java/lang/String charAt (I)C");
+            break;
 
-    default:
-        //no se genera codigo de lectura para otra cosa
-        break;
+        default:
+            //no se genera codigo de lectura para otra cosa
+            break;
     }
 
     escribirLlamadaVariable(simbolo, true);
