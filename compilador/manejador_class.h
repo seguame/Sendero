@@ -14,6 +14,7 @@ using namespace std;
 class ManejadorClass
 {
 public:
+    void resetearContadorLocalidades(void);
     void escribirCabeceraClase(void);
     void escribirCabeceraMetodo(Simbolo* funcion);
     void escribirConstructorEstatico(void);
@@ -82,6 +83,7 @@ private:
     vector< pair<string, string> > instrucciones;
     vector< Simbolo* > globales;
     map <string, pair<int, Simbolo*> > locales;
+    unsigned int localidadesActuales;
 };
 
 #endif // MANEJADOR_CLASS_H

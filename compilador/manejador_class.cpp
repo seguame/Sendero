@@ -2,7 +2,7 @@
 
 ManejadorClass* ManejadorClass::instancia = NULL;
 
-ManejadorClass::ManejadorClass(){}
+ManejadorClass::ManejadorClass():{}
 
 void ManejadorClass::Inicializar(void)
 {
@@ -30,6 +30,10 @@ void ManejadorClass::Terminar(void)
     }
 }
 
+void ManejadorClass::resetearContadorLocalidades(void)
+{
+    localidadesActuales = 0;
+}
 
 void ManejadorClass::registrarVariableLocal(Simbolo* simbolo, int profundidad)
 {
@@ -43,7 +47,23 @@ void ManejadorClass::registrarVariableLocal(Simbolo* simbolo, int profundidad)
         if(locales.find(id.str()) == locales.end())
         {
             simbolo->setAlias(id.str());
-            localidad = locales.size();
+
+
+            localidad = localidadesActuales;
+            //aumentar localidades del tamaño que requiera el dato
+            switch(simbolo->getTipo())
+            {
+                case T_REAL:
+                case T_CADENA:
+                    //Los doubles y cadenas toman 2 bytes del constant pool
+                    localidadesActuales += 2;
+                    break;
+                default:
+                    ++localidadesActuales;
+                    break;
+            }
+
+
 
             pair<int, Simbolo*> variable = make_pair<int, Simbolo*>(localidad, simbolo);
             pair<string, pair<int, Simbolo*> > insertable = make_pair(id.str(), variable);
