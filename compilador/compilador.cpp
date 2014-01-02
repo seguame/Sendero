@@ -2291,45 +2291,47 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
         }
 
         leerLexema();
-        if(lexico.compare("(") == 0)
+
+        if(temp != NULL)
         {
-            if(temp != NULL && temp->getTipo() != T_FUNCION)
+            if(lexico.compare("(") == 0)
             {
-                escribirError("Identificador \"" + temp->getIdentificador() + "\"no está definido como funcion, pero se usa como una");
+                if(temp->getTipo() != T_FUNCION)
+                {
+                    escribirError("Identificador \"" + temp->getIdentificador() + "\"no está definido como funcion, pero se usa como una");
+                }
+
+                string paramsObtenidos = lFunc_2();
+                string paramsEsperados = temp->getFirmaFuncion();
+
+                if(paramsEsperados.compare(paramsObtenidos) != 0)
+                {
+                    escribirError("Error de parametros, la funcion espera " + obtenerStringFirma(paramsEsperados) +
+                                  " y se está enviando " + obtenerStringFirma(paramsObtenidos));
+                }
+
+                ManejadorClass::ObtenerInstancia()->escribirLlamadaFuncion(temp);
             }
-
-            string paramsObtenidos = lFunc_2();
-            string paramsEsperados = (temp != NULL) ? temp->getFirmaFuncion() : "";
-
-            if(paramsEsperados.compare(paramsObtenidos) != 0)
+            else
             {
-                escribirError("Error de parametros, la funcion espera " + obtenerStringFirma(paramsEsperados) +
-                              " y se está enviando " + obtenerStringFirma(paramsObtenidos));
+                if(temp->getTipo() == T_FUNCION)
+                {
+                    escribirError("Identificador \"" + temp->getIdentificador() + "\" es una funcion, pero es usada como variable");
+                }
+
+                if(!evaluarDespues)
+                {
+                    //verificar que cumpla con su especificacion de dimension
+                    dimension(temp, true);
+
+
+                    //poner identificador para obtener su valor asociado
+                    ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+                }
             }
-
-            ManejadorClass::ObtenerInstancia()->escribirLlamadaFuncion(temp);
-
-            return;
         }
-        else
-        {
-            if(temp != NULL && temp->getTipo() == T_FUNCION)
-            {
-                escribirError("Identificador \"" + temp->getIdentificador() + "\" es una funcion, pero es usada como variable");
-            }
 
-            if(!evaluarDespues)
-            {
-                //verificar que cumpla con su especificacion de dimension
-                dimension(temp, true);
-
-
-                //poner identificador para obtener su valor asociado
-                ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
-            }
-
-            return;
-        }
+        return;
     }
     else if(lexico.compare("(") == 0)
     {
