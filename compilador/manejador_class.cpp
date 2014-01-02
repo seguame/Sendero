@@ -441,6 +441,36 @@ void ManejadorClass::escribirResta(Tipo t)
     }
 }
 
+void ManejadorClass::escribirMultiplicacion(Tipo t)
+{
+    switch(t)
+    {
+        case T_ENTERO: aniadirInstruccion("    imul", ""); break;
+        case T_REAL: aniadirInstruccion("    dmul", ""); break;
+        default: qDebug() << "Multiplicacion de tipos no soportada " << t;
+    }
+}
+
+void ManejadorClass::escribirDivision(Tipo t)
+{
+    switch(t)
+    {
+        case T_ENTERO: aniadirInstruccion("    idiv", ""); break;
+        case T_REAL: aniadirInstruccion("    ddiv", ""); break;
+        default: qDebug() << "Division de tipos no soportada " << t;
+    }
+}
+
+void ManejadorClass::escribirModulo(Tipo t)
+{
+    switch(t)
+    {
+        case T_ENTERO: aniadirInstruccion("    irem", ""); break;
+        case T_REAL: aniadirInstruccion("    drem", ""); break;
+        default: qDebug() << "Modulo (%) de tipos no soportada " << t;
+    }
+}
+
 void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
 {
     bool esGlobal = false;

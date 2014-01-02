@@ -37,6 +37,9 @@ public:
     void escribirValorConstante(Simbolo* simbolo);
     void escribirSuma(Tipo t);
     void escribirResta(Tipo t);
+    void escribirMultiplicacion(Tipo t);
+    void escribirDivision(Tipo t);
+    void escribirModulo(Tipo t);
     void escribirEnteroConstante(int i);
     void escribirRealConstante(double d);
 
