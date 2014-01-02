@@ -42,7 +42,7 @@ public:
     void escribirModulo(Tipo t);
     void escribirPotencia(void);
     void escribirInvertirValor(Tipo t);
-    void escribirComparacion(string operando);
+    void escribirComparacion(string operando, string etiqueta);
     void escribirEnteroConstante(int i);
     void escribirRealConstante(double d);
 
