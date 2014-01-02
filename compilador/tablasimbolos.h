@@ -59,8 +59,9 @@ private:
     Compilador* refCompilador;
     vector< map <string, Simbolo*>* > *simbolos;
     stack<Simbolo*> *pilaSimbolos;
-    stack<Tipo> *pilaTipos;
     stack<Simbolo*> *pilaValores;
+    stack<Tipo> *pilaTipos;
+
 
     Simbolo* contextoFuncion;
     bool retornoValidado;
