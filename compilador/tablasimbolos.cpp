@@ -3,9 +3,9 @@
 
 TablaSimbolos::TablaSimbolos(Compilador* c):
     pilaSimbolos(NULL),
+    pilaValores(NULL),
     pilaTipos(NULL),
-    contextoFuncion(NULL),
-    pilaValores(NULL)
+    contextoFuncion(NULL)
 {
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
@@ -126,7 +126,7 @@ void TablaSimbolos::borrarScope(void)
 
 /**
  * @brief TablaSimbolos::purgarTabla
- *        Reinicia todo
+ *        Elimina referencia de los simbolos, pero no libera memoria
  */
 void TablaSimbolos::purgarTabla(void)
 {
@@ -134,6 +134,13 @@ void TablaSimbolos::purgarTabla(void)
     simbolos->clear();
 }
 
+
+/**
+ * @brief TablaSimbolos::existeSimbolo busca en la tabla si existe el simbolo indicado
+ * @param buscable
+ * @param temp, mapa donde hacer la busqueda
+ * @return true si encontrado, falso en contra.
+ */
 bool TablaSimbolos::existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* temp) const
 {
     qDebug() << "Checando existencia de simbolo";
@@ -166,7 +173,11 @@ bool TablaSimbolos::existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* tem
     return false;
 }
 
-
+/**
+ * @brief TablaSimbolos::prepararPilas
+ *        Inicializa el contenido de las pilas, si contenian algo
+ *        son purgadas hasta quedar vacias
+ */
 void TablaSimbolos::prepararPilas(void)
 {
     qDebug() << "Preparando apilamiento";
@@ -188,6 +199,14 @@ void TablaSimbolos::prepararPilas(void)
     purgarPilas();
 }
 
+/**
+ * @brief TablaSimbolos::apilarSimbolo
+ *          Almacena temporalmente un nuevo simbolo como candidato a la tabla de simbolos
+ *          con el identificador dado
+ * @param identificador
+ * @param estaInicializado
+ * @return Referencia al simbolo generado
+ */
 Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializado)
 {
     qDebug() << "Apilando " << identificador.c_str();
@@ -204,6 +223,12 @@ Simbolo* TablaSimbolos::apilarSimbolo(string identificador, bool estaInicializad
     return s;
 }
 
+/**
+ * @brief TablaSimbolos::apilarValor
+ *          Apila temporalmente un simbolo existente para su posterior evaluacion
+ *          en expresiones
+ * @param s
+ */
 void TablaSimbolos::apilarValor(Simbolo* s)
 {
     if(s == NULL)
@@ -214,6 +239,12 @@ void TablaSimbolos::apilarValor(Simbolo* s)
     pilaValores->push(s);
 }
 
+
+/**
+ * @brief TablaSimbolos::desapilarValor
+ *          Extrae el simbolo en el tope de la pila de valores
+ * @return Simbolo extraido
+ */
 Simbolo* TablaSimbolos::desapilarValor(void)
 {
     if(pilaValores->empty())
@@ -230,6 +261,14 @@ Simbolo* TablaSimbolos::desapilarValor(void)
     return NULL;
 }
 
+/**
+ * @brief TablaSimbolos::almacenarPilaSimbolos
+ *          Se intentan guardar todos los simbolos apilados, aqui se chequea que no existan
+ *          si alguno ya está en la tabla es ignorado y reportado como erroneo
+ * @param tipo, Tipo de simbolo a almacenar
+ * @param esGlobal
+ * @return Un string que contiene una firma de los tipos almacenados
+ */
 string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo, bool esGlobal)
 {
     stringstream regresable;
@@ -257,11 +296,21 @@ string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo, bool esGlobal)
     return regresable.str();
 }
 
+/**
+ * @brief TablaSimbolos::apilarTipo
+ *          Apilar temporalmente el tipo de algun simbolo
+ * @param tipo
+ */
 void TablaSimbolos::apilarTipo(Tipo tipo)
 {
     pilaTipos->push(tipo);
 }
 
+/**
+ * @brief TablaSimbolos::desapilarTipo
+ *          Extrae el tipo en el tope de la pila de tipos
+ * @return
+ */
 Tipo TablaSimbolos::desapilarTipo(void)
 {
     if(pilaTipos->empty())
@@ -278,20 +327,10 @@ Tipo TablaSimbolos::desapilarTipo(void)
     return T_INVALIDO;
 }
 
-/*void TablaSimbolos::noEsEvaluable(void)
-{
-    //TODO;
-}*/
-
-/*void TablaSimbolos::checarValidezDeOperaciones(void)
-{
-    while(!pilaTipos->empty())
-    {
-        qDebug() << pilaTipos->top();
-        pilaTipos->pop();
-    }
-}*/
-
+/**
+ * @brief TablaSimbolos::purgarPilas
+ *          Libera la memoria de los simbolos asociados y vacía las pila
+ */
 void TablaSimbolos::purgarPilas(void)
 {
     qDebug() << "Purgando las pilas";
@@ -317,11 +356,23 @@ void TablaSimbolos::purgarPilas(void)
 
 }
 
+
+/**
+ * @brief TablaSimbolos::entrarContextoFuncion
+ *          Genera lo necesario para que una funcion tenga sus variables
+ *          locales validas en el bytecode, inicializa el tipo de retorno
+ *          como no definido
+ * @param funcion
+ */
 void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)
 {
     qDebug() << "Entrando en contexto funcion";
+
     //Un scope propio para las variables de la firma de funcion
     nuevoScope();
+
+    //El contador de variables locales se reinicia a 0
+    ManejadorClass::ObtenerInstancia()->resetearContadorLocalidades();
 
     retornoValidado = false;
     if(funcion != NULL)
@@ -330,6 +381,13 @@ void TablaSimbolos::entrarContextoFuncion(Simbolo* funcion)
     }
 }
 
+
+/**
+ * @brief TablaSimbolos::setFirmaFuncion
+ *          Al contexto de funcion actual le asigna la firma de metodo
+ *          obtenida en forma de cadena
+ * @param s
+ */
 void TablaSimbolos::setFirmaFuncion(const string& s)
 {
     if(contextoFuncion != NULL)
@@ -342,6 +400,12 @@ void TablaSimbolos::setFirmaFuncion(const string& s)
     }
 }
 
+
+/**
+ * @brief TablaSimbolos::setTipoRetornoFuncion
+ *          Especifica que valor retornara la funcion
+ * @param t
+ */
 void TablaSimbolos::setTipoRetornoFuncion(Tipo t)
 {
     if(contextoFuncion != NULL)
@@ -354,6 +418,12 @@ void TablaSimbolos::setTipoRetornoFuncion(Tipo t)
     }
 }
 
+/**
+ * @brief TablaSimbolos::getTipoRetornoFuncion
+ *          Al mandarse llamar marca que la funcion tuvo almenos
+ *          un retorno valido
+ * @return
+ */
 Tipo TablaSimbolos::getTipoRetornoFuncion(void)
 {
     retornoValidado = true;
@@ -366,6 +436,12 @@ Tipo TablaSimbolos::getTipoRetornoFuncion(void)
     return T_INVALIDO;
 }
 
+/**
+ * @brief TablaSimbolos::salirContextoFuncion
+ *          Elimina los Simbolos generados para la funcion
+ *          Verifica que la funcion retorne el valor que especifica
+ *          o no retorne nada, tambien nulifica el contexto de funcion
+ */
 void TablaSimbolos::salirContextoFuncion(void)
 {
     qDebug() << "saliendo scope de funcion";
