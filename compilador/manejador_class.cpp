@@ -2,7 +2,7 @@
 
 ManejadorClass* ManejadorClass::instancia = NULL;
 
-ManejadorClass::ManejadorClass():{}
+ManejadorClass::ManejadorClass(){}
 
 void ManejadorClass::Inicializar(void)
 {
@@ -54,8 +54,7 @@ void ManejadorClass::registrarVariableLocal(Simbolo* simbolo, int profundidad)
             switch(simbolo->getTipo())
             {
                 case T_REAL:
-                case T_CADENA:
-                    //Los doubles y cadenas toman 2 bytes del constant pool
+                    //Los doubles toman 2 bytes del constant pool
                     localidadesActuales += 2;
                     break;
                 default:
