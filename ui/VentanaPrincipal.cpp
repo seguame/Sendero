@@ -310,13 +310,13 @@ void VentanaPrincipal::crearWidgetsMovibles()
     menuVista->addAction(dock->toggleViewAction());
 
 
-    consola = new QConsoleWidget();
+    /*consola = new QConsoleWidget();
     dock = new QDockWidget(tr("Consola"), this);
     dock->setAllowedAreas(Qt::BottomDockWidgetArea);
     dock->setWidget(consola);
 
     addDockWidget(Qt::BottomDockWidgetArea, dock, Qt::Vertical);
-    menuVista->addAction(dock->toggleViewAction());
+    menuVista->addAction(dock->toggleViewAction());*/
 }
 
 void VentanaPrincipal::actualizarVistas()
