@@ -461,6 +461,11 @@ void ManejadorClass::escribirDivision(Tipo t)
     }
 }
 
+void ManejadorClass::escribirPotencia(void)
+{
+    aniadirInstruccion("    invokestatic", "java/lang/Math pow (DD)D");
+}
+
 void ManejadorClass::escribirModulo(Tipo t)
 {
     switch(t)

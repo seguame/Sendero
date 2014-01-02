@@ -2148,6 +2148,8 @@ void Compilador::expo (bool terminoOpcional)
             NuevoIzquierdo = operacionPotencia[derecho][izquierdo];
             tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
 
+            ManejadorClass::ObtenerInstancia()->escribirPotencia();
+
             //solo desapilamos uno, pues se supone se produce uno nuevo
             tablaDeSimbolos->desapilarValor();
         }
