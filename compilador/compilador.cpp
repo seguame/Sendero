@@ -2216,14 +2216,15 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
         }
 
 
-        tablaDeSimbolos->apilarValor(almacenadoTemporal);
-
         if(!evaluarDespues)
         {
             //cargar valor en pila del jvm
             ManejadorClass::ObtenerInstancia()->escribirValorConstante(almacenadoTemporal);
         }
 
+
+        //guadar simbolo para posterior uso en las operaciones
+        tablaDeSimbolos->apilarValor(almacenadoTemporal);
         tablaDeSimbolos->apilarTipo(almacenadoTemporal->getTipo());
 
         leerLexema();
@@ -2232,16 +2233,7 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
     }
     else if(token.compare(IDENTIFICADOR) == 0)
     {
-        //TODO, invertir valores de las variables
-
-
         Simbolo* temp = tablaDeSimbolos->buscarSimbolo(lexico);
-
-
-        //Como se estan usando datos variables, la expresion no
-        //puede ser evaluada en tiempo de compilacion
-        //Abandonado este aproach
-        //tablaDeSimbolos->noEsEvaluable();
 
         //Se apilan los simbolos asociados
         //para mantener coherencia entre las pilas de Valor y de Tipo
@@ -2263,7 +2255,6 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                     escribirError("La variable \"" + temp->getIdentificador() + "\" no esta inicializada");
                 }
 
-                tablaDeSimbolos->apilarValor(temp);
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
 
             }
@@ -2279,9 +2270,10 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
 
                 //Apilar el tipo de retorno de la funcion
                 tablaDeSimbolos->apilarTipo(retorno);
-                //aunque no tiene valor asociado, se apila para mantener coherencia
-                tablaDeSimbolos->apilarValor(temp);
             }
+
+            //almacenar simbolo para su posterior uso en las operaciones
+            tablaDeSimbolos->apilarValor(temp);
         }
 
         leerLexema();
