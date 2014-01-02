@@ -421,18 +421,6 @@ void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
     aniadirInstruccion(".field static public final", operando.str());
 }
 
-
-void ManejadorClass::escribirValorConstante(Simbolo* simbolo)
-{
-    if(simbolo->getIdentificador().compare("HOLDER") != 0) qDebug() << "valor constante viene de una variable";
-
-    switch(simbolo->getTipo())
-    {
-        case T_ENTERO: escribirEnteroConstante(simbolo->getValor<int>()); break;
-        default: qDebug() << "Valor aun no soportado en pila";
-    }
-}
-
 void ManejadorClass::escribirSuma(Tipo t)
 {
     switch(t)
@@ -510,6 +498,26 @@ void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
     else
     {
         escribirLlamadaVarGlobal(simbolo, almacenar);
+    }
+}
+
+void ManejadorClass::escribirValorConstante(Simbolo* simbolo)
+{
+    if(simbolo->getIdentificador().compare("HOLDER") != 0) qDebug() << "valor constante viene de una variable";
+
+    switch(simbolo->getTipo())
+    {
+        case T_ENTERO:
+            escribirEnteroConstante(simbolo->getValor<int>());
+            break;
+
+        case T_REAL:
+            escribirRealConstante(simbolo->getValor<double>());
+            break;
+
+        default:
+            qDebug() << "Valor aun no soportado en pila";
+            break;
     }
 }
 
