@@ -2091,6 +2091,14 @@ void Compilador::multi(bool terminoOpcional)
             NuevoIzquierdo = operacionMulti[derecho][izquierdo];
             tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
 
+
+            if(actual.compare("*") == 0)
+                ManejadorClass::ObtenerInstancia()->escribirMultiplicacion(NuevoIzquierdo);
+            else if(actual.compare("/") == 0)
+                ManejadorClass::ObtenerInstancia()->escribirDivision(NuevoIzquierdo);
+            else
+                ManejadorClass::ObtenerInstancia()->escribirModulo(NuevoIzquierdo);
+
             //solo desapilamos uno, pues se supone se produce uno nuevo
             tablaDeSimbolos->desapilarValor();
         }
