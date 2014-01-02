@@ -1985,6 +1985,8 @@ void Compilador::oprel(bool terminoOpcional)
             //las comparaciones dan de valor izquierdo un booleano
             tablaDeSimbolos->apilarTipo(T_BOOLEANO);
 
+            ManejadorClass::ObtenerInstancia()->escribirComparacion(actual, "DUMMY_ETK");
+
             //solo desapilamos uno, pues se supone se produce uno nuevo
             tablaDeSimbolos->desapilarValor();
         }
