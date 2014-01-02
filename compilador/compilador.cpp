@@ -1660,9 +1660,10 @@ bool Compilador::imprime(void)
         escribirError("Se esperaba apertura de parentesis");
 
     ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
-    bool esConstante = false;
+    bool esConstante;
     do
     {
+        esConstante = false;
         leerLexema();
         expr(false);
 
@@ -1855,6 +1856,9 @@ void Compilador::expr(bool terminoOpcional)
                escribirError("El valor a la izquierda del || no es de tipo Logico");
 
            tablaDeSimbolos->apilarTipo(T_BOOLEANO);
+
+           //solo desapilamos uno, pues se supone se produce uno nuevo
+           tablaDeSimbolos->desapilarValor();
         }
 
     }while(lexico.compare("||") == 0);
@@ -1897,6 +1901,9 @@ void Compilador::opy(bool terminoOpcional)
                escribirError("El valor a la izquierda del && no es de tipo Logico");
 
            tablaDeSimbolos->apilarTipo(T_BOOLEANO);
+
+           //solo desapilamos uno, pues se supone se produce uno nuevo
+           tablaDeSimbolos->desapilarValor();
         }
 
     }while(lexico.compare("&&") == 0);
@@ -1977,6 +1984,9 @@ void Compilador::oprel(bool terminoOpcional)
 
             //las comparaciones dan de valor izquierdo un booleano
             tablaDeSimbolos->apilarTipo(T_BOOLEANO);
+
+            //solo desapilamos uno, pues se supone se produce uno nuevo
+            tablaDeSimbolos->desapilarValor();
         }
 
 
@@ -2031,6 +2041,9 @@ void Compilador::suma(bool terminoOpcional)
                 ManejadorClass::ObtenerInstancia()->escribirSuma(NuevoIzquierdo);
             else
                 ManejadorClass::ObtenerInstancia()->escribirResta(NuevoIzquierdo);
+
+            //solo desapilamos uno, pues se supone se produce uno nuevo
+            tablaDeSimbolos->desapilarValor();
         }
 
     }while(lexico.compare("+") == 0 || lexico.compare("-") == 0);
@@ -2077,6 +2090,9 @@ void Compilador::multi(bool terminoOpcional)
             //Obtener el tipo de valor izquierdo y apilarlo
             NuevoIzquierdo = operacionMulti[derecho][izquierdo];
             tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
+
+            //solo desapilamos uno, pues se supone se produce uno nuevo
+            tablaDeSimbolos->desapilarValor();
         }
 
     }while(lexico.compare("*") == 0 || lexico.compare("/") == 0 || lexico.compare("%") == 0);
@@ -2123,6 +2139,9 @@ void Compilador::expo (bool terminoOpcional)
             //Obtener el tipo de valor izquierdo y apilarlo
             NuevoIzquierdo = operacionPotencia[derecho][izquierdo];
             tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
+
+            //solo desapilamos uno, pues se supone se produce uno nuevo
+            tablaDeSimbolos->desapilarValor();
         }
 
     }while(lexico.compare("^") == 0);
@@ -2168,7 +2187,7 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
         //Llegó un dato constante, determinar su tipo, valor y apilarlos
 
         Simbolo* almacenadoTemporal = new Simbolo("HOLDER");
-        almacenadoTemporal->setTemporal();
+        almacenadoTemporal->setTemporal()->setConstante();
 
         if(!obtenerTipoValorConstante(almacenadoTemporal))
         {
@@ -2178,15 +2197,17 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
         {
             switch(almacenadoTemporal->getTipo())
             {
-            case T_ENTERO:
-                almacenadoTemporal->setValor( -1 * (almacenadoTemporal->getValor<int>() ));
-                break;
-            case T_REAL:
-                almacenadoTemporal->setValor(-1 * (almacenadoTemporal->getValor<double>() ));
-                break;
-            default:
-                escribirError("Aplicando valor inverso a tipo de dato no compatible");
-                break;
+                case T_ENTERO:
+                    almacenadoTemporal->setValor( -1 * (almacenadoTemporal->getValor<int>() ));
+                    break;
+
+                case T_REAL:
+                    almacenadoTemporal->setValor( -1 * (almacenadoTemporal->getValor<double>() ));
+                    break;
+
+                default:
+                    escribirError("Aplicando valor inverso a tipo de dato no compatible");
+                    break;
             }
         }
 
@@ -2247,17 +2268,15 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
 
                 Tipo retorno = temp->getTipoRetorno();
 
-                if(retorno != T_INVALIDO)
-                {
-                    tablaDeSimbolos->apilarValor(temp);
-                }
-                else
+                if(retorno == T_INVALIDO)
                 {
                     escribirError("La funcion no retorna valor");
                 }
 
                 //Apilar el tipo de retorno de la funcion
                 tablaDeSimbolos->apilarTipo(retorno);
+                //aunque no tiene valor asociado, se apila para mantener coherencia
+                tablaDeSimbolos->apilarValor(temp);
             }
         }
 
@@ -2320,8 +2339,9 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
         return;
     }
 
-
-    tablaDeSimbolos->apilarTipo(T_INVALIDO); //dummy, si no hay terminos, se apila un invalido
+    // si no hay terminos, se apila un invalido
+    tablaDeSimbolos->apilarValor(new Simbolo("Dummy"));
+    tablaDeSimbolos->apilarTipo(T_INVALIDO);
 }
 
 bool Compilador::obtenerTipoValorConstante(Simbolo* simb)
