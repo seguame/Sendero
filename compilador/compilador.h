@@ -59,9 +59,13 @@ class Compilador
         unsigned int _lineaActual;
         unsigned int _columnaActual;
 
+        //Bandera de control para las 2 librerias realmente requeridas
         bool fmtDefinido;
         bool conDefinido;
 
+        //Esta bandera controla el modo de declaracion de variables,
+        //las globales y constantes se acomodan distinto y por tanto
+        //no deben ser parseadas al jvm del mismo modo
         bool evaluarDespues;
 
 
