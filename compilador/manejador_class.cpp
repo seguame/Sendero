@@ -760,7 +760,14 @@ void ManejadorClass::escribirArchivoParaEnsamblar(const string& ruta)
 
     for(vector<pair<string,string> >::size_type i = 0; i != instrucciones.size(); ++i)
     {
-        archivo << instrucciones[i].first << " " << instrucciones[i].second << std::endl;
+        archivo << instrucciones[i].first;
+
+        if(instrucciones[i].second.compare("") != 0)
+        {
+            archivo << " " << instrucciones[i].second;
+        }
+
+        archivo << endl;
     }
 
     qDebug() << "Archivo bytecode escrito";
