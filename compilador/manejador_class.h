@@ -42,8 +42,10 @@ public:
     void escribirModulo(Tipo t);
     void escribirPotencia(void);
     void escribirInvertirValor(Tipo t);
+    void escribirComparacion(string operando);
     void escribirEnteroConstante(int i);
     void escribirRealConstante(double d);
+
 
     void aniadirInstruccion(const string& operacion,const string& parametro);
 

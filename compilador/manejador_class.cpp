@@ -486,6 +486,22 @@ void ManejadorClass::escribirInvertirValor(Tipo t)
     }
 }
 
+void ManejadorClass::escribirComparacion(string operando, string etiqueta)
+{
+    if(operando.compare(">") == 0)
+        aniadirInstruccion("    if_icmpgt", etiqueta);
+    else if(operando.compare("<") == 0)
+        aniadirInstruccion("    if_icmplt", etiqueta);
+    else if(operando.compare(">=") == 0)
+        aniadirInstruccion("    if_icmpge", etiqueta);
+    else if(operando.compare("<=") == 0)
+        aniadirInstruccion("    if_icmple", etiqueta);
+    else if(operando.compare("==") == 0)
+        aniadirInstruccion("    if_icmpeq", etiqueta);
+    else if(operando.compare("!=") == 0)
+        aniadirInstruccion("    if_icmpne", etiqueta);
+}
+
 void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
 {
     bool esGlobal = false;
