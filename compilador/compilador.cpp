@@ -1634,6 +1634,7 @@ bool Compilador::imprime(void)
 {
     qDebug() << "imprime";
     bool conSalto = false;
+    stringstream imprimible;
 
     leerLexema();
 
@@ -1663,55 +1664,59 @@ bool Compilador::imprime(void)
     bool esConstante;
     do
     {
+        imprimible.str(std::string());
         esConstante = false;
         leerLexema();
         expr(false);
 
         Simbolo* sActual = tablaDeSimbolos->desapilarValor();
         Tipo tActual = tablaDeSimbolos->desapilarTipo();
-        stringstream imprimible;
 
-        if(sActual->esTemporal())
+        if(sActual != NULL)
         {
-            esConstante = true;
 
-            switch(tActual)
+            if(sActual->esTemporal())
             {
-                case T_ENTERO:
-                    imprimible << sActual->getValor<int>();
-                    break;
-                case T_REAL:
-                    imprimible << sActual->getValor<double>();
-                    break;
-                case T_BOOLEANO:
+                esConstante = true;
 
-                    if(sActual->getValor<bool>())
-                    {
-                        imprimible << "\"Verdadero\"";
-                    }
-                    else
-                    {
-                        imprimible << "\"Falso\"";
-                    }
-                    break;
-                case T_CADENA:
-                    imprimible << (sActual->getValor<string>());
-                    break;
-                case T_CARACTER:
-                    imprimible << sActual->getValor<char>();
-                    break;
-                default:
-                    imprimible << "\"NULO\"";
-                    break;
+                switch(tActual)
+                {
+                    case T_ENTERO:
+                        imprimible << sActual->getValor<int>();
+                        break;
+                    case T_REAL:
+                        imprimible << sActual->getValor<double>();
+                        break;
+                    case T_BOOLEANO:
+
+                        if(sActual->getValor<bool>())
+                        {
+                            imprimible << "\"Verdadero\"";
+                        }
+                        else
+                        {
+                            imprimible << "\"Falso\"";
+                        }
+                        break;
+                    case T_CADENA:
+                        imprimible << (sActual->getValor<string>());
+                        break;
+                    case T_CARACTER:
+                        imprimible << sActual->getValor<char>();
+                        break;
+                    default:
+                        imprimible << "\"NULO\"";
+                        break;
+                }
             }
+
+            ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(imprimible.str(), sActual, tActual, esConstante);
+
+            if(sActual->esTemporal()) delete sActual;
+
+            ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
+
         }
-
-        ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(imprimible.str(), sActual, tActual, esConstante);
-
-        if(sActual->esTemporal()) delete sActual;
-
-        ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
-
     }while(lexico.compare(",") == 0);
 
     if(conSalto)
