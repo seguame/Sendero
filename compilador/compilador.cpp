@@ -178,7 +178,10 @@ void Compilador::hacerAnalisisSintactico(void)
     ManejadorClass::ObtenerInstancia()->escribirArchivoParaEnsamblar(_rutaAlArchivo+"/"+_nombreArchivo);
 
 
-    ManejadorClass::Ensamblar(_rutaAlArchivo, _nombreArchivo);
+    if(ReportadorErrores::ObtenerInstancia()->getCantidadErrores() == 0)
+    {
+        ManejadorClass::Ensamblar(_rutaAlArchivo, _nombreArchivo);
+    }
 }
 
 void Compilador::saltarLineasEnBlanco(void)

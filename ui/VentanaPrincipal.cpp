@@ -135,13 +135,11 @@ void VentanaPrincipal::compilar()
 
         if(ReportadorErrores::ObtenerInstancia()->getCantidadErrores() == 0)
         {
-            qDebug() << "Se generara bytecode";
-            //Escribir el bytecode
-
+            this->setStatusTip(tr("Archivo compilado correctamente"));
         }
         else
         {
-            qDebug() << "No se generara bytecode";
+            this->setStatusTip(tr("Existieron errores y no se compilo el programa"));
         }
 
         ManejadorClass::Terminar();
