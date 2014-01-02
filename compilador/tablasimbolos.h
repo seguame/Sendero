@@ -51,6 +51,10 @@ public:
     Tipo getTipoRetornoFuncion(void);
     void salirContextoFuncion(void);
 
+    void entrarContextoCondicional(void);
+    string getEtiquetaActual(void);
+    void salirContextoCondicional(void);
+
 
 private:
     bool existeSimbolo(Simbolo* buscable, map <string, Simbolo*>* temp) const;
@@ -58,6 +62,7 @@ private:
 private:
     Compilador* refCompilador;
     vector< map <string, Simbolo*>* > *simbolos;
+    vector<string> etiquetas;
     stack<Simbolo*> *pilaSimbolos;
     stack<Simbolo*> *pilaValores;
     stack<Tipo> *pilaTipos;

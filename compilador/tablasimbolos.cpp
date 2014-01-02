@@ -467,3 +467,22 @@ void TablaSimbolos::salirContextoFuncion(void)
     }
 
 }
+
+void TablaSimbolos::entrarContextoCondicional(void)
+{
+    stringstream etq;
+
+    etq << "ET_" << etiquetas.size();
+
+    etiquetas.push_back(etq.str());
+}
+
+string TablaSimbolos::getEtiquetaActual(void)
+{
+    return etiquetas.at(etiquetas.size() - 1);
+}
+
+void TablaSimbolos::salirContextoCondicional(void)
+{
+    etiquetas.pop_back();
+}
