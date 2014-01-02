@@ -2184,6 +2184,8 @@ void Compilador::signo (bool terminoOpcional)
        if(derecho != T_ENTERO && derecho != T_REAL)
            escribirError("El valor a la derecha del - no es de tipo Entero o Real");
 
+       ManejadorClass::ObtenerInstancia()->escribirInvertirValor(derecho);
+
        //su tipo no cambia, se reapila
        tablaDeSimbolos->apilarTipo(derecho);
     }
@@ -2205,19 +2207,9 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
         }
         else if(invertirValor)
         {
-            switch(almacenadoTemporal->getTipo())
+            if(almacenadoTemporal->getTipo() != T_ENTERO && almacenadoTemporal->getTipo() != T_REAL)
             {
-                case T_ENTERO:
-                    almacenadoTemporal->setValor( -1 * (almacenadoTemporal->getValor<int>() ));
-                    break;
-
-                case T_REAL:
-                    almacenadoTemporal->setValor( -1 * (almacenadoTemporal->getValor<double>() ));
-                    break;
-
-                default:
-                    escribirError("Aplicando valor inverso a tipo de dato no compatible");
-                    break;
+                escribirError("Aplicando valor inverso a tipo de dato no compatible");
             }
         }
 

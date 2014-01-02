@@ -476,6 +476,16 @@ void ManejadorClass::escribirModulo(Tipo t)
     }
 }
 
+void ManejadorClass::escribirInvertirValor(Tipo t)
+{
+    switch(t)
+    {
+        case T_ENTERO: aniadirInstruccion("    ineg", ""); break;
+        case T_REAL: aniadirInstruccion("    dneg", ""); break;
+        default: qDebug() << "Inversion de valor de tipos no soportada " << t;
+    }
+}
+
 void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
 {
     bool esGlobal = false;

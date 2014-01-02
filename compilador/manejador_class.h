@@ -41,6 +41,7 @@ public:
     void escribirDivision(Tipo t);
     void escribirModulo(Tipo t);
     void escribirPotencia(void);
+    void escribirInvertirValor(Tipo t);
     void escribirEnteroConstante(int i);
     void escribirRealConstante(double d);
 
