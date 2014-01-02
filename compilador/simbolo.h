@@ -89,13 +89,6 @@ class Simbolo
                 _inicializado = true;
             }
 
-            /*if(_ptr != NULL)
-            {
-                delete _ptr;
-                _ptr = NULL;
-            }
-            _ptr = new dato<T>(valor);*/
-
             if(_ptr != NULL)
             {
                 if(strcmp(typeid(valor).name(), (typeid(string*).name())) == 0)
@@ -107,10 +100,22 @@ class Simbolo
                 }
                 else
                 {
-                    qDebug() << "reasignacion";
-                    dynamic_cast<dato<T>&>(*this->_ptr)._valor = valor;
 
+                    qDebug() << "reasignacion";
+                    try
+                    {
+                        dynamic_cast<dato<T>&>(*this->_ptr)._valor = valor;
+                    }
+                    catch (bad_alloc ba)
+                    {
+                        qDebug() << "Cambio total de dato, regenerando";
+                        delete _ptr;
+                        _ptr = NULL;
+                        _ptr = new dato<T>(valor);
+                    }
                 }
+
+                //TODO: Cambiar el tipo de dato segun se asigne
             }
             else
             {
