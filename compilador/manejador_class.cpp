@@ -793,6 +793,11 @@ void ManejadorClass::escribirRealConstante(double d)
     aniadirInstruccion(operador.str(), operando.str());
 }
 
+void ManejadorClass::escribirCastingDouble(void)
+{
+    aniadirInstruccion("    i2d", "");
+}
+
 void ManejadorClass::escribirArchivoParaEnsamblar(const string& ruta)
 {
     archivo.open((ruta+".bytecode").c_str());
