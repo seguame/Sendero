@@ -1187,12 +1187,16 @@ void Compilador::asigna (void)
         {
             ManejadorClass::ObtenerInstancia()->escribirCastingDouble();
         }
-        //variables no dimensionadas se ponen despues de toda la carga de la expr
+        //variables no dimensionadas se llaman despues de toda la carga de la expr
         //las dimensionadas, antes
         if(temp->getCantidadDimensiones() == 0)
         {
             ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, true);
-
+        }
+        else
+        {
+            //se cargara a las referencias el valor a asignar
+            ManejadorClass::ObtenerInstancia()->escribirGuardarEnReferencia(buscado);
         }
         /*Simbolo* varTemp = tablaDeSimbolos->desapilarValor();
 
