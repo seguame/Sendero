@@ -760,27 +760,23 @@ void ManejadorClass::escribirEnteroConstante(int i)
         stringstream operando;
 
         operador << "    ";
-        operando << "";
+        operando << i;
 
         if(i >= 0 && i <= 5)
         {
             operador << "iconst_";
-            operador << i;
         }
         else if(i >= -128 && i <= 127)
         {
             operador << "bipush";
-            operando << i;
         }
         else if(i >= -32768 && i <= 32767)
         {
             operador << "sipush";
-            operando << i;
         }
         else
         {
-            operador << "OVERFLOW";
-            qDebug() << "Valor entero muy grande, no implementado";
+            operador << "ldc_w";
         }
 
         aniadirInstruccion(operador.str(), operando.str());
