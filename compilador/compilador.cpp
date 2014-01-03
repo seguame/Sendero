@@ -1386,6 +1386,7 @@ string Compilador::vparam(void)
         leerLexema();
         expr(opcional);
 
+        tablaDeSimbolos->desapilarValor();
         paramObtenidos << tablaDeSimbolos->desapilarTipo();
 
     }while(lexico.compare(",") == 0);
@@ -1684,7 +1685,7 @@ bool Compilador::imprime(void)
         if(sActual != NULL)
         {
 
-            if(sActual->esTemporal())
+            /*if(sActual->esTemporal())
             {
                 esConstante = true;
 
@@ -1717,7 +1718,7 @@ bool Compilador::imprime(void)
                         imprimible << "\"NULO\"";
                         break;
                 }
-            }
+            }*/
 
             ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(imprimible.str(), sActual, tActual, esConstante);
 
