@@ -348,6 +348,10 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto, Simbolo* s, 
         llamada << "(C)V";
         break;
 
+    case T_BOOLEANO:
+        llamada << "(Z)V";
+        break;
+
     case T_FUNCION:
         switch(s->getTipoRetorno())
         {
@@ -373,7 +377,6 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto, Simbolo* s, 
 
     case T_CADENA:
     case T_INVALIDO:
-    case T_BOOLEANO:
         llamada << "(Ljava/lang/Object;)V";
         break;
     }
@@ -591,6 +594,14 @@ void ManejadorClass::escribirValorConstante(Simbolo* simbolo)
             escribirEnteroConstante(simbolo->getValor<int>());
             break;
 
+        case T_CARACTER:
+            escribirEnteroConstante(simbolo->getValor<char>());
+            break;
+
+        case T_BOOLEANO:
+            escribirEnteroConstante(simbolo->getValor<bool>());
+            break;
+
         case T_REAL:
             escribirRealConstante(simbolo->getValor<double>());
             break;
@@ -600,7 +611,7 @@ void ManejadorClass::escribirValorConstante(Simbolo* simbolo)
             break;
 
         default:
-            qDebug() << "Valor aun no soportado en pila";
+            qDebug() << "Valor no soportado en pila";
             break;
     }
 }
@@ -760,23 +771,27 @@ void ManejadorClass::escribirEnteroConstante(int i)
         stringstream operando;
 
         operador << "    ";
-        operando << i;
+        operando << "";
 
         if(i >= 0 && i <= 5)
         {
             operador << "iconst_";
+            operador << i;
         }
         else if(i >= -128 && i <= 127)
         {
             operador << "bipush";
+            operando << i;
         }
         else if(i >= -32768 && i <= 32767)
         {
             operador << "sipush";
+            operando << i;
         }
         else
         {
             operador << "ldc_w";
+            operando << i;
         }
 
         aniadirInstruccion(operador.str(), operando.str());
