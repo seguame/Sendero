@@ -46,6 +46,7 @@ public:
     void escribirComparacion(string operando, string etiqueta);
     void escribirEnteroConstante(int i);
     void escribirRealConstante(double d);
+    void escribirStringConstante(const string& s);
     void escribirCastingDouble(void);
 
 

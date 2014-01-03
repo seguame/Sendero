@@ -311,11 +311,11 @@ void ManejadorClass::escribirImpresionLNPantalla(const string& texto)
 
 void ManejadorClass::escribirImpresionPantalla(const string& texto, Simbolo* s, Tipo t, bool esConstante)
 {
-    if(esConstante)
+    /*if(esConstante)
     {
         switch(t)
         {
-        case T_CADENA:
+        //case T_CADENA:
         case T_INVALIDO:
         case T_BOOLEANO:
             aniadirInstruccion("    ldc", texto);
@@ -328,7 +328,7 @@ void ManejadorClass::escribirImpresionPantalla(const string& texto, Simbolo* s, 
             break;
         default: break;
         }
-    }
+    }*/
 
     stringstream llamada;
 
@@ -595,6 +595,10 @@ void ManejadorClass::escribirValorConstante(Simbolo* simbolo)
             escribirRealConstante(simbolo->getValor<double>());
             break;
 
+        case T_CADENA:
+            escribirStringConstante(simbolo->getValor<string>());
+            break;
+
         default:
             qDebug() << "Valor aun no soportado en pila";
             break;
@@ -670,6 +674,7 @@ void ManejadorClass::escribirLlamadaVariableReal(int posStack, bool almacenar)
 
     aniadirInstruccion(operador.str(), operando.str());
 }
+
 
 void ManejadorClass::escribirLlamadaVariableAlfabetico(int posStack, bool almacenar)
 {
@@ -774,7 +779,7 @@ void ManejadorClass::escribirEnteroConstante(int i)
         }
         else
         {
-            operador << "ERRORENTERO";
+            operador << "OVERFLOW";
             qDebug() << "Valor entero muy grande, no implementado";
         }
 
@@ -791,6 +796,11 @@ void ManejadorClass::escribirRealConstante(double d)
     operando << d;
 
     aniadirInstruccion(operador.str(), operando.str());
+}
+
+void ManejadorClass::escribirStringConstante(const string& s)
+{
+    aniadirInstruccion("    ldc", s);
 }
 
 void ManejadorClass::escribirCastingDouble(void)
