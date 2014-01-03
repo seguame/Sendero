@@ -36,6 +36,7 @@ public:
     void escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar);
     void escribirLlamadaVariable(Simbolo* simbolo, bool almacenar);
     void escribirValorConstante(Simbolo* simbolo);
+    void escribirGuardarEnReferencia(Tipo t);
     void escribirSuma(Tipo t);
     void escribirResta(Tipo t);
     void escribirMultiplicacion(Tipo t);

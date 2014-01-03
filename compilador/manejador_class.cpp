@@ -443,6 +443,31 @@ void ManejadorClass::escribirDeclararConstante(Simbolo* simbolo)
     aniadirInstruccion(".field static public final", operando.str());
 }
 
+void ManejadorClass::escribirGuardarEnReferencia(Tipo t)
+{
+    switch(t)
+    {
+        case T_ENTERO:
+            aniadirInstruccion("    iastore","");
+            break;
+        case T_REAL:
+            aniadirInstruccion("    dastore","");
+            break;
+        case T_CADENA:
+            aniadirInstruccion("    aastore","");
+            break;
+        case T_CARACTER:
+            aniadirInstruccion("    castore","");
+            break;
+        case T_BOOLEANO:
+            aniadirInstruccion("    bastore","");
+            break;
+        default:
+            qDebug() << "Referencia de tipo nulo";
+            break;
+    }
+}
+
 void ManejadorClass::escribirSuma(Tipo t)
 {
     switch(t)
