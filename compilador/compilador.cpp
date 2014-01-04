@@ -1479,8 +1479,6 @@ bool Compilador::desde(void)
 
     }while(lexico.compare(",") == 0);
 
-    //if(lexico.compare(";") != 0)
-    //    escribirError("Se esperaba delimitador de zona de incrementos");
 
     bloque();
     leerLexema();
