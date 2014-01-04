@@ -310,27 +310,8 @@ void ManejadorClass::escribirImpresionLNPantalla(const string& texto)
     aniadirInstruccion("    invokevirtual", "java/io/PrintStream println (Ljava/lang/Object;)V");
 }
 
-void ManejadorClass::escribirImpresionPantalla(const string& texto, Simbolo* s, Tipo t, bool esConstante)
+void ManejadorClass::escribirImpresionPantalla(Simbolo* s, Tipo t)
 {
-    /*if(esConstante)
-    {
-        switch(t)
-        {
-        //case T_CADENA:
-        case T_INVALIDO:
-        case T_BOOLEANO:
-            aniadirInstruccion("    ldc", texto);
-            break;
-        case T_ENTERO:
-            escribirEnteroConstante(s->getValor<int>());
-            break;
-        case T_REAL:
-            escribirRealConstante(s->getValor<double>());
-            break;
-        default: break;
-        }
-    }*/
-
     stringstream llamada;
 
     llamada << "java/io/PrintStream print ";
