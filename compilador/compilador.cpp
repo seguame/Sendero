@@ -2274,6 +2274,12 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                     escribirError("La variable \"" + temp->getIdentificador() + "\" no esta inicializada");
                 }
 
+                //si es dimensionada se debe cargar antes que sus dimensiones
+                if(temp->getCantidadDimensiones() > 0)
+                {
+                    ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+                }
+
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
 
             }
@@ -2330,8 +2336,16 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                     dimension(temp, true);
 
 
-                    //poner identificador para obtener su valor asociado
-                    ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+                    if(temp->getCantidadDimensiones() == 0)
+                    {
+                        //poner identificador para obtener su valor asociado
+                        ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+                    }
+                    else
+                    {
+                        //se cargara a las referencias el valor a asignar
+                        ManejadorClass::ObtenerInstancia()->escribirCargarReferencia(temp->getTipo());
+                    }
                 }
             }
         }
