@@ -468,6 +468,31 @@ void ManejadorClass::escribirGuardarEnReferencia(Tipo t)
     }
 }
 
+void ManejadorClass::escribirCargarReferencia(Tipo t)
+{
+    switch(t)
+    {
+        case T_ENTERO:
+            aniadirInstruccion("    iaload","");
+            break;
+        case T_REAL:
+            aniadirInstruccion("    daload","");
+            break;
+        case T_CADENA:
+            aniadirInstruccion("    aaload","");
+            break;
+        case T_CARACTER:
+            aniadirInstruccion("    caload","");
+            break;
+        case T_BOOLEANO:
+            aniadirInstruccion("    baload","");
+            break;
+        default:
+            qDebug() << "Referencia de tipo nulo";
+            break;
+    }
+}
+
 void ManejadorClass::escribirSuma(Tipo t)
 {
     switch(t)
