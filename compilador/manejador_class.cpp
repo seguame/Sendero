@@ -856,6 +856,12 @@ void ManejadorClass::escribirRealConstante(double d)
     operador << "    ldc2_w";
     operando << d;
 
+    //evitar que se almacene como entero
+    if((fmod(d,1.0)) == 0.0)
+    {
+        operando << ".0";
+    }
+
     aniadirInstruccion(operador.str(), operando.str());
 }
 
