@@ -1683,10 +1683,11 @@ bool Compilador::imprime(void)
     if(lexico.compare("(") != 0)
         escribirError("Se esperaba apertura de parentesis");
 
-    ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
     bool esConstante;
     do
     {
+        ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
+
         imprimible.str(std::string());
         esConstante = false;
         leerLexema();
@@ -1737,7 +1738,6 @@ bool Compilador::imprime(void)
 
             if(sActual->esTemporal()) delete sActual;
 
-            ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
 
         }
     }while(lexico.compare(",") == 0);
