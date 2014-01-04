@@ -23,7 +23,7 @@ public:
 
     void prepararImpresionPantalla(void);
     void escribirImpresionLNPantalla(const string& texto);
-    void escribirImpresionPantalla(const string& texto, Simbolo* s, Tipo t, bool esConstante);
+    void escribirImpresionPantalla(Simbolo* s, Tipo t);
 
     void escribirLeerDato(Simbolo* simbolo);
 
