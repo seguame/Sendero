@@ -468,7 +468,7 @@ void TablaSimbolos::salirContextoFuncion(void)
 
 }
 
-void TablaSimbolos::entrarContextoCondicional(void)
+string TablaSimbolos::generarEtiqueta(void)
 {
     stringstream etq;
 
@@ -482,7 +482,7 @@ string TablaSimbolos::getEtiquetaActual(void)
     return etiquetas.at(etiquetas.size() - 1);
 }
 
-void TablaSimbolos::salirContextoCondicional(void)
+void TablaSimbolos::eliminarUltimaEtiqueta(void)
 {
     etiquetas.pop_back();
 }

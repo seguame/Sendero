@@ -51,9 +51,9 @@ public:
     Tipo getTipoRetornoFuncion(void);
     void salirContextoFuncion(void);
 
-    void entrarContextoCondicional(void);
+    string generarEtiqueta(void);
     string getEtiquetaActual(void);
-    void salirContextoCondicional(void);
+    void eliminarUltimaEtiqueta(void);
 
 
 private:
