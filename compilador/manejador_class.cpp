@@ -251,6 +251,7 @@ void ManejadorClass::escribirFinMetodo(Simbolo* funcion)
 
     aniadirInstruccion(retorno, "");
     aniadirInstruccion(".end", "method");
+    aniadirInstruccion("", "");
 }
 
 void ManejadorClass::aniadirInstruccion(const string& operacion,const string& parametro)
@@ -894,7 +895,10 @@ void ManejadorClass::escribirArchivoParaEnsamblar(const string& ruta)
 
     for(vector<pair<string,string> >::size_type i = 0; i != instrucciones.size(); ++i)
     {
-        archivo << instrucciones[i].first;
+        if(instrucciones[i].first.compare("") != 0)
+        {
+            archivo << instrucciones[i].first;
+        }
 
         if(instrucciones[i].second.compare("") != 0)
         {
