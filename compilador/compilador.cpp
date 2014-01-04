@@ -1683,13 +1683,9 @@ bool Compilador::imprime(void)
     if(lexico.compare("(") != 0)
         escribirError("Se esperaba apertura de parentesis");
 
-    bool esConstante;
     do
     {
         ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
-
-        imprimible.str(std::string());
-        esConstante = false;
         leerLexema();
         expr(false);
 
@@ -1698,48 +1694,11 @@ bool Compilador::imprime(void)
 
         if(sActual != NULL)
         {
-
-            /*if(sActual->esTemporal())
-            {
-                esConstante = true;
-
-                switch(tActual)
-                {
-                    case T_ENTERO:
-                        imprimible << sActual->getValor<int>();
-                        break;
-                    case T_REAL:
-                        imprimible << sActual->getValor<double>();
-                        break;
-                    case T_BOOLEANO:
-
-                        if(sActual->getValor<bool>())
-                        {
-                            imprimible << "\"Verdadero\"";
-                        }
-                        else
-                        {
-                            imprimible << "\"Falso\"";
-                        }
-                        break;
-                    case T_CADENA:
-                        imprimible << (sActual->getValor<string>());
-                        break;
-                    case T_CARACTER:
-                        imprimible << sActual->getValor<char>();
-                        break;
-                    default:
-                        imprimible << "\"NULO\"";
-                        break;
-                }
-            }*/
-
-            ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(imprimible.str(), sActual, tActual, esConstante);
+            ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(sActual, tActual);
 
             if(sActual->esTemporal()) delete sActual;
-
-
         }
+
     }while(lexico.compare(",") == 0);
 
     if(conSalto)
