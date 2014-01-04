@@ -305,6 +305,7 @@ void ManejadorClass::prepararImpresionPantalla(void)
 
 void ManejadorClass::escribirImpresionLNPantalla(const string& texto)
 {
+    aniadirInstruccion("    getstatic", "java/lang/System out Ljava/io/PrintStream;");
     aniadirInstruccion("    ldc", texto);
     aniadirInstruccion("    invokevirtual", "java/io/PrintStream println (Ljava/lang/Object;)V");
 }
