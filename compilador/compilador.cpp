@@ -1402,6 +1402,9 @@ bool Compilador::si(void)
 {
     qDebug() << "si";
 
+
+    string etq_si = tablaDeSimbolos->generarEtiqueta();
+    tablaDeSimbolos->generarEtiqueta();
     leerLexema();
     expr(false);
 
@@ -1415,13 +1418,19 @@ bool Compilador::si(void)
 
     leerLexema();
 
+    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_si);
+
     if(lexico.compare("sino") == 0)
     {
+        ManejadorClass::ObtenerInstancia()->escribirEtiqueta(tablaDeSimbolos->getEtiquetaActual());
+        tablaDeSimbolos->eliminarUltimaEtiqueta();
         leerLexema();
         bloque();
         leerLexema();
     }
 
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_si);
+    tablaDeSimbolos->eliminarUltimaEtiqueta();
     return true;
 }
 
@@ -2004,7 +2013,7 @@ void Compilador::oprel(bool terminoOpcional)
             //las comparaciones dan de valor izquierdo un booleano
             tablaDeSimbolos->apilarTipo(T_BOOLEANO);
 
-            ManejadorClass::ObtenerInstancia()->escribirComparacion(actual, "DUMMY_ETK");
+            ManejadorClass::ObtenerInstancia()->escribirComparacion(actual, tablaDeSimbolos->getEtiquetaActual());
 
             //solo desapilamos uno, pues se supone se produce uno nuevo
             tablaDeSimbolos->desapilarValor();
