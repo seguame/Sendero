@@ -1485,6 +1485,8 @@ bool Compilador::desde(void)
     bloque();
     leerLexema();
 
+
+
     return true;
 }
 
@@ -1992,11 +1994,8 @@ void Compilador::suma(bool terminoOpcional)
 
     do
     {
-        if(lexico.compare("+") == 0 || lexico.compare("-") == 0)
+        if((lexico.compare("+") == 0 || lexico.compare("-") == 0) && !primeraPasada)
         {
-            if(primeraPasada)
-                escribirError("Se esperaba un termino antes del simbolo");
-
             actual = lexico;
             hayOperacion = true;
             leerLexema();
