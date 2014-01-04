@@ -22,7 +22,7 @@ public:
 	CRedirect();
 	~CRedirect();
 
-        bool StartChildProcess(bool bShowChildWindow = FALSE);
+        bool StartChildProcess();
         bool IsChildRunning() const;
 	void TerminateChildProcess();
         void WriteChildStdIn(QString szInput);

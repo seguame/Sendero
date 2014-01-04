@@ -23,7 +23,7 @@ QConsoleWidget::QConsoleWidget(QWidget *parent) : QTextEdit(parent)
     connect(redirect, SIGNAL(OnChildStdErrWrite(QString)), this, SLOT(OnChildStdErrWrite(QString)));
     connect(redirect, SIGNAL(OnChildTerminate()), this, SLOT(OnChildTerminate()));
 
-    redirect->StartChildProcess(false);
+    redirect->StartChildProcess();
 }
 
 QConsoleWidget::~QConsoleWidget()

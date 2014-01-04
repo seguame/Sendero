@@ -19,7 +19,7 @@ CRedirect::~CRedirect()
     TerminateChildProcess();
 }
 
-bool CRedirect::StartChildProcess(bool bShowChildWindow)
+bool CRedirect::StartChildProcess()
 {
     process = new QProcess();
     process->setProcessChannelMode(QProcess::MergedChannels);

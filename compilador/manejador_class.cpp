@@ -318,49 +318,56 @@ void ManejadorClass::escribirImpresionPantalla(Simbolo* s, Tipo t)
 
     switch(t)
     {
-    case T_ENTERO:
-        llamada << "(I)V";
-        break;
+        case T_ENTERO:
+            llamada << "(I)V";
+            break;
 
-    case T_REAL:
-        llamada << "(D)V";
-        break;
+        case T_REAL:
+            llamada << "(D)V";
+            break;
 
-    case T_CARACTER:
-        llamada << "(C)V";
-        break;
+        case T_CARACTER:
+            llamada << "(C)V";
+            break;
 
-    case T_BOOLEANO:
-        llamada << "(Z)V";
-        break;
+        case T_BOOLEANO:
+            llamada << "(Z)V";
+            break;
 
-    case T_FUNCION:
-        switch(s->getTipoRetorno())
-        {
-            case T_ENTERO:
-                llamada << "(I)V";
-                break;
+        case T_FUNCION:
+            switch(s->getTipoRetorno())
+            {
+                case T_ENTERO:
+                    llamada << "(I)V";
+                    break;
 
-            case T_REAL:
-                llamada << "(D)V";
-                break;
+                case T_REAL:
+                    llamada << "(D)V";
+                    break;
 
-            case T_CARACTER:
-                llamada << "(C)V";
-                break;
+                case T_CARACTER:
+                    llamada << "(C)V";
+                    break;
 
-            case T_CADENA:
-            case T_INVALIDO: //"NULL"
-            case T_BOOLEANO: //"Verdadero" | "Falso"
-                llamada << "(Ljava/lang/Object;)V";
-                break;
-        }
-        break;
+                case T_CADENA:
+                case T_INVALIDO: //"NULL"
+                case T_BOOLEANO: //"Verdadero" | "Falso"
+                    llamada << "(Ljava/lang/Object;)V";
+                    break;
 
-    case T_CADENA:
-    case T_INVALIDO:
-        llamada << "(Ljava/lang/Object;)V";
-        break;
+                default:
+                    qDebug() << "Llamada a imprimir a una funcion que no retorna nada";
+                    break;
+            }
+            break;
+
+        case T_CADENA:
+        case T_INVALIDO:
+            llamada << "(Ljava/lang/Object;)V";
+            break;
+
+        default:
+            qDebug() << "Llamando a imprimir una dato no definido";
     }
 
     aniadirInstruccion("    invokevirtual", llamada.str());
@@ -801,7 +808,7 @@ void ManejadorClass::escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar)
 
     llamada << nombreClase << " " << simbolo->getIdentificador() << " ";
 
-    for(int i = 0; i < simbolo->getCantidadDimensiones(); ++i)
+    for(unsigned int i = 0; i < simbolo->getCantidadDimensiones(); ++i)
     {
         llamada << "[";
     }
