@@ -5,7 +5,8 @@ TablaSimbolos::TablaSimbolos(Compilador* c):
     pilaSimbolos(NULL),
     pilaValores(NULL),
     pilaTipos(NULL),
-    contextoFuncion(NULL)
+    contextoFuncion(NULL),
+    contEtiquetas(0)
 {
     qDebug() << "Creando tabla de simbolos";
     simbolos = new vector< map <string, Simbolo*>* >();
@@ -472,17 +473,28 @@ string TablaSimbolos::generarEtiqueta(void)
 {
     stringstream etq;
 
-    etq << "ET_" << etiquetas.size();
+    etq << "ET_" << contEtiquetas;
 
-    etiquetas.push_back(etq.str());
+    etiquetas.push(etq.str());
+
+    ++contEtiquetas;
+    return etq.str();
 }
 
 string TablaSimbolos::getEtiquetaActual(void)
 {
-    return etiquetas.at(etiquetas.size() - 1);
+    if(!etiquetas.empty())
+    {
+        return etiquetas.top();
+    }
+
+    return "NO_ETIQUETA";
 }
 
 void TablaSimbolos::eliminarUltimaEtiqueta(void)
 {
-    etiquetas.pop_back();
+    if(!etiquetas.empty())
+    {
+        etiquetas.pop();
+    }
 }

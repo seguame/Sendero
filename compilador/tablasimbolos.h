@@ -62,7 +62,7 @@ private:
 private:
     Compilador* refCompilador;
     vector< map <string, Simbolo*>* > *simbolos;
-    vector<string> etiquetas;
+    stack<string> etiquetas;
     stack<Simbolo*> *pilaSimbolos;
     stack<Simbolo*> *pilaValores;
     stack<Tipo> *pilaTipos;
@@ -70,6 +70,7 @@ private:
 
     Simbolo* contextoFuncion;
     bool retornoValidado;
+    unsigned int contEtiquetas;
 };
 
 #endif // TABLASIMBOLOS_H
