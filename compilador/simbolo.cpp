@@ -60,6 +60,13 @@ Simbolo* Simbolo::setTipo(Tipo tipo)
 Simbolo* Simbolo::setCantidadDimensiones(unsigned int cantidad)
 {
     _cantDimensiones = cantidad;
+
+    if(cantidad > 0)
+    {
+        //Las variables con dimension ya se inicializan en bytecode
+        setInicializado();
+    }
+
     return this;
 }
 
