@@ -560,18 +560,22 @@ void ManejadorClass::escribirInvertirValor(Tipo t)
 
 void ManejadorClass::escribirComparacion(string operando, string etiqueta)
 {
+    //Se manda llamar la intruccion contraria de la pedida, para dar el salto
+    //a la que se quiere solo si la contraria no se cumple
+
+
     if(operando.compare(">") == 0)
-        aniadirInstruccion("    if_icmpgt", etiqueta);
-    else if(operando.compare("<") == 0)
-        aniadirInstruccion("    if_icmplt", etiqueta);
-    else if(operando.compare(">=") == 0)
-        aniadirInstruccion("    if_icmpge", etiqueta);
-    else if(operando.compare("<=") == 0)
         aniadirInstruccion("    if_icmple", etiqueta);
+    else if(operando.compare("<") == 0)
+        aniadirInstruccion("    if_icmpge", etiqueta);
+    else if(operando.compare(">=") == 0)
+        aniadirInstruccion("    if_icmplt", etiqueta);
+    else if(operando.compare("<=") == 0)
+        aniadirInstruccion("    if_icmpgt", etiqueta);
     else if(operando.compare("==") == 0)
-        aniadirInstruccion("    if_icmpeq", etiqueta);
-    else if(operando.compare("!=") == 0)
         aniadirInstruccion("    if_icmpne", etiqueta);
+    else if(operando.compare("!=") == 0)
+        aniadirInstruccion("    if_icmpeq", etiqueta);
 }
 
 void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
@@ -632,6 +636,20 @@ void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
     {
         escribirLlamadaVarGlobal(simbolo, almacenar);
     }
+}
+
+void ManejadorClass::escribirEtiqueta(const string& etq)
+{
+    stringstream etiqueta;
+
+    etiqueta << etq << ":";
+
+    aniadirInstruccion(etiqueta.str(),"");
+}
+
+void ManejadorClass::escribirSaltoEtiqueta(const string& etq)
+{
+    aniadirInstruccion("    goto", etq);
 }
 
 void ManejadorClass::escribirValorConstante(Simbolo* simbolo)

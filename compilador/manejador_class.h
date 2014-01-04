@@ -36,6 +36,8 @@ public:
     void escribirLlamadaFuncion(Simbolo* simbolo);
     void escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar);
     void escribirLlamadaVariable(Simbolo* simbolo, bool almacenar);
+    void escribirEtiqueta(const string& etq);
+    void escribirSaltoEtiqueta(const string& etq);
     void escribirValorConstante(Simbolo* simbolo);
     void escribirGuardarEnReferencia(Tipo t);
     void escribirCargarReferencia(Tipo t);
