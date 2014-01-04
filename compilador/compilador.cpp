@@ -1423,10 +1423,10 @@ bool Compilador::si(void)
     if(lexico.compare("sino") == 0)
     {
         ManejadorClass::ObtenerInstancia()->escribirEtiqueta(tablaDeSimbolos->getEtiquetaActual());
-        tablaDeSimbolos->eliminarUltimaEtiqueta();
         leerLexema();
         bloque();
         leerLexema();
+        tablaDeSimbolos->eliminarUltimaEtiqueta();
     }
 
     ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_si);
@@ -1437,6 +1437,12 @@ bool Compilador::si(void)
 bool Compilador::desde(void)
 {
     qDebug() << "desde";
+
+    string etq_inicio  = tablaDeSimbolos->generarEtiqueta();
+    string etq_opers   = tablaDeSimbolos->generarEtiqueta();
+    string etq_cuerpo  = tablaDeSimbolos->generarEtiqueta();
+    string etq_salida  = tablaDeSimbolos->generarEtiqueta();
+
 
     leerLexema();
 
@@ -1458,6 +1464,7 @@ bool Compilador::desde(void)
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba asignaciones separadas por coma o un delimitador de zona de asignacion");
 
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_inicio);
     leerLexema();
     expr(true);
 
@@ -1465,6 +1472,8 @@ bool Compilador::desde(void)
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba delimitador de zona de condicion");
 
+    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_cuerpo);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_opers);
     leerLexema();
     do
     {
@@ -1478,13 +1487,18 @@ bool Compilador::desde(void)
         asigna();
 
     }while(lexico.compare(",") == 0);
-
-
+    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_inicio);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_cuerpo);
     bloque();
     leerLexema();
 
+    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_opers);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_salida);
 
-
+    tablaDeSimbolos->eliminarUltimaEtiqueta();
+    tablaDeSimbolos->eliminarUltimaEtiqueta();
+    tablaDeSimbolos->eliminarUltimaEtiqueta();
+    tablaDeSimbolos->eliminarUltimaEtiqueta();
     return true;
 }
 
