@@ -55,7 +55,7 @@ public:
     Etiqueta generarEtiqueta(Etiqueta_tipo tipo);
     Etiqueta getEtiquetaActual(void);
     void eliminarUltimaEtiqueta(void);
-    Etiqueta getUltimaEtiquetaDetipo(Etiqueta_tipo tipo);
+    Etiqueta getUltimaEtiquetaDetipo(Etiqueta_tipo tipo, bool esInstruccionContinua);
 
 
 private:

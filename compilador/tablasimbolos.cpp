@@ -500,13 +500,18 @@ void TablaSimbolos::eliminarUltimaEtiqueta(void)
     }
 }
 
-Etiqueta TablaSimbolos::getUltimaEtiquetaDetipo(Etiqueta_tipo tipo)
+Etiqueta TablaSimbolos::getUltimaEtiquetaDetipo(Etiqueta_tipo tipo, bool esInstruccionContinua)
 {
     for(vector<Etiqueta>::reverse_iterator it = etiquetas.rbegin(); it != etiquetas.rend(); ++it)
     {
         Etiqueta tmp = *it;
         if(tmp.getTipoEtq() == tipo)
         {
+            if(esInstruccionContinua)
+            {
+                it += 2; //retroceder 2 posiciones, a donde está la 3ra parte del ciclo
+                tmp = *it;
+            }
             return tmp;
         }
     }

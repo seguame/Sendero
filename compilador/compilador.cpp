@@ -1112,11 +1112,11 @@ bool Compilador::comando (void)
         }
         else if(lexico.compare("interrumpe") == 0)
         {
-            Etiqueta temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_DESDE);
+            Etiqueta temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_DESDE, false);
 
             if(temp.getTipoEtq() == ETQ_NULL)
             {
-                temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_CASO);
+                temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_CASO, false);
             }
 
             if(temp.getTipoEtq() == ETQ_NULL)
@@ -1132,7 +1132,7 @@ bool Compilador::comando (void)
         }
         else if(lexico.compare("continua") == 0)
         {
-            Etiqueta temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_DESDE);
+            Etiqueta temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_DESDE, true);
 
             if(temp.getTipoEtq() == ETQ_NULL)
             {
