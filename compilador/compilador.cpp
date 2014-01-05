@@ -1226,30 +1226,8 @@ void Compilador::asigna (void)
             //se cargara a las referencias el valor a asignar
             ManejadorClass::ObtenerInstancia()->escribirGuardarEnReferencia(buscado);
         }
-        /*Simbolo* varTemp = tablaDeSimbolos->desapilarValor();
-
-        if(varTemp == NULL)
-        {
-            qDebug() << "Intentado asignar, pero no hay valor en pila";
-        }
-        else if(varTemp->getIdentificador().compare("HOLDER") == 0)
-        {
-            switch(obtenido)
-            {
-            case T_ENTERO:
-                ManejadorClass::ObtenerInstancia()->escribirEnteroConstante(varTemp->getValor<long>());
-                break;
-            }
-        }
-        else
-        {
-            //
-        }*/
 
         temp->setInicializado();
-
-
-
     }
     else
     {
