@@ -1123,15 +1123,24 @@ bool Compilador::comando (void)
             {
                 escribirError("Solo se admite \"Interrumpe\" dentro de ciclos o casos");
             }
+            else
+            {
+                ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(temp);
+            }
 
             leerLexema();
         }
         else if(lexico.compare("continua") == 0)
         {
             Etiqueta temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_DESDE);
+
             if(temp.getTipoEtq() == ETQ_NULL)
             {
                 escribirError("Solo se admite \"continua\" dentro de ciclos o casos");
+            }
+            else
+            {
+                ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(temp);
             }
 
             leerLexema();
