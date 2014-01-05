@@ -1112,10 +1112,28 @@ bool Compilador::comando (void)
         }
         else if(lexico.compare("interrumpe") == 0)
         {
+            Etiqueta temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_DESDE);
+
+            if(temp.getTipoEtq() == ETQ_NULL)
+            {
+                temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_CASO);
+            }
+
+            if(temp.getTipoEtq() == ETQ_NULL)
+            {
+                escribirError("Solo se admite \"Interrumpe\" dentro de ciclos o casos");
+            }
+
             leerLexema();
         }
         else if(lexico.compare("continua") == 0)
         {
+            Etiqueta temp = tablaDeSimbolos->getUltimaEtiquetaDetipo(ETQ_DESDE);
+            if(temp.getTipoEtq() == ETQ_NULL)
+            {
+                escribirError("Solo se admite \"continua\" dentro de ciclos o casos");
+            }
+
             leerLexema();
         }
     }
