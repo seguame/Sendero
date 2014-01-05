@@ -1406,6 +1406,7 @@ bool Compilador::si(void)
 
     Etiqueta etq_si   = tablaDeSimbolos->generarEtiqueta(ETQ_SI);
     Etiqueta etq_sino = tablaDeSimbolos->generarEtiqueta(ETQ_SI);
+
     leerLexema();
     expr(false);
 
@@ -1420,14 +1421,13 @@ bool Compilador::si(void)
     leerLexema();
 
     ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_si);
-
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_sino);
     if(lexico.compare("sino") == 0)
     {
-        ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_sino);
+
         leerLexema();
         bloque();
         leerLexema();
-
     }
 
     ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_si);
