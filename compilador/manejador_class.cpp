@@ -956,6 +956,7 @@ string ManejadorClass::obtenerTipoRetorno(Tipo retorno)
     {
         case T_CARACTER:
         case T_ENTERO:
+        case T_BOOLEANO:
             return "    ireturn";
         case T_REAL:
             return "    dreturn";
