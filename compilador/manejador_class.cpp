@@ -960,6 +960,8 @@ string ManejadorClass::obtenerTipoRetorno(Tipo retorno)
             return "    ireturn";
         case T_REAL:
             return "    dreturn";
+        case T_CADENA:
+            return "    areturn";
         default:
             return "    return";
     }
