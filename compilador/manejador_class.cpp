@@ -913,10 +913,9 @@ void ManejadorClass::escribirArchivoParaEnsamblar(const string& ruta)
 int ManejadorClass::Ensamblar(const string& ruta, const string& archivo)
 {
     stringstream comando;
-    stringstream comando2;
 
     comando << "python ";
-    comando << "\"/home/seguame/Documentos/Taller Compiladores/EditorSendero/compilador/Krakatau/assemble.py\" \"";
+    comando << "./Krakatau/assemble.py \"";
     comando << ruta;
     comando << "/";
     comando << archivo;
@@ -924,23 +923,7 @@ int ManejadorClass::Ensamblar(const string& ruta, const string& archivo)
 
     qDebug() << comando.str().c_str();
 
-    system(comando.str().c_str());
-
-    comando2 << "mv ";
-    comando2 << "\"/home/seguame/Documentos/Taller Compiladores/EditorSendero/compilador/Krakatau/";
-    comando2 << archivo;
-    comando2 << ".class\" \"";
-    comando2 << ruta;
-    comando2 << "/";
-    comando2 << archivo;
-    comando2 << ".class\"";
-
-    qDebug() << comando2.str().c_str();
-
-    return system(comando2.str().c_str());
-
-
-    //return system(("java " + archivo).c_str());
+    return system(comando.str().c_str());
 }
 
 void ManejadorClass::setNombreClase(const string& nombre)
