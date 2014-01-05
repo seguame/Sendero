@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     compilador/class_file.cpp \
     compilador/manejador_class.cpp \
     ui/externo/redirect.cpp \
-    ui/externo/qconsolewidget.cpp
+    ui/externo/qconsolewidget.cpp \
+    compilador/etiqueta.cpp
 
 HEADERS  += \
     ui/VentanaPrincipal.h \
@@ -43,7 +44,8 @@ HEADERS  += \
     compilador/class_file.h \
     compilador/manejador_class.h \
     ui/externo/redirect.h \
-    ui/externo/qconsolewidget.h
+    ui/externo/qconsolewidget.h \
+    compilador/etiqueta.h
 
 RESOURCES += \
     Imagenes.qrc
