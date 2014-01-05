@@ -4,6 +4,7 @@
 #include "utils/conversor.h"
 #include "utils/reportadorerrores.h"
 #include "manejador_class.h"
+#include "etiqueta.h"
 
 const Estado Compilador::matriz_transiciones[ESTADOS][ENTRADAS] =
 {
@@ -1403,8 +1404,8 @@ bool Compilador::si(void)
     qDebug() << "si";
 
 
-    string etq_si = tablaDeSimbolos->generarEtiqueta();
-    tablaDeSimbolos->generarEtiqueta();
+    Etiqueta etq_si   = tablaDeSimbolos->generarEtiqueta(ETQ_SI);
+    Etiqueta etq_sino = tablaDeSimbolos->generarEtiqueta(ETQ_SI);
     leerLexema();
     expr(false);
 
@@ -1422,14 +1423,15 @@ bool Compilador::si(void)
 
     if(lexico.compare("sino") == 0)
     {
-        ManejadorClass::ObtenerInstancia()->escribirEtiqueta(tablaDeSimbolos->getEtiquetaActual());
+        ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_sino);
         leerLexema();
         bloque();
         leerLexema();
-        tablaDeSimbolos->eliminarUltimaEtiqueta();
+
     }
 
     ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_si);
+    tablaDeSimbolos->eliminarUltimaEtiqueta();
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     return true;
 }
@@ -1438,10 +1440,10 @@ bool Compilador::desde(void)
 {
     qDebug() << "desde";
 
-    string etq_inicio  = tablaDeSimbolos->generarEtiqueta();
-    string etq_opers   = tablaDeSimbolos->generarEtiqueta();
-    string etq_cuerpo  = tablaDeSimbolos->generarEtiqueta();
-    string etq_salida  = tablaDeSimbolos->generarEtiqueta();
+    Etiqueta etq_inicio  = tablaDeSimbolos->generarEtiqueta(ETQ_DESDE);
+    Etiqueta etq_opers   = tablaDeSimbolos->generarEtiqueta(ETQ_DESDE);
+    Etiqueta etq_cuerpo  = tablaDeSimbolos->generarEtiqueta(ETQ_DESDE);
+    Etiqueta etq_salida  = tablaDeSimbolos->generarEtiqueta(ETQ_DESDE);
 
 
     leerLexema();

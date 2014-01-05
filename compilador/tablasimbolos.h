@@ -13,6 +13,7 @@
 #include "simbolo.h"
 #include "utils/reportadorerrores.h"
 #include "compilador.h"
+#include "etiqueta.h"
 
 #include <QDebug>
 
@@ -51,8 +52,8 @@ public:
     Tipo getTipoRetornoFuncion(void);
     void salirContextoFuncion(void);
 
-    string generarEtiqueta(void);
-    string getEtiquetaActual(void);
+    Etiqueta generarEtiqueta(Etiqueta_tipo tipo);
+    Etiqueta getEtiquetaActual(void);
     void eliminarUltimaEtiqueta(void);
 
 
@@ -62,7 +63,7 @@ private:
 private:
     Compilador* refCompilador;
     vector< map <string, Simbolo*>* > *simbolos;
-    stack<string> etiquetas;
+    vector<Etiqueta> etiquetas;
     stack<Simbolo*> *pilaSimbolos;
     stack<Simbolo*> *pilaValores;
     stack<Tipo> *pilaTipos;

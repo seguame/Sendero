@@ -548,24 +548,24 @@ void ManejadorClass::escribirInvertirValor(Tipo t)
     }
 }
 
-void ManejadorClass::escribirComparacion(string operando, string etiqueta)
+void ManejadorClass::escribirComparacion(string operando,const Etiqueta& etiqueta)
 {
     //Se manda llamar la intruccion contraria de la pedida, para dar el salto
     //a la que se quiere solo si la contraria no se cumple
 
 
     if(operando.compare(">") == 0)
-        aniadirInstruccion("    if_icmple", etiqueta);
+        aniadirInstruccion("    if_icmple", etiqueta.getIdentificador());
     else if(operando.compare("<") == 0)
-        aniadirInstruccion("    if_icmpge", etiqueta);
+        aniadirInstruccion("    if_icmpge", etiqueta.getIdentificador());
     else if(operando.compare(">=") == 0)
-        aniadirInstruccion("    if_icmplt", etiqueta);
+        aniadirInstruccion("    if_icmplt", etiqueta.getIdentificador());
     else if(operando.compare("<=") == 0)
-        aniadirInstruccion("    if_icmpgt", etiqueta);
+        aniadirInstruccion("    if_icmpgt", etiqueta.getIdentificador());
     else if(operando.compare("==") == 0)
-        aniadirInstruccion("    if_icmpne", etiqueta);
+        aniadirInstruccion("    if_icmpne", etiqueta.getIdentificador());
     else if(operando.compare("!=") == 0)
-        aniadirInstruccion("    if_icmpeq", etiqueta);
+        aniadirInstruccion("    if_icmpeq", etiqueta.getIdentificador());
 }
 
 void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
@@ -628,18 +628,17 @@ void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
     }
 }
 
-void ManejadorClass::escribirEtiqueta(const string& etq)
+void ManejadorClass::escribirEtiqueta(const Etiqueta& etq)
 {
     stringstream etiqueta;
-
-    etiqueta << etq << ":";
+    etiqueta << etq.getIdentificador() << ":";
 
     aniadirInstruccion(etiqueta.str(),"");
 }
 
-void ManejadorClass::escribirSaltoEtiqueta(const string& etq)
+void ManejadorClass::escribirSaltoEtiqueta(const Etiqueta& etq)
 {
-    aniadirInstruccion("    goto", etq);
+    aniadirInstruccion("    goto", etq.getIdentificador());
 }
 
 void ManejadorClass::escribirValorConstante(Simbolo* simbolo)

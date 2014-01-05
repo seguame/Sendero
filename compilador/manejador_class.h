@@ -7,6 +7,7 @@
 #include <cmath>
 
 #include "simbolo.h"
+#include "etiqueta.h"
 
 #include <QDebug>
 
@@ -36,8 +37,8 @@ public:
     void escribirLlamadaFuncion(Simbolo* simbolo);
     void escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar);
     void escribirLlamadaVariable(Simbolo* simbolo, bool almacenar);
-    void escribirEtiqueta(const string& etq);
-    void escribirSaltoEtiqueta(const string& etq);
+    void escribirEtiqueta(const Etiqueta& etq);
+    void escribirSaltoEtiqueta(const Etiqueta& etq);
     void escribirValorConstante(Simbolo* simbolo);
     void escribirGuardarEnReferencia(Tipo t);
     void escribirCargarReferencia(Tipo t);
@@ -48,7 +49,7 @@ public:
     void escribirModulo(Tipo t);
     void escribirPotencia(void);
     void escribirInvertirValor(Tipo t);
-    void escribirComparacion(string operando, string etiqueta);
+    void escribirComparacion(string operando, const Etiqueta& etiqueta);
     void escribirEnteroConstante(int i);
     void escribirRealConstante(double d);
     void escribirStringConstante(const string& s);

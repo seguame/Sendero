@@ -469,32 +469,33 @@ void TablaSimbolos::salirContextoFuncion(void)
 
 }
 
-string TablaSimbolos::generarEtiqueta(void)
+Etiqueta TablaSimbolos::generarEtiqueta(Etiqueta_tipo tipo)
 {
     stringstream etq;
-
     etq << "ET_" << contEtiquetas;
 
-    etiquetas.push(etq.str());
+    Etiqueta generada(etq.str(), tipo);
+
+    etiquetas.push_back(generada);
 
     ++contEtiquetas;
-    return etq.str();
+    return generada;
 }
 
-string TablaSimbolos::getEtiquetaActual(void)
+Etiqueta TablaSimbolos::getEtiquetaActual(void)
 {
     if(!etiquetas.empty())
     {
-        return etiquetas.top();
+        return etiquetas.back();
     }
 
-    return "NO_ETIQUETA";
+    return Etiqueta("NO_ETIQUETA", ETQ_NULL);
 }
 
 void TablaSimbolos::eliminarUltimaEtiqueta(void)
 {
     if(!etiquetas.empty())
     {
-        etiquetas.pop();
+        etiquetas.pop_back();
     }
 }
