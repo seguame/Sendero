@@ -499,3 +499,17 @@ void TablaSimbolos::eliminarUltimaEtiqueta(void)
         etiquetas.pop_back();
     }
 }
+
+Etiqueta TablaSimbolos::getUltimaEtiquetaDetipo(Etiqueta_tipo tipo)
+{
+    for(vector<Etiqueta>::reverse_iterator it = etiquetas.rbegin(); it != etiquetas.rend(); ++it)
+    {
+        Etiqueta tmp = *it;
+        if(tmp.getTipoEtq() == tipo)
+        {
+            return tmp;
+        }
+    }
+
+    return Etiqueta("NO_ETIQUETA", ETQ_NULL);
+}
