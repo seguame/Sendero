@@ -274,23 +274,32 @@ string TablaSimbolos::almacenarPilaSimbolos(Tipo tipo, bool esGlobal)
 {
     stringstream regresable;
     qDebug() << "Almacenando contenido de la pila";
+
+    stack<Simbolo*> aux;
+
     while(!pilaSimbolos->empty())
     {
-        if(this->insertarSimbolo(pilaSimbolos->top()->setTipo(tipo)))
+        aux.push(pilaSimbolos->top());
+        pilaSimbolos->pop();
+    }
+
+    while(!aux.empty())
+    {
+        if(this->insertarSimbolo(aux.top()->setTipo(tipo)))
         {
             if(esGlobal)
             {
-                ManejadorClass::ObtenerInstancia()->escribirDeclararVariableGlobal(pilaSimbolos->top());
+                ManejadorClass::ObtenerInstancia()->escribirDeclararVariableGlobal(aux.top());
             }
             else
             {
                 //Registrarla como variable en nivel distinto, no se hace verificacion de sobreescritura pues
                 //se valido por semantica que exista en ese nivel
-                ManejadorClass::ObtenerInstancia()->registrarVariableLocal(pilaSimbolos->top(), simbolos->size());
-                ManejadorClass::ObtenerInstancia()->escribirDeclararArray(pilaSimbolos->top(), false);
+                ManejadorClass::ObtenerInstancia()->registrarVariableLocal(aux.top(), simbolos->size());
+                ManejadorClass::ObtenerInstancia()->escribirDeclararArray(aux.top(), false);
             }
         }
-        pilaSimbolos->pop();
+        aux.pop();
         regresable << tipo;
     }
 
