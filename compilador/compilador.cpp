@@ -1742,7 +1742,6 @@ bool Compilador::imprime(void)
 {
     qDebug() << "imprime";
     bool conSalto = false;
-    stringstream imprimible;
 
     leerLexema();
 
