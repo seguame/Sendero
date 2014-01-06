@@ -55,7 +55,8 @@ public:
     void escribirModulo(Tipo t);
     void escribirPotencia(void);
     void escribirInvertirValor(Tipo t);
-    void escribirComparacion(string operando, const Etiqueta& etiqueta);
+    void escribirComparacionEntera(string operando, const Etiqueta& etiqueta);
+    void escribirComparacionReal(string operando, const Etiqueta& etiqueta);
     void escribirEnteroConstante(int i);
     void escribirRealConstante(double d);
     void escribirStringConstante(const string& s);

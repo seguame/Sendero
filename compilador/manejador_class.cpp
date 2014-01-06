@@ -548,7 +548,7 @@ void ManejadorClass::escribirInvertirValor(Tipo t)
     }
 }
 
-void ManejadorClass::escribirComparacion(string operando,const Etiqueta& etiqueta)
+void ManejadorClass::escribirComparacionEntera(string operando,const Etiqueta& etiqueta)
 {
     //Se manda llamar la intruccion contraria de la pedida, para dar el salto
     //a la que se quiere solo si la contraria no se cumple
@@ -566,6 +566,40 @@ void ManejadorClass::escribirComparacion(string operando,const Etiqueta& etiquet
         aniadirInstruccion("    if_icmpne", etiqueta.getIdentificador());
     else if(operando.compare("!=") == 0)
         aniadirInstruccion("    if_icmpeq", etiqueta.getIdentificador());
+}
+
+void ManejadorClass::escribirComparacionReal(string operando,const Etiqueta& etiqueta)
+{
+    if(operando.compare(">") == 0)
+    {
+        aniadirInstruccion("    dcmpg", "");
+        aniadirInstruccion("    ifge", etiqueta.getIdentificador());
+    }
+    else if(operando.compare("<") == 0)
+    {
+        aniadirInstruccion("    dcmpl", "");
+        aniadirInstruccion("    ifle", etiqueta.getIdentificador());
+    }
+    else if(operando.compare(">=") == 0)
+    {
+        aniadirInstruccion("    dcmpg", "");
+        aniadirInstruccion("    ifgt", etiqueta.getIdentificador());
+    }
+    else if(operando.compare("<=") == 0)
+    {
+        aniadirInstruccion("    dcmpl", "");
+        aniadirInstruccion("    iflt", etiqueta.getIdentificador());
+    }
+    else if(operando.compare("==") == 0)
+    {
+        aniadirInstruccion("    dcmpl", "");
+        aniadirInstruccion("    ifne", etiqueta.getIdentificador());
+    }
+    else if(operando.compare("!=") == 0)
+    {
+        aniadirInstruccion("    dcmpl", "");
+        aniadirInstruccion("    ifeq", etiqueta.getIdentificador());
+    }
 }
 
 void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
@@ -594,7 +628,9 @@ void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
             posStr << pos;
 
             if(almacenar)
-                aniadirInstruccion("    astore", posStr.str());
+            {
+                escribirGuardarEnReferencia(simbolo->getTipo());
+            }
             else
                 aniadirInstruccion("    aload", posStr.str());
         }
@@ -624,7 +660,15 @@ void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
     }
     else
     {
-        escribirLlamadaVarGlobal(simbolo, almacenar);
+        //TODO: testear mas esta seccion
+        if(simbolo->getCantidadDimensiones() > 0 && almacenar)
+        {
+            escribirGuardarEnReferencia(simbolo->getTipo());
+        }
+        else
+        {
+            escribirLlamadaVarGlobal(simbolo, almacenar);
+        }
     }
 }
 
