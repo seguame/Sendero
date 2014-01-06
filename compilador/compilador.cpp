@@ -1428,7 +1428,7 @@ bool Compilador::si(void)
     leerLexema();
 
     ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_si);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_sino);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_sino, "; //Si no se cumple la condicion");
     if(lexico.compare("sino") == 0)
     {
 
@@ -1437,7 +1437,7 @@ bool Compilador::si(void)
         leerLexema();
     }
 
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_si);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_si, "; //Si se cumple la condicion");
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     return true;
@@ -1473,7 +1473,7 @@ bool Compilador::desde(void)
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba asignaciones separadas por coma o un delimitador de zona de asignacion");
 
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_inicio);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_inicio, "; //Inicio de ciclo \"desde\"");
     leerLexema();
     expr(true);
 
@@ -1482,7 +1482,7 @@ bool Compilador::desde(void)
         escribirError("Se esperaba delimitador de zona de condicion");
 
     ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_cuerpo);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_opers);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_opers, "; //Inicio de operaciones a ejecutar despues del \"desde\"");
     leerLexema();
     do
     {
@@ -1497,12 +1497,12 @@ bool Compilador::desde(void)
 
     }while(lexico.compare(",") == 0);
     ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_inicio);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_cuerpo);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_cuerpo, "; //Inicio del cuerpo del \"desde\"");
     bloque();
     leerLexema();
 
     ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_opers);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_salida);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_salida, "; //Salida de ciclo \"desde\"");
 
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     tablaDeSimbolos->eliminarUltimaEtiqueta();
@@ -1568,7 +1568,7 @@ bool Compilador::caso(void)
         if(lexico.compare("defecto") == 0)
         {
             Etiqueta difault = tablaDeSimbolos->generarEtiqueta(ETQ_CASO);
-            ManejadorClass::ObtenerInstancia()->escribirEtiqueta(difault);
+            ManejadorClass::ObtenerInstancia()->escribirEtiqueta(difault, "; //Caso default del \"caso\"");
 
             if(!existeUnDefault)
             {
@@ -1622,7 +1622,9 @@ bool Compilador::caso(void)
             }
 
             Etiqueta etqCaso = tablaDeSimbolos->generarEtiqueta(ETQ_CASO);
-            ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etqCaso);
+            stringstream coment;
+            coment << "; //Caso " << valorAdjudicado << " del \"caso\"";
+            ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etqCaso, coment.str());
 
             leerLexema();
             if(lexico.compare(":") != 0)
@@ -1654,9 +1656,9 @@ bool Compilador::caso(void)
 
     leerLexema();
 
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(inicio_caso);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(inicio_caso, "; //Saltos para cada caso");
     ManejadorClass::ObtenerInstancia()->escribirCaso(existeUnDefault, fin_caso);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(fin_caso);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(fin_caso, "; //Codigo posterior a los casos");
 
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     tablaDeSimbolos->eliminarUltimaEtiqueta();
