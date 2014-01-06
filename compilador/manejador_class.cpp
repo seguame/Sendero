@@ -572,23 +572,23 @@ void ManejadorClass::escribirComparacionReal(string operando,const Etiqueta& eti
 {
     if(operando.compare(">") == 0)
     {
-        aniadirInstruccion("    dcmpg", "");
-        aniadirInstruccion("    ifge", etiqueta.getIdentificador());
-    }
-    else if(operando.compare("<") == 0)
-    {
         aniadirInstruccion("    dcmpl", "");
         aniadirInstruccion("    ifle", etiqueta.getIdentificador());
     }
-    else if(operando.compare(">=") == 0)
+    else if(operando.compare("<") == 0)
     {
         aniadirInstruccion("    dcmpg", "");
-        aniadirInstruccion("    ifgt", etiqueta.getIdentificador());
+        aniadirInstruccion("    ifge", etiqueta.getIdentificador());
     }
-    else if(operando.compare("<=") == 0)
+    else if(operando.compare(">=") == 0)
     {
         aniadirInstruccion("    dcmpl", "");
         aniadirInstruccion("    iflt", etiqueta.getIdentificador());
+    }
+    else if(operando.compare("<=") == 0)
+    {
+        aniadirInstruccion("    dcmpg", "");
+        aniadirInstruccion("    ifgt", etiqueta.getIdentificador());
     }
     else if(operando.compare("==") == 0)
     {
@@ -1005,7 +1005,11 @@ int ManejadorClass::Ensamblar(const string& ruta, const string& archivo)
 {
     stringstream comando;
 
+    #ifdef WIN32
+    comando << "C:/python27/python ";
+    #else
     comando << "python ";
+    #endif
     comando << "./Krakatau/assemble.py \"";
     comando << ruta;
     comando << "/";
