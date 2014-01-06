@@ -34,11 +34,17 @@ public:
     void escribirDeclararConstante(Simbolo* simbolo);
     void escribirDeclararArray(Simbolo* simbolo, bool global);
 
+    void escribirEtiqueta(const Etiqueta& etq);
+    void escribirSaltoEtiqueta(const Etiqueta& etq);
+
+    void inicializarCaso(void);
+    void aniadirCaso(Simbolo* simb,const Etiqueta& etq);
+    void escribirCaso(void);
+
     void escribirLlamadaFuncion(Simbolo* simbolo);
     void escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar);
     void escribirLlamadaVariable(Simbolo* simbolo, bool almacenar);
-    void escribirEtiqueta(const Etiqueta& etq);
-    void escribirSaltoEtiqueta(const Etiqueta& etq);
+
     void escribirValorConstante(Simbolo* simbolo);
     void escribirGuardarEnReferencia(Tipo t);
     void escribirCargarReferencia(Tipo t);
@@ -92,6 +98,8 @@ private:
     vector< Simbolo* > globales;
     map <string, pair<int, Simbolo*> > locales;
     unsigned int localidadesActuales;
+
+    vector<pair<string, string> > casos;
 };
 
 #endif // MANEJADOR_CLASS_H

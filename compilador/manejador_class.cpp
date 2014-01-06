@@ -673,6 +673,36 @@ void ManejadorClass::escribirValorConstante(Simbolo* simbolo)
     }
 }
 
+void ManejadorClass::inicializarCaso(void)
+{
+    casos.push_back(make_pair("    lookupswitch", ""));
+}
+
+void ManejadorClass::aniadirCaso(Simbolo *simb, const Etiqueta &etq)
+{
+    if(simb != NULL)
+    {
+        stringstream etqCaso;
+
+        //los caracteres se traducen a entero
+        etqCaso << "        " << simb->getValor<int>() << ":";
+
+        casos.push_back(make_pair(etqCaso.str(), etq.getIdentificador()));
+    }
+    else //default
+    {
+        casos.push_back(make_pair("        default:", etq.getIdentificador()));
+    }
+}
+
+void ManejadorClass::escribirCaso(void)
+{
+    for(vector<pair<string,string> >::size_type i = 0; i != casos.size(); ++i)
+    {
+        aniadirInstruccion(casos[i].first, casos[i].second);
+    }
+}
+
 void ManejadorClass::escribirLlamadaVariableEntero(int posStack, bool almacenar)
 {
     stringstream operador;
