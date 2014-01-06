@@ -628,12 +628,12 @@ void ManejadorClass::escribirLlamadaVariable(Simbolo* simbolo, bool almacenar)
     }
 }
 
-void ManejadorClass::escribirEtiqueta(const Etiqueta& etq)
+void ManejadorClass::escribirEtiqueta(const Etiqueta& etq, const string& comentario)
 {
     stringstream etiqueta;
     etiqueta << etq.getIdentificador() << ":";
 
-    aniadirInstruccion(etiqueta.str(),"");
+    aniadirInstruccion(etiqueta.str(), comentario);
 }
 
 void ManejadorClass::escribirSaltoEtiqueta(const Etiqueta& etq)
@@ -684,19 +684,36 @@ void ManejadorClass::aniadirCaso(Simbolo *simb, const Etiqueta &etq)
     {
         stringstream etqCaso;
 
-        //los caracteres se traducen a entero
-        etqCaso << "        " << simb->getValor<int>() << ":";
+        int valorAdjudicado = 0;
+
+        if(simb->getTipo() == T_ENTERO)
+            valorAdjudicado = simb->getValor<int>();
+        else if(simb->getTipo() == T_CARACTER)
+            valorAdjudicado =(int)simb->getValor<char>();
+
+        etqCaso << "        " << valorAdjudicado << ":";
 
         casos.push_back(make_pair(etqCaso.str(), etq.getIdentificador()));
     }
     else //default
     {
-        casos.push_back(make_pair("        default:", etq.getIdentificador()));
+        casoDefault = make_pair("        default:", etq.getIdentificador());
     }
 }
 
-void ManejadorClass::escribirCaso(void)
+void ManejadorClass::escribirCaso(bool hayDefault, const Etiqueta& etq)
 {
+    //El default siempre va al final en el bytecode, y tambien siempre debe haber uno
+    if(hayDefault)
+    {
+        casos.push_back(casoDefault);
+    }
+    else
+    {
+        casos.push_back(make_pair("        default:", etq.getIdentificador()));
+    }
+
+
     for(vector<pair<string,string> >::size_type i = 0; i != casos.size(); ++i)
     {
         aniadirInstruccion(casos[i].first, casos[i].second);

@@ -34,12 +34,12 @@ public:
     void escribirDeclararConstante(Simbolo* simbolo);
     void escribirDeclararArray(Simbolo* simbolo, bool global);
 
-    void escribirEtiqueta(const Etiqueta& etq);
+    void escribirEtiqueta(const Etiqueta& etq, const string& comentario);
     void escribirSaltoEtiqueta(const Etiqueta& etq);
 
     void inicializarCaso(void);
     void aniadirCaso(Simbolo* simb,const Etiqueta& etq);
-    void escribirCaso(void);
+    void escribirCaso(bool hayDefault, const Etiqueta& etq);
 
     void escribirLlamadaFuncion(Simbolo* simbolo);
     void escribirLlamadaVarGlobal(Simbolo* simbolo, bool almacenar);
@@ -100,6 +100,7 @@ private:
     unsigned int localidadesActuales;
 
     vector<pair<string, string> > casos;
+    pair<string, string> casoDefault;
 };
 
 #endif // MANEJADOR_CLASS_H
