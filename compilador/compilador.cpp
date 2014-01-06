@@ -1,5 +1,7 @@
 #include <QDebug>
 
+#include <algorithm>
+
 #include "compilador.h"
 #include "utils/conversor.h"
 #include "utils/reportadorerrores.h"
@@ -1514,10 +1516,14 @@ bool Compilador::caso(void)
 {
     qDebug() << "caso";
 
+    vector<int> casosPuestos;
+
+    Etiqueta inicio_caso = tablaDeSimbolos->generarEtiqueta(ETQ_CASO);
+    Etiqueta fin_caso    = tablaDeSimbolos->generarEtiqueta(ETQ_CASO);
+
     bool existeUnDefault = false;
 
     leerLexema();
-
     if(token.compare(IDENTIFICADOR) != 0)
     {
         escribirError("Se esperaba la variable de \"caso\"");
@@ -1532,12 +1538,21 @@ bool Compilador::caso(void)
         }
         else
         {
-            if(temp->getTipo() != T_ENTERO)
+            if(temp->getTipo() != T_ENTERO && temp->getTipo() != T_CARACTER)
             {
-                escribirError("Para la variable de \"caso\" solo se admiten tipos enteros y se da un " + temp->getStringTipo());
+                escribirError("Para la variable de \"caso\" solo se admiten tipos entero y caracter. Se da un " + temp->getStringTipo());
             }
+
+            ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
         }
     }
+
+    //Que salte a la parte donde se chequea el switch, como se hace una sola pasada
+    //y se genera el bytecode como se va leyendo, debo hacer un salto adelantado y luego retroceder
+    //segun sea que caso
+    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(inicio_caso);
+
+    ManejadorClass::ObtenerInstancia()->inicializarCaso();
 
     leerLexema();
 
@@ -1548,8 +1563,13 @@ bool Compilador::caso(void)
 
     do
     {
+        Simbolo* temp = NULL;
+
         if(lexico.compare("defecto") == 0)
         {
+            Etiqueta difault = tablaDeSimbolos->generarEtiqueta(ETQ_CASO);
+            ManejadorClass::ObtenerInstancia()->escribirEtiqueta(difault);
+
             if(!existeUnDefault)
             {
                 existeUnDefault = true;
@@ -1565,23 +1585,56 @@ bool Compilador::caso(void)
                 escribirError("Se esperaba \":\"");
             }
 
+            ManejadorClass::ObtenerInstancia()->aniadirCaso(temp, difault);
+            tablaDeSimbolos->eliminarUltimaEtiqueta();
             leerLexema();
             estatutos();
+
 
         }
         else if(lexico.compare("valor") == 0)
         {
+            temp = new Simbolo("HOLDER");
+
             leerLexema();
-            if(token.compare(ENTERO) != 0)
+            if(token.compare(ENTERO) != 0 && token.compare(CARACTER) != 0)
             {
-                escribirError("Solo se admiten constantes enteras como casos");
+                escribirError("Solo se admiten constantes enteras o de caracter como casos");
             }
+
+            obtenerTipoValorConstante(temp);
+
+
+            int valorAdjudicado;
+
+            if(temp->getTipo() == T_ENTERO)
+                valorAdjudicado = temp->getValor<int>();
+            else if(temp->getTipo() == T_CARACTER)
+                valorAdjudicado =(int)temp->getValor<char>();
+
+            if (find(casosPuestos.begin(), casosPuestos.end(), valorAdjudicado) == casosPuestos.end())
+            {
+                casosPuestos.push_back(valorAdjudicado);
+            }
+            else
+            {
+                escribirError("Etiqueta de caso ya ue usada con anterioridad");
+            }
+
+            Etiqueta etqCaso = tablaDeSimbolos->generarEtiqueta(ETQ_CASO);
+            ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etqCaso);
 
             leerLexema();
             if(lexico.compare(":") != 0)
             {
                 escribirError("Se esperaba \":\"");
             }
+
+            ManejadorClass::ObtenerInstancia()->aniadirCaso(temp, etqCaso);
+            tablaDeSimbolos->eliminarUltimaEtiqueta();
+
+            delete temp;
+            temp = NULL;
 
             leerLexema();
             estatutos();
@@ -1592,12 +1645,21 @@ bool Compilador::caso(void)
         }
     }while(lexico.compare("valor") == 0 || lexico.compare("defecto") == 0);
 
-    leerLexema();
+    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(fin_caso);
+
     if(lexico.compare("}") != 0)
     {
         escribirError("Se esperaba cierre de bloque de casos");
     }
 
+    leerLexema();
+
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(inicio_caso);
+    ManejadorClass::ObtenerInstancia()->escribirCaso(existeUnDefault, fin_caso);
+    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(fin_caso);
+
+    tablaDeSimbolos->eliminarUltimaEtiqueta();
+    tablaDeSimbolos->eliminarUltimaEtiqueta();
     return true;
 }
 
@@ -1717,7 +1779,11 @@ bool Compilador::imprime(void)
         {
             ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(sActual, tActual);
 
-            if(sActual->esTemporal()) delete sActual;
+            if(sActual->esTemporal())
+            {
+                delete sActual;
+                sActual = NULL;
+            }
         }
 
     }while(lexico.compare(",") == 0);
@@ -2363,6 +2429,7 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
 
 bool Compilador::obtenerTipoValorConstante(Simbolo* simb)
 {
+    qDebug() << "Obteniendo valor constante";
     bool exitoParsing = true;
 
     if(token.compare(REAL) == 0)
