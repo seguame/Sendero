@@ -1722,6 +1722,11 @@ bool Compilador::lee(void)
         }
     }
 
+    if(temp != NULL && temp->getCantidadDimensiones() > 0)
+    {
+        ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+    }
+
     leerLexema();
     dimension(temp, true);
 
@@ -2060,7 +2065,14 @@ void Compilador::oprel(bool terminoOpcional)
             //las comparaciones dan de valor izquierdo un booleano
             tablaDeSimbolos->apilarTipo(T_BOOLEANO);
 
-            ManejadorClass::ObtenerInstancia()->escribirComparacion(actual, tablaDeSimbolos->getEtiquetaActual());
+            if(izquierdo == T_ENTERO)
+            {
+                ManejadorClass::ObtenerInstancia()->escribirComparacionEntera(actual, tablaDeSimbolos->getEtiquetaActual());
+            }
+            else
+            {
+                ManejadorClass::ObtenerInstancia()->escribirComparacionReal(actual, tablaDeSimbolos->getEtiquetaActual());
+            }
 
             //solo desapilamos uno, pues se supone se produce uno nuevo
             tablaDeSimbolos->desapilarValor();
