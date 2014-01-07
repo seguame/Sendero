@@ -171,14 +171,15 @@ void Compilador::realizarMagia(void)
 
 void Compilador::hacerAnalisisSintactico(void)
 {
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
     //Escribir cabecera del intermedario de bytecode
-    ManejadorClass::ObtenerInstancia()->setNombreClase(_nombreArchivo);
-    ManejadorClass::ObtenerInstancia()->escribirCabeceraClase();
+    manejador->setNombreClase(_nombreArchivo);
+    manejador->escribirCabeceraClase();
 
     programa();
 
 
-    ManejadorClass::ObtenerInstancia()->escribirArchivoParaEnsamblar(_rutaAlArchivo+"/"+_nombreArchivo);
+    manejador->escribirArchivoParaEnsamblar(_rutaAlArchivo+"/"+_nombreArchivo);
 
 
     if(ReportadorErrores::ObtenerInstancia()->getCantidadErrores() == 0)
@@ -1021,6 +1022,8 @@ bool Compilador::comando (void)
 {
     qDebug() << "comando";
 
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
+
     bool requiereSeparador = true;
 
     if(lexico.compare("var") == 0)
@@ -1079,7 +1082,7 @@ bool Compilador::comando (void)
                                       " y se está enviando " + obtenerStringFirma(paramsObtenidos));
                     }
 
-                    ManejadorClass::ObtenerInstancia()->escribirLlamadaFuncion(temp);
+                    manejador->escribirLlamadaFuncion(temp);
 
                     leerLexema();
                 }
@@ -1127,7 +1130,7 @@ bool Compilador::comando (void)
             }
             else
             {
-                ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(temp);
+                manejador->escribirSaltoEtiqueta(temp);
             }
 
             leerLexema();
@@ -1142,7 +1145,7 @@ bool Compilador::comando (void)
             }
             else
             {
-                ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(temp);
+                manejador->escribirSaltoEtiqueta(temp);
             }
 
             leerLexema();
@@ -1154,6 +1157,7 @@ bool Compilador::comando (void)
 
 void Compilador::asigna (void)
 {
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
     Simbolo* temp = NULL;
     Tipo buscado = T_INVALIDO;
     Tipo obtenido = T_INVALIDO;
@@ -1190,7 +1194,7 @@ void Compilador::asigna (void)
     if(temp != NULL && temp->getCantidadDimensiones() > 0)
     {
         //se manda a llamar a la intruccion que cargue la referencia al array para almacenarle valor
-        ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+        manejador->escribirLlamadaVariable(temp, false);
     }
 
     //Dimension verificará que la variable encontrada cumpla
@@ -1215,18 +1219,18 @@ void Compilador::asigna (void)
 
         if(buscado == T_REAL && obtenido == T_ENTERO)
         {
-            ManejadorClass::ObtenerInstancia()->escribirCastingDouble();
+            manejador->escribirCastingDouble();
         }
         //variables no dimensionadas se llaman despues de toda la carga de la expr
         //las dimensionadas, antes
         if(temp->getCantidadDimensiones() == 0)
         {
-            ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, true);
+            manejador->escribirLlamadaVariable(temp, true);
         }
         else
         {
             //se cargara a las referencias el valor a asignar
-            ManejadorClass::ObtenerInstancia()->escribirGuardarEnReferencia(buscado);
+           manejador->escribirGuardarEnReferencia(buscado);
         }
 
         temp->setInicializado();
@@ -1409,7 +1413,7 @@ string Compilador::vparam(void)
 bool Compilador::si(void)
 {
     qDebug() << "si";
-
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
 
     Etiqueta etq_si   = tablaDeSimbolos->generarEtiqueta(ETQ_SI);
     Etiqueta etq_sino = tablaDeSimbolos->generarEtiqueta(ETQ_SI);
@@ -1427,8 +1431,8 @@ bool Compilador::si(void)
 
     leerLexema();
 
-    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_si);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_sino, "; //Si no se cumple la condicion");
+    manejador->escribirSaltoEtiqueta(etq_si);
+    manejador->escribirEtiqueta(etq_sino, "; //Si no se cumple la condicion");
     if(lexico.compare("sino") == 0)
     {
 
@@ -1437,7 +1441,7 @@ bool Compilador::si(void)
         leerLexema();
     }
 
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_si, "; //Si se cumple la condicion");
+    manejador->escribirEtiqueta(etq_si, "; //Si se cumple la condicion");
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     return true;
@@ -1446,6 +1450,8 @@ bool Compilador::si(void)
 bool Compilador::desde(void)
 {
     qDebug() << "desde";
+
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
 
     Etiqueta etq_inicio  = tablaDeSimbolos->generarEtiqueta(ETQ_DESDE);
     Etiqueta etq_opers   = tablaDeSimbolos->generarEtiqueta(ETQ_DESDE);
@@ -1473,7 +1479,7 @@ bool Compilador::desde(void)
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba asignaciones separadas por coma o un delimitador de zona de asignacion");
 
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_inicio, "; //Inicio de ciclo \"desde\"");
+    manejador->escribirEtiqueta(etq_inicio, "; //Inicio de ciclo \"desde\"");
     leerLexema();
     expr(true);
 
@@ -1481,8 +1487,8 @@ bool Compilador::desde(void)
     if(lexico.compare(";") != 0)
         escribirError("Se esperaba delimitador de zona de condicion");
 
-    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_cuerpo);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_opers, "; //Inicio de operaciones a ejecutar despues del \"desde\"");
+    manejador->escribirSaltoEtiqueta(etq_cuerpo);
+    manejador->escribirEtiqueta(etq_opers, "; //Inicio de operaciones a ejecutar despues del \"desde\"");
     leerLexema();
     do
     {
@@ -1496,13 +1502,13 @@ bool Compilador::desde(void)
         asigna();
 
     }while(lexico.compare(",") == 0);
-    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_inicio);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_cuerpo, "; //Inicio del cuerpo del \"desde\"");
+    manejador->escribirSaltoEtiqueta(etq_inicio);
+    manejador->escribirEtiqueta(etq_cuerpo, "; //Inicio del cuerpo del \"desde\"");
     bloque();
     leerLexema();
 
-    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(etq_opers);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etq_salida, "; //Salida de ciclo \"desde\"");
+    manejador->escribirSaltoEtiqueta(etq_opers);
+    manejador->escribirEtiqueta(etq_salida, "; //Salida de ciclo \"desde\"");
 
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     tablaDeSimbolos->eliminarUltimaEtiqueta();
@@ -1515,6 +1521,8 @@ bool Compilador::desde(void)
 bool Compilador::caso(void)
 {
     qDebug() << "caso";
+
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
 
     vector<int> casosPuestos;
 
@@ -1543,16 +1551,16 @@ bool Compilador::caso(void)
                 escribirError("Para la variable de \"caso\" solo se admiten tipos entero y caracter. Se da un " + temp->getStringTipo());
             }
 
-            ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+            manejador->escribirLlamadaVariable(temp, false);
         }
     }
 
     //Que salte a la parte donde se chequea el switch, como se hace una sola pasada
     //y se genera el bytecode como se va leyendo, debo hacer un salto adelantado y luego retroceder
     //segun sea que caso
-    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(inicio_caso);
+    manejador->escribirSaltoEtiqueta(inicio_caso);
 
-    ManejadorClass::ObtenerInstancia()->inicializarCaso();
+    manejador->inicializarCaso();
 
     leerLexema();
 
@@ -1568,7 +1576,7 @@ bool Compilador::caso(void)
         if(lexico.compare("defecto") == 0)
         {
             Etiqueta difault = tablaDeSimbolos->generarEtiqueta(ETQ_CASO);
-            ManejadorClass::ObtenerInstancia()->escribirEtiqueta(difault, "; //Caso default del \"caso\"");
+            manejador->escribirEtiqueta(difault, "; //Caso default del \"caso\"");
 
             if(!existeUnDefault)
             {
@@ -1585,7 +1593,7 @@ bool Compilador::caso(void)
                 escribirError("Se esperaba \":\"");
             }
 
-            ManejadorClass::ObtenerInstancia()->aniadirCaso(temp, difault);
+            manejador->aniadirCaso(temp, difault);
             tablaDeSimbolos->eliminarUltimaEtiqueta();
             leerLexema();
             estatutos();
@@ -1624,7 +1632,7 @@ bool Compilador::caso(void)
             Etiqueta etqCaso = tablaDeSimbolos->generarEtiqueta(ETQ_CASO);
             stringstream coment;
             coment << "; //Caso " << valorAdjudicado << " del \"caso\"";
-            ManejadorClass::ObtenerInstancia()->escribirEtiqueta(etqCaso, coment.str());
+            manejador->escribirEtiqueta(etqCaso, coment.str());
 
             leerLexema();
             if(lexico.compare(":") != 0)
@@ -1632,7 +1640,7 @@ bool Compilador::caso(void)
                 escribirError("Se esperaba \":\"");
             }
 
-            ManejadorClass::ObtenerInstancia()->aniadirCaso(temp, etqCaso);
+            manejador->aniadirCaso(temp, etqCaso);
             tablaDeSimbolos->eliminarUltimaEtiqueta();
 
             delete temp;
@@ -1647,7 +1655,7 @@ bool Compilador::caso(void)
         }
     }while(lexico.compare("valor") == 0 || lexico.compare("defecto") == 0);
 
-    ManejadorClass::ObtenerInstancia()->escribirSaltoEtiqueta(fin_caso);
+    manejador->escribirSaltoEtiqueta(fin_caso);
 
     if(lexico.compare("}") != 0)
     {
@@ -1656,9 +1664,9 @@ bool Compilador::caso(void)
 
     leerLexema();
 
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(inicio_caso, "; //Saltos para cada caso");
-    ManejadorClass::ObtenerInstancia()->escribirCaso(existeUnDefault, fin_caso);
-    ManejadorClass::ObtenerInstancia()->escribirEtiqueta(fin_caso, "; //Codigo posterior a los casos");
+    manejador->escribirEtiqueta(inicio_caso, "; //Saltos para cada caso");
+    manejador->escribirCaso(existeUnDefault, fin_caso);
+    manejador->escribirEtiqueta(fin_caso, "; //Codigo posterior a los casos");
 
     tablaDeSimbolos->eliminarUltimaEtiqueta();
     tablaDeSimbolos->eliminarUltimaEtiqueta();
@@ -1685,6 +1693,7 @@ bool Compilador::regresa (void)
 
 bool Compilador::lee(void)
 {
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
     Simbolo* temp = NULL;
     qDebug() << "lee";
 
@@ -1724,7 +1733,7 @@ bool Compilador::lee(void)
 
     if(temp != NULL && temp->getCantidadDimensiones() > 0)
     {
-        ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+        manejador->escribirLlamadaVariable(temp, false);
     }
 
     leerLexema();
@@ -1737,7 +1746,7 @@ bool Compilador::lee(void)
 
     if(temp != NULL)
     {
-        ManejadorClass::ObtenerInstancia()->escribirLeerDato(temp);
+        manejador->escribirLeerDato(temp);
     }
 
     return true;
@@ -1747,6 +1756,8 @@ bool Compilador::imprime(void)
 {
     qDebug() << "imprime";
     bool conSalto = false;
+
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
 
     leerLexema();
 
@@ -1774,7 +1785,7 @@ bool Compilador::imprime(void)
 
     do
     {
-        ManejadorClass::ObtenerInstancia()->prepararImpresionPantalla();
+        manejador->prepararImpresionPantalla();
         leerLexema();
         expr(false);
 
@@ -1783,7 +1794,7 @@ bool Compilador::imprime(void)
 
         if(sActual != NULL)
         {
-            ManejadorClass::ObtenerInstancia()->escribirImpresionPantalla(sActual, tActual);
+            manejador->escribirImpresionPantalla(sActual, tActual);
 
             if(sActual->esTemporal())
             {
@@ -1796,7 +1807,7 @@ bool Compilador::imprime(void)
 
     if(conSalto)
     {
-        ManejadorClass::ObtenerInstancia()->escribirImpresionLNPantalla("\"\"");
+        manejador->escribirImpresionLNPantalla("\"\"");
     }
 
     if(lexico.compare(")") != 0)
@@ -1825,6 +1836,7 @@ bool Compilador::constante(void)
     if(lexico.compare("const") != 0)
         return false;
 
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
 
     leerLexema();
 
@@ -1843,7 +1855,7 @@ bool Compilador::constante(void)
         {
             tablaDeSimbolos->insertarSimbolo(simb);
 
-            ManejadorClass::ObtenerInstancia()->escribirDeclararConstante(simb);
+            manejador->escribirDeclararConstante(simb);
         }
         else
         {
@@ -1875,7 +1887,7 @@ bool Compilador::constante(void)
             {
                 tablaDeSimbolos->insertarSimbolo(simb);
 
-                ManejadorClass::ObtenerInstancia()->escribirDeclararConstante(simb);
+                manejador->escribirDeclararConstante(simb);
             }
             else
             {
@@ -2086,6 +2098,7 @@ void Compilador::suma(bool terminoOpcional)
 {
     qDebug() << "suma";
 
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
     string actual;
     bool hayOperacion = false;
     bool primeraPasada = true;
@@ -2124,9 +2137,9 @@ void Compilador::suma(bool terminoOpcional)
 
 
             if(actual.compare("+") == 0)
-                ManejadorClass::ObtenerInstancia()->escribirSuma(NuevoIzquierdo);
+                manejador->escribirSuma(NuevoIzquierdo);
             else
-                ManejadorClass::ObtenerInstancia()->escribirResta(NuevoIzquierdo);
+                manejador->escribirResta(NuevoIzquierdo);
 
             //solo desapilamos uno, pues se supone se produce uno nuevo
             tablaDeSimbolos->desapilarValor();
@@ -2139,6 +2152,7 @@ void Compilador::multi(bool terminoOpcional)
 {
     qDebug() << "multi";
 
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
     string actual;
     bool hayOperacion = false;
     bool primeraPasada = true;
@@ -2179,11 +2193,11 @@ void Compilador::multi(bool terminoOpcional)
 
 
             if(actual.compare("*") == 0)
-                ManejadorClass::ObtenerInstancia()->escribirMultiplicacion(NuevoIzquierdo);
+                manejador->escribirMultiplicacion(NuevoIzquierdo);
             else if(actual.compare("/") == 0)
-                ManejadorClass::ObtenerInstancia()->escribirDivision(NuevoIzquierdo);
+                manejador->escribirDivision(NuevoIzquierdo);
             else
-                ManejadorClass::ObtenerInstancia()->escribirModulo(NuevoIzquierdo);
+                manejador->escribirModulo(NuevoIzquierdo);
 
             //solo desapilamos uno, pues se supone se produce uno nuevo
             tablaDeSimbolos->desapilarValor();
@@ -2196,6 +2210,7 @@ void Compilador::expo (bool terminoOpcional)
 {
     qDebug() << "expo";
 
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
     string actual;
     bool hayOperacion = false;
     bool primeraPasada = true;
@@ -2234,7 +2249,7 @@ void Compilador::expo (bool terminoOpcional)
             NuevoIzquierdo = operacionPotencia[derecho][izquierdo];
             tablaDeSimbolos->apilarTipo(NuevoIzquierdo);
 
-            ManejadorClass::ObtenerInstancia()->escribirPotencia();
+            manejador->escribirPotencia();
 
             //solo desapilamos uno, pues se supone se produce uno nuevo
             tablaDeSimbolos->desapilarValor();
@@ -2280,6 +2295,9 @@ void Compilador::signo (bool terminoOpcional)
 void Compilador::termino (bool terminoOpcional, bool invertirValor)
 {
     qDebug() << "termino";
+
+    ManejadorClass* manejador = ManejadorClass::ObtenerInstancia();
+
     if(constanteTipo(token))
     {
         //Llegó un dato constante, determinar su tipo, valor y apilarlos
@@ -2303,7 +2321,7 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
         if(!evaluarDespues)
         {
             //cargar valor en pila del jvm
-            ManejadorClass::ObtenerInstancia()->escribirValorConstante(almacenadoTemporal);
+            manejador->escribirValorConstante(almacenadoTemporal);
         }
 
 
@@ -2342,7 +2360,7 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                 //si es dimensionada se debe cargar antes que sus dimensiones
                 if(temp->getCantidadDimensiones() > 0)
                 {
-                    ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+                    manejador->escribirLlamadaVariable(temp, false);
                 }
 
                 tablaDeSimbolos->apilarTipo(temp->getTipo());
@@ -2386,7 +2404,7 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                                   " y se está enviando " + obtenerStringFirma(paramsObtenidos));
                 }
 
-                ManejadorClass::ObtenerInstancia()->escribirLlamadaFuncion(temp);
+                manejador->escribirLlamadaFuncion(temp);
             }
             else
             {
@@ -2404,12 +2422,12 @@ void Compilador::termino (bool terminoOpcional, bool invertirValor)
                     if(temp->getCantidadDimensiones() == 0)
                     {
                         //poner identificador para obtener su valor asociado
-                        ManejadorClass::ObtenerInstancia()->escribirLlamadaVariable(temp, false);
+                        manejador->escribirLlamadaVariable(temp, false);
                     }
                     else
                     {
                         //se cargara a las referencias el valor a asignar
-                        ManejadorClass::ObtenerInstancia()->escribirCargarReferencia(temp->getTipo());
+                        manejador->escribirCargarReferencia(temp->getTipo());
                     }
                 }
             }
